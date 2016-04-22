@@ -142,7 +142,7 @@
 		<div id='receiptInfo'></div>
 		<textarea id="receipt" autofocus readonly></textarea>
 		<div class="button-row">
-			<input type='button' class='submit-button'  onclick="showEmailPopup();" value='Save Receipt'> 
+			<input id='saveDuggaButton' type='button' class='submit-button'  onclick="showEmailPopup();" value='Save Receipt'> 
 			<input type='button' class='submit-button'  onclick="hideReceiptPopup();" value='Close'>	
 		</div>
 		<div id='emailPopup' style="display:none">
