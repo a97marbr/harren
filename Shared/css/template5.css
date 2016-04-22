@@ -1,0 +1,66 @@
+/* This template makes four boxes, one to the upper left and one to the upper right.
+   A third at the bottom left and the forth at the bottom right. */
+#box1wrapper {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: -webkit-calc(50.0%);
+    height: -moz-calc(50.0%);
+    height: calc(50.0%);
+    width: -webkit-calc(50.0%);
+    width: -moz-calc(50.0%); 
+    width: calc(50.0%); 
+	max-width: 90%;
+	min-width: 10%;
+	max-height: 90%;
+	min-height: 10%;
+}
+
+#box2wrapper {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: -webkit-calc(50.0%);
+    height: -moz-calc(50.0%);
+    height: calc(50.0%);
+    width: -webkit-calc(50.0%);
+    width: -moz-calc(50.0%); 
+    width: calc(50.0%);
+	max-width: 90%;
+	min-width: 10%;
+	max-height: 90%;
+	min-height: 10%;
+}
+
+#box3wrapper {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    height: -webkit-calc(50.0%);
+    height: -moz-calc(50.0%);
+    height: calc(50.0%);
+    width: -webkit-calc(50.0%);
+    width: -moz-calc(50.0%); 
+    width: calc(50.0%);
+	max-width: 90%;
+	min-width: 10%;
+	max-height: 90%;
+	min-height: 10%;
+}
+
+#box4wrapper {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    height: -webkit-calc(50.0%);
+    height: -moz-calc(50.0%);
+    height: calc(50.0%);
+    width: -webkit-calc(50.0%);
+    width: -moz-calc(50.0%); 
+    width: calc(50.0%);
+	max-width: 90%;
+	min-width: 10%;
+	max-height: 90%;
+	min-height: 10%;
+}
+

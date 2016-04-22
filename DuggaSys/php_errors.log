@@ -1,0 +1,4 @@
+[07-Oct-2015 12:07:53 Europe/Stockholm] PHP Notice:  Undefined variable: duggastats in C:\Apache24\htdocs\LenaSYS\DuggaSys\resultedservice.php on line 244
+[16-Oct-2015 11:55:35 Europe/Stockholm] PHP Notice:  Undefined variable: file_extension in C:\Apache24\htdocs\LenaSYS\DuggaSys\showdoc.php on line 241
+[17-Oct-2015 00:46:45 Europe/Stockholm] PHP Notice:  Undefined variable: file_extension in C:\Apache24\htdocs\LenaSYS\DuggaSys\showdoc.php on line 244
+[17-Oct-2015 00:47:36 Europe/Stockholm] PHP Notice:  Undefined variable: file_extension in C:\Apache24\htdocs\LenaSYS\DuggaSys\showdoc.php on line 244
