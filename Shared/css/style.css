@@ -882,6 +882,10 @@ input.submit-button:hover {
     border-radius:4px;	
 }
 
+input.submit-button:disabled {
+    opacity: 0.3;
+}
+
 input.submit-button-red {
     background-color:#c75050;
     border:0px;

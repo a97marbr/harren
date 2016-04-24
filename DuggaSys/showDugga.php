@@ -118,7 +118,7 @@
 					echo "<table width='100%'>";
 					echo "<tr>";
 					echo "<td align='center'>";
-					echo "<input class='submit-button' type='button' value='Save' onclick='saveClick();' style='width:160px;height:48px;line-height:48px;' />";
+					echo "<input id='saveDuggaButton' class='submit-button' type='button' value='Save' onclick='saveClick();' style='width:160px;height:48px;line-height:48px;' />";
 					echo "<input class='submit-button' type='button' value='Reset' onclick='reset();' style='width:160px;height:48px;line-height:48px;' />";
 					echo "</td>";
 					echo "</tr>";
@@ -142,7 +142,7 @@
 		<div id='receiptInfo'></div>
 		<textarea id="receipt" autofocus readonly></textarea>
 		<div class="button-row">
-			<input id='saveDuggaButton' type='button' class='submit-button'  onclick="showEmailPopup();" value='Save Receipt'> 
+			<input type='button' class='submit-button'  onclick="showEmailPopup();" value='Save Receipt'> 
 			<input type='button' class='submit-button'  onclick="hideReceiptPopup();" value='Close'>	
 		</div>
 		<div id='emailPopup' style="display:none">

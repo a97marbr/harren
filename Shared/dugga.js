@@ -720,3 +720,7 @@ function toggleInstructions(element)
 {
 	$(element).parent().find(".instructions-content").slideToggle("slow");
 }
+
+function disableSave(){
+	document.getElementById("saveDuggaButton").disabled = true;
+}

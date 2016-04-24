@@ -228,7 +228,7 @@ function createFileUploadArea(fileuploadfileds){
 				form +="<input name='link' type='text' size='40' maxlength='256' />";
 				form +="<input type='hidden' name='kind' value='2' />";
 		}else if(type=="text"){
-				form +="<textarea rows='20' name='inputtext'  id='"+fieldname+"Text' style='-webkit-box-sizing: border-box; -moz-box-sizing: border-box;box-sizing: border-box;	width: 100%;background:#f8f8ff;border-radius:8px;box-shadow: 2px 2px 4px #888 inset;padding:4px;' placeholder='Enter your text and upload.' onchange='disableSave();'></textarea>";
+				form +="<textarea rows='20' name='inputtext'  id='"+fieldname+"Text' style='-webkit-box-sizing: border-box; -moz-box-sizing: border-box;box-sizing: border-box;	width: 100%;background:#f8f8ff;border-radius:8px;box-shadow: 2px 2px 4px #888 inset;padding:4px;' placeholder='Enter your text and upload.' onkeyup='disableSave();'></textarea>";
 				form +="<input type='hidden' name='kind' value='3' />";
 		}else{
 				form +="<input name='uploadedfile[]' type='file' multiple='multiple' onchange='this.form.submit();'/>";
