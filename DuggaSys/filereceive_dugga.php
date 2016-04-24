@@ -81,6 +81,10 @@ if($ha){
 						}
 				}
 		
+				// Replace non ascii characters in lastname and firstname
+				$firstname=preg_replace("/[^a-zA-Z0-9.]/", "", $firstname);
+				$lasttname=preg_replace("/[^a-zA-Z0-9.]/", "", $lastname);				
+
 				// Create a file area with format Lastname-Firstname-Login
 				$userdir = $lastname."_".$firstname."_".$loginname;
 		
@@ -95,6 +99,7 @@ if($ha){
 		if($inputtext!="UNK"){
 				
 				$fname=$fieldtype;
+				$fname=preg_replace("/[^a-zA-Z0-9.]/", "", $fname);				
 				
 				$extension="txt";
 				$mime="txt";
@@ -168,7 +173,7 @@ if($ha){
 				// chdir('../'); 
 								
 				//  if the file is of type "GFILE"(global) or "MFILE"(course local) and it doesn't exists in the db, add a row into the db
-				$allowedT = array("application/x-msdownload","application/x-pdf","application/pdf","application/x-rar-compressed","application/zip", "application/octet-stream","application/force-download","application/x-download", "application/x-zip-compressed", "binary/octet-stream", "application/download");
+				$allowedT = array("application/x-msdownload","application/x-pdf ","application/pdf","application/x-rar-compressed","application/zip", "application/octet-stream","application/force-download","application/x-download", "application/x-zip-compressed", "binary/octet-stream");
 				$allowedX = array("pdf","zip","rar");
 				
 				$swizzled = swizzleArray($_FILES['uploadedfile']);
