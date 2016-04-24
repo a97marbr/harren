@@ -82,7 +82,9 @@ function returnedDugga(data)
 		if (duggaFiles.length > 0){
 			for (var l=0; l<duggaFiles.length; l++){
 				if (duggaFiles[l].kind == "3"){
-					if (document.getElementById(duggaFiles[l].fieldnme+"Text") != null) document.getElementById(duggaFiles[l].fieldnme+"Text").value=decodeURIComponent(duggaFiles[l].content);
+					if (document.getElementById(duggaFiles[l].fieldnme+"Text") != null){
+							document.getElementById(duggaFiles[l].fieldnme+"Text").value=duggaFiles[l].content;
+					} 
 				}
 			}	
 		} else {
