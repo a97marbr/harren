@@ -83,7 +83,8 @@ function returnedDugga(data)
 			for (var l=0; l<duggaFiles.length; l++){
 				if (duggaFiles[l].kind == "3"){
 					if (document.getElementById(duggaFiles[l].fieldnme+"Text") != null){
-							document.getElementById(duggaFiles[l].fieldnme+"Text").value=duggaFiles[l].content;
+							//alert(duggaFiles[l].content);
+							document.getElementById(duggaFiles[l].fieldnme+"Text").innerHTML=duggaFiles[l].content;
 					} 
 				}
 			}	
@@ -192,11 +193,17 @@ function showFacit(param, uanswer, danswer, userStats, files)
 
 		}
 		duggaFiles = files;
+
+		// ----------------========#############========----------------
+		// This is in show facit marking view NOT official running version!
+		// ----------------========#############========----------------
 		
 		if (duggaFiles.length > 0){
 			for (var l=0; l<duggaFiles.length; l++){
 				if (duggaFiles[l].kind == "3"){
-					if (document.getElementById(duggaFiles[l].fieldnme+"Text") != null) document.getElementById(duggaFiles[l].fieldnme+"Text").value=duggaFiles[l].content;
+					if (document.getElementById(duggaFiles[l].fieldnme+"Text") != null){
+					 	document.getElementById(duggaFiles[l].fieldnme+"Text").value=duggaFiles[l].content;
+					}
 				}
 			}	
 		} else {

@@ -313,7 +313,7 @@ foreach($query->fetchAll() as $row) {
 			  $movname=$currcvd."/submissions/".$courseid."/".$coursevers."/".$duggaid."/".$userdir."/".$row['filename'].$row['seq'].".".$row['extension'];	
 
 			  if (file_exists ($movname)){
-						$content=html_entity_decode(file_get_contents($movname));
+						$content=file_get_contents($movname);
 			  }else{
 						$content="File does not exist";			  
 			  }
