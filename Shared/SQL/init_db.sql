@@ -138,7 +138,7 @@ CREATE TABLE userAnswer (
 	moment			INT UNSIGNED NOT NULL,
 	grade 			TINYINT(2),
 	uid 			INT UNSIGNED NOT NULL,
-	useranswer		varchar(2048),
+	useranswer		varchar(16384),
 	submitted 		TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	marked			TIMESTAMP NULL,
 	vers			VARCHAR(8),
