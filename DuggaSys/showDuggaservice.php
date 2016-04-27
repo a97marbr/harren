@@ -305,19 +305,19 @@ $result = $query->execute();
 foreach($query->fetchAll() as $row) {
 		
 		if($row['kind']=="3"){
-				// Read file contents
+			// Read file contents
 
-				$currcvd=getcwd();
+			$currcvd=getcwd();
 
-				$userdir = $lastname."_".$firstname."_".$loginname;
-			  $movname=$currcvd."/submissions/".$courseid."/".$coursevers."/".$duggaid."/".$userdir."/".$row['filename'].$row['seq'].".".$row['extension'];	
+			$userdir = $lastname."_".$firstname."_".$loginname;
+			$movname=$currcvd."/submissions/".$courseid."/".$coursevers."/".$duggaid."/".$userdir."/".$row['filename'].$row['seq'].".".$row['extension'];	
 
-			  if (file_exists ($movname)){
-						$content=html_entity_decode(file_get_contents($movname));
-			  }else{
-						$content="File does not exist";			  
-			  }
-		
+			if (file_exists ($movname)){
+					$content=file_get_contents($movname);
+			}else{
+					$content="File does not exist";			  
+			}
+
 		}else{
 				$content="Not a text submission";						
 		}
@@ -337,8 +337,13 @@ foreach($query->fetchAll() as $row) {
 			'seq' => $row['seq'],	
 			'content' => $content
 		);
-		array_push($files, $entry);		
+		// If the filednme key isn't set, create it now
+  		if (!isset($files[$row['fieldnme']])) $files[$row['fieldnme']] = array();
+
+		array_push($files[$row['fieldnme']], $entry);	
 }
+
+if (sizeof($files) === 0) {$files = (object)array();} // Force data type to be object
 
 $array = array(
 		"debug" => $debug,
