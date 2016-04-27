@@ -646,26 +646,25 @@ function findfilevers(filez,cfield,ctype)
 		var oldfile="";
 		var tab="<table>";
 		tab+="<thead><tr><th>Filename</th><th>Upload date</th></tr></thead>"
-		tab +="<tbody>"
-		for (var subm in filez){
-			var lastSubm=filez[subm].length-1;
-			if(cfield==filez[subm][lastSubm].fieldnme){
-					if(ctype=="zip"||ctype=="pdf"||ctype=="link"||ctype=="text"){
-							foundfile=filez[subm][lastSubm];
-							break;							
-					}else{
-							// Each new filename make row in table.
-							if(oldfile!=filez[subm][lastSubm].filename){
-									var filelink=filez[subm][lastSubm].filepath+filez[subm][lastSubm].filename+filez[subm][lastSubm].seq+"."+filez[subm][lastSubm].extension;											
-									tab+="<tr'><td style='padding:4px;'>";
-									tab+="<a href='"+filelink+"' >"+filez[subm][lastSubm].filename+"."+filez[subm][lastSubm].extension+"</a>";
-									tab+="</td><td style='padding:4px;'>";
-									tab+=filez[subm][lastSubm].updtime;
-									tab+="</td></tr>";		
-							}
-							oldfile=filez[subm][lastSubm].filename;
-					}
-			}
+		tab +="<tbody>";
+		for (var i=filez.length-1;i>=0;i--){
+				if(cfield==filez[i].fieldnme){
+						if(ctype=="zip"||ctype=="pdf"||ctype=="link"||ctype=="text"){
+								foundfile=filez[i];
+								break;							
+						}else{
+								// Each new filename make row in table.
+								if(oldfile!=filez[i].filename){
+										var filelink=filez[i].filepath+filez[i].filename+filez[i].seq+"."+filez[i].extension;											
+										tab+="<tr'><td style='padding:4px;'>";
+										tab+="<a href='"+filelink+"' >"+filez[i].filename+"."+filez[i].extension+"</a>";
+										tab+="</td><td style='padding:4px;'>";
+										tab+=filez[i].updtime;
+										tab+="</td></tr>";		
+								}
+								oldfile=filez[i].filename;
+						}
+				}
 		}
 		tab+="</tbody>"
 		tab+="</table>"			

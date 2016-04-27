@@ -27,7 +27,6 @@ function setup()
 
 function returnedDugga(data) 
 {	
-
 	$("#content").css({"position":"relative","top":"50px"});
 
 	dataV = data;
@@ -68,9 +67,11 @@ function returnedDugga(data)
 			// UNK 
 		}
 
+		var duggaFiles = data["files"][inParams["moment"]];
+
 		createFileUploadArea(duggaParams["submissions"]);
 		for (var k=0; k < duggaParams["submissions"].length; k++){
-			findfilevers(data["files"], duggaParams["submissions"][k].fieldname,duggaParams["submissions"][k].type);
+			findfilevers(duggaFiles, duggaParams["submissions"][k].fieldname,duggaParams["submissions"][k].type);
     		if (duggaParams['uploadInstruction'] !== null){
 				document.getElementById(duggaParams["submissions"][k].fieldname+"Instruction").innerHTML=duggaParams["submissions"][k].instruction;
 			}
@@ -179,15 +180,16 @@ function showFacit(param, uanswer, danswer, userStats, files, moment)
 
 		$("#snus").parent().find(".instructions-content").slideToggle("slow");
 
+		var duggaFiles = files[moment];
+
 		createFileUploadArea(duggaParams["submissions"]);
 		for (var k=0; k < duggaParams["submissions"].length; k++){
-			findfilevers(files, duggaParams["submissions"][k].fieldname,duggaParams["submissions"][k].type);
+			findfilevers(duggaFiles, duggaParams["submissions"][k].fieldname,duggaParams["submissions"][k].type);
     		if (duggaParams['uploadInstruction'] !== null){
 				document.getElementById(duggaParams["submissions"][k].fieldname+"Instruction").innerHTML=duggaParams["submissions"][k].instruction;
 			}
 
 		}
-		duggaFiles = files;
 
 		// ----------------========#############========----------------
 		// This is in show facit marking view NOT official running version!
@@ -207,15 +209,10 @@ function showFacit(param, uanswer, danswer, userStats, files, moment)
 		}
 */
 
-		console.log(duggaFiles);
-
-		alert(duggaFiles.items[0]);
-
-		for (var subm in duggaFiles){
-				if (duggaFiles[subm][duggaFiles[subm].length-1].kind == "3"){
-					lastelement=duggaFiles[subm][duggaFiles[subm].length-1];
-					if (document.getElementById(lastelement.fieldnme+"Text") != null){
-					 		document.getElementById(lastelement.fieldnme+"Text").innerHTML=lastelement.content;					
+		for (var version=0; version < duggaFiles.length;version++){				
+				if (duggaFiles[version].kind == "3"){
+					if (document.getElementById(duggaFiles[version].fieldnme+"Text") != null){
+					 		document.getElementById(duggaFiles[version].fieldnme+"Text").innerHTML=duggaFiles[version].content;					
 					}
 				}
 		}			

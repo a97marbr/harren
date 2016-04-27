@@ -122,7 +122,7 @@ if($ha){
 			  $movname=$currcvd."/submissions/".$cid."/".$vers."/".$duggaid."/".$userdir."/".$fname.$seq.".".$extension;	
 			  file_put_contents($movname, htmlentities($inputtext, ENT_QUOTES | ENT_IGNORE, "UTF-8"));
 			  
-				$query = $pdo->prepare("INSERT INTO submission(fieldnme,uid,cid,vers,did,filepath,filename,extension,mime,kind,seq,updtime) VALUES(:field,:uid,:cid,:vers,:did,:filepath,:filename,:extension,:mime,:kind,:seq,now());");
+				$query = $pdo->prepare("INSERT INTO submission(fieldnme,uid,cid,vers,did,filepath,filename,extension,mime,kind,seq,segment,updtime) VALUES(:field,:uid,:cid,:vers,:did,:filepath,:filename,:extension,:mime,:kind,:seq,:segment,now());");
 				
 				$query->bindParam(':uid', $userid);
 				$query->bindParam(':cid', $cid);
@@ -134,6 +134,7 @@ if($ha){
 				$query->bindParam(':mime', $mime);
 				$query->bindParam(':field', $fieldtype);
 				$query->bindParam(':kind', $fieldkind);
+				$query->bindParam(':segment', $moment);
 				$query->bindParam(':seq', $seq);
 				
 				if(!$query->execute()) {
@@ -153,7 +154,7 @@ if($ha){
 							$seq=$row['Dusty']+1;
 				}			
 
-				$query = $pdo->prepare("INSERT INTO submission(fieldnme,uid,cid,vers,did,filepath,filename,extension,mime,kind,seq,updtime) VALUES(:field,:uid,:cid,:vers,:did,:filepath,null,null,null,:kind,:seq,now());");
+				$query = $pdo->prepare("INSERT INTO submission(fieldnme,uid,cid,vers,did,filepath,filename,extension,mime,kind,seq,segment,updtime) VALUES(:field,:uid,:cid,:vers,:did,:filepath,null,null,null,:kind,:seq,:segment,now());");
 				
 			
 				$query->bindParam(':uid', $userid);
@@ -164,6 +165,7 @@ if($ha){
 				$query->bindParam(':field', $fieldtype);
 				$query->bindParam(':kind', $fieldkind);
 				$query->bindParam(':seq', $seq);
+				$query->bindParam(':segment', $moment);
 				
 				if(!$query->execute()) {
 					$error=$query->errorInfo();
@@ -236,7 +238,7 @@ if($ha){
 														$query->bindParam(':field', $fieldtype);
 														$query->bindParam(':kind', $fieldkind);
 														$query->bindParam(':seq', $seq);
-														$query->bindParam(':segment', $segment);
+														$query->bindParam(':segment', $moment);
 														
 														if(!$query->execute()) {
 															$error=$query->errorInfo();
