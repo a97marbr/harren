@@ -171,14 +171,19 @@ if($ha){
 				}			 				
 		}else{
 				// chdir('../'); 
+
+				
 								
 				//  if the file is of type "GFILE"(global) or "MFILE"(course local) and it doesn't exists in the db, add a row into the db
-			  $allowedT = array("application/x-msdownload","application/x-pdf","application/pdf","application/x-rar-compressed","application/zip", "application/octet-stream","application/force-download","application/x-download", "application/x-zip-compressed", "binary/octet-stream", "application/download","application/application-download");
+			  $allowedT = array("application/x-zip","application/x-msdownload","application/x-pdf","application/pdf","application/x-rar-compressed","application/zip", "application/octet-stream","application/force-download","application/x-download", "application/x-zip-compressed", "binary/octet-stream", "application/download","application/application-download");
 				$allowedX = array("pdf","zip","rar");
 				
 				$swizzled = swizzleArray($_FILES['uploadedfile']);
 				
 				foreach ($swizzled as $key => $filea){
+					
+						$filea['type']=str_replace('"', "",$filea['type']);
+						$filea['type']=str_replace("'", "",$filea['type']);
 					
 						//  if the file has a name (e.g it is successfully sent to "filereceive.php") begin the upload process.
 						if($filea["name"]!=""){
@@ -196,7 +201,7 @@ if($ha){
 								} else {
 									$extension = "UNK";
 								}
-				
+								
 								if(in_array($extension, $allowedX)&&in_array($filea['type'], $allowedT)){ 
 										//  if file type is allowed, continue the uploading process.
 																						
@@ -216,7 +221,7 @@ if($ha){
 										// check if upload is successful 
 										if(move_uploaded_file($filea["tmp_name"],$movname)){ 
 		
-														$query = $pdo->prepare("INSERT INTO submission(fieldnme,uid,cid,vers,did,filepath,filename,extension,mime,kind,seq,segment,updtime) VALUES(:field,:uid,:cid,:vers,:did,:filepath,:filename,:extension,:mime,:kind,:segment,:seq,now());");
+														$query = $pdo->prepare("INSERT INTO submission(fieldnme,uid,cid,vers,did,filepath,filename,extension,mime,kind,seq,segment,updtime) VALUES(:field,:uid,:cid,:vers,:did,:filepath,:filename,:extension,:mime,:kind,:seq,:segment,now());");
 														
 														$filepath="submissions/".$cid."/".$vers."/".$duggaid."/".$userdir."/";
 		
@@ -266,7 +271,7 @@ if(!$error){
 if(!$error){
 		echo "<script>window.gocation.replace('showDugga.php?cid=".$cid."&coursevers=".$vers."&did=".$duggaid."&moment=".$moment."&segment=".$segment."&highscoremode=0');</script>"; //update page, redirect to "fileed.php" with the variables sent for course id and version id
 }else{
-		echo $error;
+
 }
 ?>
 </body>
