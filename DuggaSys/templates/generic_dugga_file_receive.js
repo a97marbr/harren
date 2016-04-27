@@ -185,11 +185,17 @@ function showFacit(param, uanswer, danswer, userStats, files)
 
 		}
 		duggaFiles = files;
+
+		// ----------------========#############========----------------
+		// This is in show facit marking view NOT official running version!
+		// ----------------========#############========----------------
 		
 		if (duggaFiles.length > 0){
 			for (var l=0; l<duggaFiles.length; l++){
 				if (duggaFiles[l].kind == "3"){
-					if (document.getElementById(duggaFiles[l].fieldnme+"Text") != null) document.getElementById(duggaFiles[l].fieldnme+"Text").value=duggaFiles[l].content;
+					if (document.getElementById(duggaFiles[l].fieldnme+"Text") != null){
+					 	document.getElementById(duggaFiles[l].fieldnme+"Text").value=duggaFiles[l].content;
+					}
 				}
 			}	
 		} else {
@@ -223,7 +229,7 @@ function createFileUploadArea(fileuploadfileds){
 				form +="<input name='link' type='text' size='40' maxlength='256' />";
 				form +="<input type='hidden' name='kind' value='2' />";
 		}else if(type=="text"){
-				form +="<textarea rows='20' name='inputtext'  id='"+fieldname+"Text' style='-webkit-box-sizing: border-box; -moz-box-sizing: border-box;box-sizing: border-box;	width: 100%;background:#f8f8ff;border-radius:8px;box-shadow: 2px 2px 4px #888 inset;padding:4px;' placeholder='Enter your text and upload.' onchange='disableSave();'></textarea>";
+				form +="<textarea rows='20' name='inputtext'  id='"+fieldname+"Text' style='-webkit-box-sizing: border-box; -moz-box-sizing: border-box;box-sizing: border-box;	width: 100%;background:#f8f8ff;border-radius:8px;box-shadow: 2px 2px 4px #888 inset;padding:4px;' placeholder='Enter your text and upload.' onkeyup='disableSave();'></textarea>";
 				form +="<input type='hidden' name='kind' value='3' />";
 		}else{
 				form +="<input name='uploadedfile[]' type='file' multiple='multiple' onchange='this.form.submit();'/>";
