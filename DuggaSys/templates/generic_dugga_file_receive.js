@@ -80,7 +80,10 @@ function returnedDugga(data)
 		duggaFiles = data['files'];
 		for (var subm in duggaFiles){
 				if (duggaFiles[subm][duggaFiles[subm].length-1].kind == "3"){
-					if (document.getElementById(duggaFiles[subm][duggaFiles[subm].length-1].fieldnme+"Text") != null) document.getElementById(duggaFiles[subm][duggaFiles[subm].length-1].fieldnme+"Text").innerHTML=duggaFiles[subm][duggaFiles[subm].length-1].content;
+					lastelement=duggaFiles[subm][duggaFiles[subm].length-1];
+					if (document.getElementById(lastelement.fieldnme+"Text") != null){
+					 		document.getElementById(lastelement.fieldnme+"Text").innerHTML=lastelement.content;					
+					}
 				}
 		}			
 
@@ -129,7 +132,7 @@ function saveClick()
 	saveDuggaResult(bitstr);
 }
 
-function showFacit(param, uanswer, danswer, userStats, files)
+function showFacit(param, uanswer, danswer, userStats, files, moment)
 {
 	document.getElementById('duggaTime').innerHTML=userStats[0];
 	document.getElementById('duggaTotalTime').innerHTML=userStats[1];
@@ -189,19 +192,35 @@ function showFacit(param, uanswer, danswer, userStats, files)
 		// ----------------========#############========----------------
 		// This is in show facit marking view NOT official running version!
 		// ----------------========#############========----------------
-		
+
+/*		
 		if (duggaFiles.length > 0){
 			for (var l=0; l<duggaFiles.length; l++){
 				if (duggaFiles[l].kind == "3"){
 					if (document.getElementById(duggaFiles[l].fieldnme+"Text") != null){
-					 	document.getElementById(duggaFiles[l].fieldnme+"Text").value=duggaFiles[l].content;
+					 	document.getElementById(duggaFiles[l].fieldnme+"Text").innerHTML=duggaFiles[l].content;
 					}
 				}
 			}	
 		} else {
 			// No files uploaded.
 		}
+*/
 
+		console.log(duggaFiles);
+
+		alert(duggaFiles.items[0]);
+
+		for (var subm in duggaFiles){
+				if (duggaFiles[subm][duggaFiles[subm].length-1].kind == "3"){
+					lastelement=duggaFiles[subm][duggaFiles[subm].length-1];
+					if (document.getElementById(lastelement.fieldnme+"Text") != null){
+					 		document.getElementById(lastelement.fieldnme+"Text").innerHTML=lastelement.content;					
+					}
+				}
+		}			
+	
+	
 	}
 }
 

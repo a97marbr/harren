@@ -227,7 +227,7 @@ if(strcmp($opt,"DUGGA")!==0){
 }
 
 $files= array();
-$query = $pdo->prepare("select subid,uid,vers,did,fieldnme,filename,extension,mime,updtime,kind,filepath,seq from submission where uid=:uid and vers=:vers and cid=:cid order by filename,updtime asc;");
+$query = $pdo->prepare("select subid,uid,vers,did,fieldnme,filename,extension,mime,updtime,kind,filepath,seq,segment from submission where uid=:uid and vers=:vers and cid=:cid order by filename,updtime asc;");
 $query->bindParam(':uid', $luid);
 $query->bindParam(':cid', $cid);
 $query->bindParam(':vers', $vers);
@@ -243,11 +243,14 @@ foreach($query->fetchAll() as $row) {
 				// Read file contents
 
 				$currcvd=getcwd();
+				$movname=$currcvd."/".$row['filepath']."/".$row['filename'].$row['seq'].".".$row['extension'];	
 
-				$userdir = $lastname."_".$firstname."_".$loginname;
-				$movname=$currcvd."/submissions/".$courseid."/".$coursevers."/".$duggaid."/".$userdir."/".$row['filename'].$row['seq'].".".$row['extension'];	
 
-				$content=file_get_contents($movname);
+				if(!file_exists($movname)) {
+						$content="UNK!";				
+				} else {
+						$content=file_get_contents($movname);
+				}
 		
 		}else{
 				$content="Egon!";						
@@ -266,10 +269,17 @@ foreach($query->fetchAll() as $row) {
 			'updtime' => $row['updtime'],
 			'kind' => $row['kind'],	
 			'seq' => $row['seq'],	
+			'segment' => $row['segment'],	
 			'content' => $content
 		);
-		array_push($files, $entry);		
+
+		// If the filednme key isn't set, create it now
+  	if (!isset($files[$row['segment']])) $files[$row['segment']] = array();
+		array_push($files[$row['segment']], $entry);	
+		
 }		
+
+if (sizeof($files) === 0) {$files = (object)array();} // Force data type to be object
 
 $array = array(
 	'entries' => $entries,
@@ -283,6 +293,7 @@ $array = array(
 	'duggaanswer' => $duggaanswer,
 	'useranswer' => $useranswer,
 	'duggastats' => $duggastats,
+	'moment' => $moment,
 	'files' => $files
 );
 

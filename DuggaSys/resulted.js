@@ -465,7 +465,7 @@ function returnedResults(data)
 		
 					//alert(data['duggaparam']+"\n"+data['useranswer'] + "\n" + data['duggaanswer']);
 					//console.log(data['duggastats']);
-					showFacit(data['duggaparam'],data['useranswer'],data['duggaanswer'], data['duggastats'], data['files']);
+					showFacit(data['duggaparam'],data['useranswer'],data['duggaanswer'], data['duggastats'], data['files'],data['moment']);
 				});
 				$("#resultpopover").css("display", "block");
 				//alert(data['duggaanswer']);

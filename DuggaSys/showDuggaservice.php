@@ -295,7 +295,7 @@ $savedanswer = str_replace("*####*", '&cup;', $savedanswer);
 if(strcmp($savedanswer,"") == 0){$savedanswer = "UNK";} // Return UNK if we have not submitted any answer
 
 $files= array();
-$query = $pdo->prepare("select subid,uid,vers,did,fieldnme,filename,extension,mime,updtime,kind,filepath,seq from submission where uid=:uid and vers=:vers and cid=:cid and did=:did order by fieldnme,updtime asc;");
+$query = $pdo->prepare("select subid,uid,vers,did,fieldnme,filename,extension,mime,updtime,kind,filepath,seq,segment from submission where uid=:uid and vers=:vers and cid=:cid and did=:did order by fieldnme,updtime asc;");
 $query->bindParam(':uid', $userid);
 $query->bindParam(':cid', $courseid);
 $query->bindParam(':vers', $coursevers);
@@ -335,12 +335,14 @@ foreach($query->fetchAll() as $row) {
 			'updtime' => $row['updtime'],
 			'kind' => $row['kind'],	
 			'seq' => $row['seq'],	
+			'segment' => $row['segment'],	
 			'content' => $content
 		);
-		// If the filednme key isn't set, create it now
-  		if (!isset($files[$row['fieldnme']])) $files[$row['fieldnme']] = array();
 
-		array_push($files[$row['fieldnme']], $entry);	
+		// If the filednme key isn't set, create it now
+ 		if (!isset($files[$row['segment']])) $files[$row['segment']] = array();
+
+		array_push($files[$row['segment']], $entry);	
 }
 
 if (sizeof($files) === 0) {$files = (object)array();} // Force data type to be object
