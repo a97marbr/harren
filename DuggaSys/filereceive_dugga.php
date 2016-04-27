@@ -216,7 +216,7 @@ if($ha){
 										// check if upload is successful 
 										if(move_uploaded_file($filea["tmp_name"],$movname)){ 
 		
-														$query = $pdo->prepare("INSERT INTO submission(fieldnme,uid,cid,vers,did,filepath,filename,extension,mime,kind,seq,updtime) VALUES(:field,:uid,:cid,:vers,:did,:filepath,:filename,:extension,:mime,:kind,:seq,now());");
+														$query = $pdo->prepare("INSERT INTO submission(fieldnme,uid,cid,vers,did,filepath,filename,extension,mime,kind,seq,segment,updtime) VALUES(:field,:uid,:cid,:vers,:did,:filepath,:filename,:extension,:mime,:kind,:segment,:seq,now());");
 														
 														$filepath="submissions/".$cid."/".$vers."/".$duggaid."/".$userdir."/";
 		
@@ -231,6 +231,7 @@ if($ha){
 														$query->bindParam(':field', $fieldtype);
 														$query->bindParam(':kind', $fieldkind);
 														$query->bindParam(':seq', $seq);
+														$query->bindParam(':segment', $segment);
 														
 														if(!$query->execute()) {
 															$error=$query->errorInfo();
