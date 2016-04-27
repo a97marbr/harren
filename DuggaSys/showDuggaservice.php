@@ -341,8 +341,8 @@ foreach($query->fetchAll() as $row) {
 
 		// If the filednme key isn't set, create it now
  		if (!isset($files[$row['segment']])) $files[$row['segment']] = array();
-
-		array_push($files[$row['segment']], $entry);	
+	  	if (!isset($files[$row['segment']][$row['fieldnme']])) $files[$row['segment']][$row['fieldnme']] = array();
+		array_push($files[$row['segment']][$row['fieldnme']], $entry);	
 }
 
 if (sizeof($files) === 0) {$files = (object)array();} // Force data type to be object
