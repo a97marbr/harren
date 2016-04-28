@@ -140,7 +140,7 @@ if($ha){
 				$query->bindParam(':kind', $fieldkind);
 				$query->bindParam(':segment', $moment);
 				$query->bindParam(':seq', $seq);
-				$query->bindParam(':segment', $segment);
+				$query->bindParam(':segment', $moment);
 				
 				if(!$query->execute()) {
 					$error=$query->errorInfo();
