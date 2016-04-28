@@ -40,6 +40,10 @@ $fieldkind=getOP('kind');
 $error=false;
 
 $seq=0;
+
+$loginname="";
+$lastname="";
+$firstname="";
 					
 if(isset($_SESSION['uid'])){
 	$userid=$_SESSION['uid'];
@@ -49,6 +53,10 @@ if(isset($_SESSION['uid'])){
 }else{
 	$userid="UNK";		
 } 	
+
+// Replace non ascii characters in lastname and firstname
+$firstname=preg_replace("/[^a-zA-Z0-9.]/", "", $firstname);
+$lasttname=preg_replace("/[^a-zA-Z0-9.]/", "", $lastname);				
 
 //  Handle files! One by one  -- if all is ok add file name to database
 //  login for user is successful & has either write access or is superuser					
@@ -81,10 +89,6 @@ if($ha){
 						}
 				}
 		
-				// Replace non ascii characters in lastname and firstname
-				$firstname=preg_replace("/[^a-zA-Z0-9.]/", "", $firstname);
-				$lasttname=preg_replace("/[^a-zA-Z0-9.]/", "", $lastname);				
-
 				// Create a file area with format Lastname-Firstname-Login
 				$userdir = $lastname."_".$firstname."_".$loginname;
 		
@@ -136,6 +140,7 @@ if($ha){
 				$query->bindParam(':kind', $fieldkind);
 				$query->bindParam(':segment', $moment);
 				$query->bindParam(':seq', $seq);
+				$query->bindParam(':segment', $segment);
 				
 				if(!$query->execute()) {
 					$error=$query->errorInfo();
@@ -192,9 +197,7 @@ if($ha){
 								$fname=$filea['name'];
 		
 								// Remove white space and non ascii characters
-								$fname=preg_replace('/[[:^print:]]/', '', $fname);
-								$fname = preg_replace('/\s+/', '', $fname); 
-		
+								$fname=preg_replace("/[^a-zA-Z0-9.]/", "", $fname);				
 								
 								$posPeriod = strrpos($fname, ".");
 								if ($posPeriod !== false){
