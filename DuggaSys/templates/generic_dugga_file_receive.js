@@ -78,7 +78,6 @@ function returnedDugga(data)
 
 		}
 
-		duggaFiles = data['files'];
 		for (var version=0; version < duggaFiles.length;version++){				
 			if (duggaFiles[version].kind == "3"){
 				if (document.getElementById(duggaFiles[version].fieldnme+"Text") != null){

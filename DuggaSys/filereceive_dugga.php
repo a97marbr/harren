@@ -138,7 +138,6 @@ if($ha){
 				$query->bindParam(':mime', $mime);
 				$query->bindParam(':field', $fieldtype);
 				$query->bindParam(':kind', $fieldkind);
-				$query->bindParam(':segment', $moment);
 				$query->bindParam(':seq', $seq);
 				$query->bindParam(':segment', $moment);
 				
