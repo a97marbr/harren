@@ -79,14 +79,13 @@ function returnedDugga(data)
 		}
 
 		duggaFiles = data['files'];
-		for (var subm in duggaFiles){
-				if (duggaFiles[subm][duggaFiles[subm].length-1].kind == "3"){
-					lastelement=duggaFiles[subm][duggaFiles[subm].length-1];
-					if (document.getElementById(lastelement.fieldnme+"Text") != null){
-					 		document.getElementById(lastelement.fieldnme+"Text").innerHTML=lastelement.content;					
-					}
+		for (var version=0; version < duggaFiles.length;version++){				
+			if (duggaFiles[version].kind == "3"){
+				if (document.getElementById(duggaFiles[version].fieldnme+"Text") != null){
+				 		document.getElementById(duggaFiles[version].fieldnme+"Text").innerHTML=duggaFiles[version].content;					
 				}
-		}			
+			}
+		}				
 
 		if (data["answer"] == null || data["answer"] !== "UNK") {
 
