@@ -320,7 +320,7 @@ CREATE TABLE submission(
 		mime			VARCHAR(64),
 		kind			INTEGER,
 		segment		INTEGER,
-		updtime		TIMESTAMP,
+		updtime		TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		PRIMARY KEY(subid) 
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB;
 
