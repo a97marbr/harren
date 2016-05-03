@@ -295,7 +295,7 @@ $savedanswer = str_replace("*####*", '&cup;', $savedanswer);
 if(strcmp($savedanswer,"") == 0){$savedanswer = "UNK";} // Return UNK if we have not submitted any answer
 
 $files= array();
-$query = $pdo->prepare("select subid,uid,vers,did,fieldnme,filename,extension,mime,updtime,kind,filepath,seq,segment from submission where uid=:uid and vers=:vers and cid=:cid and did=:did order by fieldnme,updtime asc;");
+$query = $pdo->prepare("select subid,uid,vers,did,fieldnme,filename,extension,mime,updtime,kind,filepath,seq,segment from submission where uid=:uid and vers=:vers and cid=:cid and did=:did order by subid,fieldnme,updtime asc;");
 $query->bindParam(':uid', $userid);
 $query->bindParam(':cid', $courseid);
 $query->bindParam(':vers', $coursevers);
@@ -309,8 +309,7 @@ foreach($query->fetchAll() as $row) {
 
 			$currcvd=getcwd();
 
-			$userdir = $lastname."_".$firstname."_".$loginname;
-			$movname=$currcvd."/submissions/".$courseid."/".$coursevers."/".$duggaid."/".$userdir."/".$row['filename'].$row['seq'].".".$row['extension'];	
+			$movname=$currcvd."/".$row['filepath']."/".$row['filename'].$row['seq'].".".$row['extension'];	
 
 			if (file_exists ($movname)){
 					$content=file_get_contents($movname);
