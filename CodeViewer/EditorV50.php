@@ -72,7 +72,7 @@ Testing Link:
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" content="text/html; charset=utf-8" />
 		<title><?php echo $title; ?></title>
 		<link type="text/css" href="../Shared/css/jquery-ui-1.10.4.min.css" rel="stylesheet">  
 		<link type="text/css" href="../Shared/css/codeviewer.css" rel="stylesheet" />
