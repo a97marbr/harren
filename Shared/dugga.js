@@ -499,7 +499,6 @@ function setupLoginLogoutButton(isLoggedIn){
 		$("#loginbutton").click(function(){processLogout();});	
 	}
 	else{
-		console.log("Setting button to show login prompt");
 		$("#loginbutton").off("click");
 		$("#loginbutton").click(function(){showLoginPopup();});		
 	}
