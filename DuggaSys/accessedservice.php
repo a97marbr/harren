@@ -3,14 +3,17 @@ date_default_timezone_set("Europe/Stockholm");
 // Include basic application services!
 include_once "../Shared/sessions.php";
 include_once "../Shared/basic.php";
+
 // Connect to database and start session
 pdoConnect();
 session_start();
+
 if(isset($_SESSION['uid'])){
 	$userid=$_SESSION['uid'];
 }else{
 	$userid="1";		
 } 
+
 $pw = getOP('pw');
 $cid = getOP('cid');
 $opt = getOP('opt');
@@ -21,10 +24,17 @@ $lastname = getOP('lastname');
 $username = getOP('username');
 $val = getOP('val');
 $newusers = getOP('newusers');
+
 $debug="NONE!";	
+
+$log_uuid = getOP('log_uuid');
+$info=$opt." ".$cid." ".$uid." ".$username." ".$newusers;
+logServiceEvent($log_uuid, EventTypes::ServiceServerStart, "accessedservice.php",$userid,$info);
+
 //------------------------------------------------------------------------------------------------
 // Services
 //------------------------------------------------------------------------------------------------
+
 if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESSION['uid']))) {
 	if(strcmp($opt,"UPDATE")==0){
 		$query = $pdo->prepare("UPDATE user set firstname=:firstname,lastname=:lastname,ssn=:ssn,username=:username WHERE uid=:uid;");
@@ -137,9 +147,11 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 		}
 	}
 }
+
 //------------------------------------------------------------------------------------------------
 // Retrieve Information			
 //------------------------------------------------------------------------------------------------
+
 $entries=array();
 if(checklogin() && (hasAccess($userid, $cid, 'w') || isSuperUser($userid))) {
 	$query = $pdo->prepare("SELECT user.uid as uid,username,access,firstname,lastname,ssn,modified FROM user, user_course WHERE cid=:cid AND user.uid=user_course.uid");
@@ -165,5 +177,8 @@ $array = array(
 	'entries' => $entries,
 	"debug" => $debug,
 );
+
 echo json_encode($array);
+
+logServiceEvent($log_uuid, EventTypes::ServiceServerEnd, "accessedservice.php",$userid,$info);
 ?>

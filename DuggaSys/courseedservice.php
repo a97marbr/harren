@@ -45,6 +45,10 @@ if(isSuperUser($userid)){
 
 $debug="NONE!";	
 
+$log_uuid = getOP('log_uuid');
+$info=$opt." ".$cid." ".$coursename." ".$versid." ".$visibility;
+logServiceEvent($log_uuid, EventTypes::ServiceServerStart, "courseedservice.php",$userid,$info);
+
 //------------------------------------------------------------------------------------------------
 // Services
 //------------------------------------------------------------------------------------------------
@@ -155,6 +159,8 @@ $array = array(
 	);
 
 echo json_encode($array);
+
+logServiceEvent($log_uuid, EventTypes::ServiceServerEnd, "courseedservice.php",$userid,$info);
 
 ?>
 

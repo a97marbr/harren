@@ -43,6 +43,10 @@ if($gradesys=="UNK") $gradesys=0;
 
 $debug="NONE!";	
 
+$info=$opt." ".$courseid." ".$coursevers." ".$coursename;
+$log_uuid = getOP('log_uuid');
+logServiceEvent($log_uuid, EventTypes::ServiceServerStart, "sectionedservice.php",$userid,$info);
+
 //------------------------------------------------------------------------------------------------
 // Services
 //------------------------------------------------------------------------------------------------
@@ -454,5 +458,8 @@ $array = array(
 );
 
 echo json_encode($array);
+
+logServiceEvent($log_uuid, EventTypes::ServiceServerEnd, "sectionedservice.php",$userid,$info);
+
 ?>
 

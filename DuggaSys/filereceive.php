@@ -38,6 +38,12 @@ if(isset($_SESSION['uid'])){
 	$userid="UNK";		
 } 	
 
+$log_uuid = getOP('log_uuid');
+
+$filo=print_r($_FILES,true);
+$info=$cid." ".$vers." ".$kind." ".$link." ".$selectedfile." ".$error." ".$filo;
+logServiceEvent($log_uuid, EventTypes::ServiceServerStart, "filerecieve.php",$userid,$info);
+
 //  Handle files! One by one  -- if all is ok add file name to database
 //  login for user is successful & has either write access or is superuser					
 
@@ -210,6 +216,8 @@ if($ha){
 			 	$error=true;
 		}				
 }
+
+logServiceEvent($log_uuid, EventTypes::ServiceServerEnd, "filerecrive.php", $userid,$info);
 	
 if(!$error){
 		echo "<meta http-equiv='refresh' content='0;URL=fileed.php?cid=".$cid."&coursevers=".$vers."' />";  //update page, redirect to "fileed.php" with the variables sent for course id and version id

@@ -35,6 +35,10 @@ $deadline = getOP('deadline');
 
 $debug="NONE!";
 
+$log_uuid = getOP('log_uuid');
+$info=$opt." ".$cid." ".$qid." ".$vid." ".$param." ".$answer." ".$disabled." ".$uid." ".$name;
+logServiceEvent($log_uuid, EventTypes::ServiceServerStart, "duggaedservice.php",$userid,$info);
+
 //------------------------------------------------------------------------------------------------
 // Services
 //------------------------------------------------------------------------------------------------
@@ -249,14 +253,10 @@ $array = array(
 	'debug' => $debug,
 	'files' => $files,
 	'duggaPages' => $duggaPages
-	);
-/*$t = json_encode($array);
-if (!$t){
-	echo "Failed: ". $t;
-} else {
-	echo "success: ". $t;
-}*/
+);
+
 echo json_encode($array);
 
+logServiceEvent($log_uuid, EventTypes::ServiceServerEnd, "duggaedservice.php",$userid,$info);
 
 ?>
