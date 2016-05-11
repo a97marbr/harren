@@ -133,10 +133,12 @@ function saveClick()
 
 function showFacit(param, uanswer, danswer, userStats, files, moment)
 {
-	document.getElementById('duggaTime').innerHTML=userStats[0];
-	document.getElementById('duggaTotalTime').innerHTML=userStats[1];
-	document.getElementById('duggaClicks').innerHTML=userStats[2];
-	document.getElementById('duggaTotalClicks').innerHTML=userStats[3];
+	if (userStats != null){
+		document.getElementById('duggaTime').innerHTML=userStats[0];
+		document.getElementById('duggaTotalTime').innerHTML=userStats[1];
+		document.getElementById('duggaClicks').innerHTML=userStats[2];
+		document.getElementById('duggaTotalClicks').innerHTML=userStats[3];		
+	}
 	$("#duggaStats").css("display","none");
 
 	inParams = parseGet();
@@ -178,7 +180,10 @@ function showFacit(param, uanswer, danswer, userStats, files, moment)
 
 		$("#snus").parent().find(".instructions-content").slideToggle("slow");
 
-		var duggaFiles = files[moment];
+		var duggaFiles = [];
+		if (moment != null) {
+			duggaFiles = files[moment];
+		} 
 
 		createFileUploadArea(duggaParams["submissions"]);
 		for (var k=0; k < duggaParams["submissions"].length; k++){

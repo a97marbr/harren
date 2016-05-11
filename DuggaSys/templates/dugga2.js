@@ -131,14 +131,15 @@ function reset()
 	document.getElementById('H5').innerHTML="0";
 }
 
-function showFacit(param, uanswer, danswer, userStats)
+function showFacit(param, uanswer, danswer, userStats, files, moment)
 {
-	document.getElementById('duggaTime').innerHTML=userStats[0];
-	document.getElementById('duggaTotalTime').innerHTML=userStats[1];
-	document.getElementById('duggaClicks').innerHTML=userStats[2];
-	document.getElementById('duggaTotalClicks').innerHTML=userStats[3];
-	$("#duggaStats").css("display","block");
-	
+	if (userStats != null){
+		document.getElementById('duggaTime').innerHTML=userStats[0];
+		document.getElementById('duggaTotalTime').innerHTML=userStats[1];
+		document.getElementById('duggaClicks').innerHTML=userStats[2];
+		document.getElementById('duggaTotalClicks').innerHTML=userStats[3];
+		$("#duggaStats").css("display","block");
+	}
 	var p = jQuery.parseJSON(param.replace(/\*/g, '"'));
 		
 	$("#fargnamn").html(p['colorname']);

@@ -110,16 +110,17 @@ function returnedDugga(data)
 	}
 }
 
-function showFacit(param, uanswer, danswer, userStats) {
-
+function showFacit(param, uanswer, danswer, userStats, files, moment)
+{
+	if (userStats != null){
+		$("#duggaInfoBox").css("display","none");
+		document.getElementById('duggaTime').innerHTML=userStats[0];
+		document.getElementById('duggaTotalTime').innerHTML=userStats[1];
+		document.getElementById('duggaClicks').innerHTML=userStats[2];
+		document.getElementById('duggaTotalClicks').innerHTML=userStats[3];
+		$("#duggaStats").css("display","block");
+	}
 	createTextures();
-
-	$("#duggaInfoBox").css("display","none");
-	document.getElementById('duggaTime').innerHTML=userStats[0];
-	document.getElementById('duggaTotalTime').innerHTML=userStats[1];
-	document.getElementById('duggaClicks').innerHTML=userStats[2];
-	document.getElementById('duggaTotalClicks').innerHTML=userStats[3];
-	$("#duggaStats").css("display","block");
 
 	ans = JSON.parse(danswer);
 	console.log(ans.vertex);

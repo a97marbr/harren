@@ -303,7 +303,7 @@ function getVariantPreview(duggaVariantParam, duggaVariantAnswer, template){
 	$.getScript("templates/"+template+".js")
 	  .done(function( script, textStatus ) {	    	    
 		
-		showFacit(decodeURIComponent(duggaVariantParam),"UNK",decodeURIComponent(duggaVariantAnswer),[0,0,0,0]);
+		showFacit(decodeURIComponent(duggaVariantParam),"UNK",decodeURIComponent(duggaVariantAnswer),null,null,null);
 		
 	  })
 	  .fail(function( jqxhr, settings, exception ) {

@@ -103,8 +103,11 @@ function reset()
 
 }
 
-function showFacit(param, uanswer, danswer)
+function showFacit(param, uanswer, danswer, userStats, files, moment)
 {
+	if (userStats != null){
+
+	}
 	var p = jQuery.parseJSON(param);
 	var daJSON = jQuery.parseJSON(danswer);
 	
