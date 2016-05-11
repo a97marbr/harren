@@ -25,6 +25,10 @@ $kind = getOP('kind');
 
 $debug="NONE!";	
 
+$log_uuid = getOP('log_uuid');
+$info=$opt." ".$cid." ".$coursevers." ".$fid." ".$filename." ".$kind;
+logServiceEvent($userid, EventTypes::ServiceServerStart, "fileedservice.php",$userid,$info);
+
 //------------------------------------------------------------------------------------------------
 // Services
 //------------------------------------------------------------------------------------------------
@@ -105,4 +109,7 @@ $array = array(
 );
 
 echo json_encode($array);
+
+logServiceEvent($log_uuid, EventTypes::ServiceServerEnd, "fileedservice.php",$userid,$info);
+
 ?>

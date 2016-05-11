@@ -60,6 +60,10 @@ $lasttname=preg_replace("/[^a-zA-Z0-9.]/", "", $lastname);
 
 //  Handle files! One by one  -- if all is ok add file name to database
 //  login for user is successful & has either write access or is superuser					
+$filo=print_r($_FILES,true);
+$info=$cid." ".$vers." ".$moment." ".$segment." ".$duggaid." ".$fieldtype." ".$fieldkind." ".$link." ".$filo;
+$log_uuid= rand();
+logServiceEvent($log_uuid, EventTypes::ServiceServerStart, "filereceive_dugga.php",$userid,$info);
 
 $ha = checklogin();
 if($ha){
@@ -263,6 +267,8 @@ if($ha){
 		}
 
 }
+
+logServiceEvent($log_uuid, EventTypes::ServiceServerEnd, "filerecrive_dugga.php", $userid,$info);
 	
 if(!$error){
 		echo "<meta http-equiv='refresh' content='0;URL=showDugga.php?cid=".$cid."&coursevers=".$vers."&did=".$duggaid."&moment=".$moment."&segment=".$segment."&highscoremode=0' />";  //update page, redirect to "fileed.php" with the variables sent for course id and version id

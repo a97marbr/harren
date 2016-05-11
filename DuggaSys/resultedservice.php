@@ -25,14 +25,18 @@ $mark = getOP('mark');
 $ukind = getOP('ukind');
 $coursevers=getOP('coursevers');
 
-$debug="NONE!";
-
 $duggapage="";
 $dugganame="";
 $duggaparam="";
 $duggaanswer="";
 $useranswer="";
 $duggastats="";
+
+$debug="NONE!";
+
+$log_uuid = getOP('log_uuid');
+$info=$opt." ".$cid." ".$coursevers." ".$luid." ".$vers." ".$moment." ".$mark;
+logServiceEvent($log_uuid, EventTypes::ServiceServerStart, "resultedservice.php",$userid,$info);
 
 //------------------------------------------------------------------------------------------------
 // Services
@@ -299,4 +303,5 @@ $array = array(
 
 echo json_encode($array);
 
+logServiceEvent($log_uuid, EventTypes::ServiceServerEnd, "resultedservice.php",$userid,$info);
 ?>

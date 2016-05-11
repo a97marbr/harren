@@ -218,6 +218,14 @@ function htmlEntities(str) {
 
 function AJAXService(opt,apara,kind)
 {
+
+	var tex = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for(var i=0; i<15; i++){
+      tex += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+	apara.log_uuid = tex;
+
 	var para="";
 	for (var key in apara) {
 		var old = apara[key];

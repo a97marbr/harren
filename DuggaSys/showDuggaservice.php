@@ -33,7 +33,6 @@ $segment=getOP('segment');
 $answer=getOP('answer');
 $highscoremode=getOP('highscoremode');
 $setanswer=gettheOP('setanswer');
-$debug="NONE!";	
 
 $param = "";
 $savedanswer = "";
@@ -46,6 +45,11 @@ $score = 0;
 $timeUsed;
 $stepsUsed;
 
+$debug="NONE!";	
+
+$log_uuid = getOP('log_uuid');
+$info=$opt." ".$courseid." ".$coursevers." ".$duggaid." ".$moment." ".$segment." ".$answer;
+logServiceEvent($log_uuid, EventTypes::ServiceServerStart, "showDuggaservice.php",$userid,$info);
 //------------------------------------------------------------------------------------------------
 // Retrieve Information			
 //------------------------------------------------------------------------------------------------
@@ -356,4 +360,7 @@ $array = array(
 	);
 
 echo json_encode($array);
+
+logServiceEvent($log_uuid, EventTypes::ServiceServerEnd, "showDuggaservice.php",$userid,$info);
+
 ?>
