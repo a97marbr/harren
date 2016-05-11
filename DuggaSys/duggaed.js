@@ -303,7 +303,7 @@ function getVariantPreview(duggaVariantParam, duggaVariantAnswer, template){
 	$.getScript("templates/"+template+".js")
 	  .done(function( script, textStatus ) {	    	    
 		
-		showFacit(duggaVariantParam,"UNK",duggaVariantAnswer,[0,0,0,0]);
+		showFacit(decodeURIComponent(duggaVariantParam),"UNK",decodeURIComponent(duggaVariantAnswer),[0,0,0,0]);
 		
 	  })
 	  .fail(function( jqxhr, settings, exception ) {
@@ -311,7 +311,7 @@ function getVariantPreview(duggaVariantParam, duggaVariantAnswer, template){
 	  	console.log(settings);
 	  	console.log(exception);	    
 	  	eval(script);
-	  	showFacit(duggaVariantParam,"UNK",duggaVariantAnswer);
+	  	showFacit(decodeURIComponent(duggaVariantParam),"UNK",decodeURIComponent(duggaVariantAnswer));
 	});
 
 	$("#resultpopover").css("display", "block");
