@@ -3,35 +3,16 @@
 //------------------------------------------------------------------------------------------------
 // makeLogEntry
 //------------------------------------------------------------------------------------------------
-//
-// Reads service Parameter from POST encoding using entities
-//
-// 1,2 Signify Reading and Writing of Dugga
-// 3,4 Signify Sucessful and Failed Login
 
 function makeLogEntry($userid,$entrytype,$pdo,$etext)
 {
-			$userag=$etext."|".$_SERVER['HTTP_USER_AGENT'];
-			if(strlen($userag)>1024) substr ($userag,0,1024);
-			$query = $pdo->prepare("INSERT INTO eventlog(address,raddress, type, user, eventtext) VALUES(:address,:raddress, :type, :user, :eventtext)");
-		
-			$query->bindParam(':user', $userid);
-			$query->bindParam(':type', $entrytype);
-		
-			$query->bindParam(':address', $_SERVER['REMOTE_ADDR']);
-			$query->bindParam(':raddress', $_SERVER['HTTP_CLIENT_IP']);
-			$query->bindParam(':eventtext', $userag);
-			
-			return ($query->execute() && $query->rowCount() > 0);
+		return false;
 }
 
 
 //------------------------------------------------------------------------------------------------
 // getOP
 //------------------------------------------------------------------------------------------------
-//
-// Reads service Parameter from POST encoding using entities
-//
 
 function getOP($name)
 {
@@ -42,6 +23,7 @@ function getOP($name)
 //------------------------------------------------------------------------------------------------
 // getOP
 //------------------------------------------------------------------------------------------------
+
 function gettheOP($name)
 {
 	if(isset($_POST[$name])){
@@ -49,10 +31,6 @@ function gettheOP($name)
 	}		
 	else return "UNK";			
 }
-
-//
-// Reads service Parameter from POST encoding using entities
-//
 
 function getOPG($name)
 {
@@ -63,9 +41,6 @@ function getOPG($name)
 //------------------------------------------------------------------------------------------------
 // makeRandomString
 //------------------------------------------------------------------------------------------------
-//
-// Makes a random string of length X
-//
 
 function makeRandomString($length = 6) {
     $validCharacters = "abcdefghijklmnopqrstuxyvwzABCDEFGHIJKLMNOPQRSTUXYVWZ+-*#&@!?";
@@ -112,7 +87,7 @@ function swizzleArray(&$filepost) {
 // connect log database - Open log database and create tables if they do not exist
 //---------------------------------------------------------------------------------------------------------------
 
-$log_db = new PDO('sqlite:../../log/loglena3.db');
+$log_db = new PDO('sqlite:../../log/loglena4.db');
 $sql = '
 	CREATE TABLE IF NOT EXISTS logEntries (
 		id INTEGER PRIMARY KEY,
@@ -140,6 +115,8 @@ $sql = '
 		userAgent TEXT,
 		operatingSystem VARCHAR(100),
 		info TEXT,
+		referer TEXT,
+		IP TEXT,
 		browser VARCHAR(100)
 	);
 	CREATE TABLE IF NOT EXISTS clickLogEntries (
@@ -210,13 +187,29 @@ function logServiceEvent($uuid, $eventType, $service, $userid, $info, $timestamp
 	if (is_null($timestamp)) {
 		$timestamp = round(microtime(true) * 1000);
 	}
-	$query = $GLOBALS['log_db']->prepare('INSERT INTO serviceLogEntries (uuid, eventType, service, timestamp, userAgent, operatingSystem, browser, userid, info) VALUES (:uuid, :eventType, :service, :timestamp, :userAgent, :operatingSystem, :browser, :userid, :info)');
+	$query = $GLOBALS['log_db']->prepare('INSERT INTO serviceLogEntries (uuid, eventType, service, timestamp, userAgent, operatingSystem, browser, userid, info, referer, IP) VALUES (:uuid, :eventType, :service, :timestamp, :userAgent, :operatingSystem, :browser, :userid, :info, :referer, :IP)');
 	$query->bindParam(':uuid', $uuid);
 	$query->bindParam(':eventType', $eventType);
 	$query->bindParam(':service', $service);
 	$query->bindParam(':timestamp', $timestamp);
 	$query->bindParam(':userid', $userid);
 	$query->bindParam(':info', $info);
+	$referer="";
+	if(isset($_SERVER['HTTP_REFERER'])){
+			$referer.=$_SERVER['HTTP_REFERER'];
+	}
+	$IP="";
+	if(isset($_SERVER['REMOTE_ADDR'])){
+			$IP.=$_SERVER['REMOTE_ADDR'];
+	} 	
+	if(isset($_SERVER['HTTP_CLIENT_IP'])){
+			$IP.=" ".$_SERVER['HTTP_CLIENT_IP'];
+	} 	
+	if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])){
+			$IP.=" ".$_SERVER['HTTP_X_FORWARDED_FOR'];
+	} 	
+	$query->bindParam(':referer', $referer);
+	$query->bindParam(':IP', $IP);
 	$query->bindParam(':userAgent', $_SERVER['HTTP_USER_AGENT']);
 	$query->bindParam(':operatingSystem', getOS());
 	$query->bindParam(':browser', getBrowser());
