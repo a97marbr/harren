@@ -54,10 +54,6 @@ if(isset($_SESSION['uid'])){
 	$userid="UNK";		
 } 	
 
-// Replace non ascii characters in lastname and firstname
-$firstname=preg_replace("/[^a-zA-Z0-9.]/", "", $firstname);
-$lasttname=preg_replace("/[^a-zA-Z0-9.]/", "", $lastname);				
-
 //  Handle files! One by one  -- if all is ok add file name to database
 //  login for user is successful & has either write access or is superuser					
 $filo=print_r($_FILES,true);
@@ -95,6 +91,13 @@ if($ha){
 		
 				// Create a file area with format Lastname-Firstname-Login
 				$userdir = $lastname."_".$firstname."_".$loginname;
+				
+				// First replace a predefined list of national characters
+				// Then replace any additional character that is not a-z, a number, period or underscore
+				$national = array("&ouml;", "&Ouml;", "&auml;", "&Auml;", "&aring;", "&Aring;","&uuml;","&Uuml;");
+				$nationalReplace = array("o", "O", "a", "A", "a", "A","u","U");
+				$userdir = str_replace($national, $nationalReplace, $userdir);
+				$userdir=preg_replace("/[^a-zA-Z0-9._]/", "", $userdir);				
 		
 				if(!file_exists ($currcvd."/submissions/".$cid."/".$vers."/".$duggaid."/".$userdir)){
 						if(!mkdir($currcvd."/submissions/".$cid."/".$vers."/".$duggaid."/".$userdir)){
@@ -107,7 +110,7 @@ if($ha){
 		if($inputtext!="UNK"){
 				
 				$fname=$fieldtype;
-				$fname=preg_replace("/[^a-zA-Z0-9.]/", "", $fname);				
+				$fname=preg_replace("/[^a-zA-Z0-9._]/", "", $fname);				
 				
 				$extension="txt";
 				$mime="txt";
@@ -200,7 +203,7 @@ if($ha){
 								$fname=$filea['name'];
 		
 								// Remove white space and non ascii characters
-								$fname=preg_replace("/[^a-zA-Z0-9.]/", "", $fname);				
+								$fname=preg_replace("/[^a-zA-Z0-9._]/", "", $fname);				
 								
 								$posPeriod = strrpos($fname, ".");
 								if ($posPeriod !== false){
