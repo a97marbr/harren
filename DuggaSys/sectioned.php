@@ -1,8 +1,5 @@
 <?php
 session_start();
-$noup="COURSE";
-$loginvar="SECTION";
-setcookie("loginvar", $loginvar);
 include_once "../../coursesyspw.php";
 include_once "../Shared/sessions.php";
 pdoConnect();
@@ -29,6 +26,7 @@ pdoConnect();
 <body>
 
 	<?php
+		$noup="COURSE";
 		include '../Shared/navheader.php';
 	?>
 

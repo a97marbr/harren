@@ -1,8 +1,5 @@
 <?php
 session_start();
-$noup="SECTION";
-$loginvar="DUGGA";
-setcookie("loginvar", $loginvar);
 
 include_once "../../coursesyspw.php";
 include_once "../Shared/sessions.php";
@@ -16,7 +13,7 @@ pdoConnect();
 	<title>Dugga editor</title>
 
 	<link type="text/css" href="../Shared/css/style.css" rel="stylesheet">
-  	<link type="text/css" href="../Shared/css/jquery-ui-1.10.4.min.css" rel="stylesheet">  
+  <link type="text/css" href="../Shared/css/jquery-ui-1.10.4.min.css" rel="stylesheet">  
 
 	<script src="../Shared/js/jquery-1.11.0.min.js"></script>
 	<script src="../Shared/js/jquery-ui-1.10.4.min.js"></script>
@@ -26,20 +23,22 @@ pdoConnect();
 </head>
 <body>
 	
+	<!-- Navigation Header START -->
 	<?php 
+		$noup="SECTION";
 		include '../Shared/navheader.php';
 	?>
+	<!-- Navigation Header END -->
 		
-	<!-- content START -->
-	<div id="content">
-					
-	</div>
-
-	<!-- Edit Dugga Dialog END -->
+	<!-- Content START -->
+	<div id="content"></div>
+	<!-- Content END -->
 	
+	<!-- Login Dialog START -->
 	<?php 
 		include '../Shared/loginbox.php';
 	?>
+	<!-- Login Dialog END -->
 
 	<!-- Edit Dugga Dialog START -->
 	<div id='editDugga' class='loginBox' style='width:464px;display:none;'>
@@ -80,18 +79,15 @@ pdoConnect();
 		</div>	
 	</div>
 	<!-- Edit Variant Dialog END -->
-	<!-- // navheader:Result Popover START 
-	//--------------------------------------------------------------------------------------------------- -->
 
+	<!-- Result Dialog START -->
 	<div id='resultpopover' class='resultPopover' style='display:none'>
 		<div class='loginBoxheader'>
 			<div onclick="closePreview();">x</div>
 		</div>
-		<div id="MarkCont" style="position:absolute; left:4px; right:4px; top:34px; bottom:4px; border:2px inset #aaa;background:#bbb"> </div>
-
+		<div id="MarkCont" style="position:absolute; left:4px; right:4px; top:34px; bottom:4px; border:2px inset #aaa;background:#bbb"></div>
 	</div>
+	<!-- Result Dialog END -->
 	
-	<!-- // navheader:Result Popover End, Edit VAriant Start 
-	//--------------------------------------------------------------------------------------------------- -->
 </body>
 </html>
