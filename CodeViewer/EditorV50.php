@@ -1,3 +1,6 @@
+<?php
+	session_start();
+?>
 <!-----------------------------------------------------------------------------------------
                          Code Viewer V5.20 (CV5)  
 -------------------------------------------------------------------------------------------
@@ -48,7 +51,6 @@ Testing Link:
 	EditorV50.php?exampleid=1&courseid=1&cvers=2013
 ------------------------------------------------------------------------------------------->
 <?php
-	session_start();
 	include_once("../../coursesyspw.php");
 	include_once("../Shared/basic.php");
 	include_once("../Shared/sessions.php");

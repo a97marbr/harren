@@ -1,3 +1,9 @@
+<?php
+session_start();
+$noup="SECTION";
+$loginvar="RESULT";
+setcookie("loginvar", $loginvar);
+?>
 <!-- /********************************************************************************
    Documentation 
 *********************************************************************************
@@ -9,7 +15,6 @@ Execution: resulted.js has an ajax call that runs at start up and displays the r
 -------------==============######## Documentation End ###########==============------------- -->
 
 <?php
-session_start();
 include_once "../../coursesyspw.php";
 include_once "../Shared/sessions.php";
 pdoConnect();
@@ -37,10 +42,7 @@ pdoConnect();
 	// navheader: displays the navigation menu and is included as html along with login check
 	//--------------------------------------------------------------------------------------------------- -->
 	<?php 
-		$noup="SECTION";
-		$loginvar="RESULT";
 		include '../Shared/navheader.php';
-		setcookie("loginvar", $loginvar);
 	?>
 		
 	<div id="content"></div> 

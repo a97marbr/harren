@@ -1,5 +1,8 @@
 <?php
 session_start();
+$noup="COURSE";
+$loginvar="SECTION";
+setcookie("loginvar", $loginvar);
 include_once "../../coursesyspw.php";
 include_once "../Shared/sessions.php";
 pdoConnect();
@@ -10,13 +13,13 @@ pdoConnect();
 <head>
 	<link rel="icon" type="image/ico" href="../Shared/icons/favicon.ico"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1 maximum-scale=1">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>Section Editor</title>
 
 	<link type="text/css" href="../Shared/css/style.css" rel="stylesheet">
 	<!--<link type="text/css" href="../Shared/css/responsive.css" rel="stylesheet">-->
-	<link type="text/css" href="../Shared/css/jquery-ui-1.10.4.min.css" rel="stylesheet">  
+	<link type="text/css" href="../Shared/css/jquery-ui-1.10.4.min.css" rel="stylesheet">
 
 	<script src="../Shared/js/jquery-1.11.0.min.js"></script>
 	<script src="../Shared/js/jquery-ui-1.10.4.min.js"></script>
@@ -26,12 +29,9 @@ pdoConnect();
 <body>
 
 	<?php
-		$noup="COURSE";
-		$loginvar="SECTION"; 
 		include '../Shared/navheader.php';
-		setcookie("loginvar", $loginvar);
 	?>
-	
+
 	<!-- content START -->
 	<div id="content">
 		<!-- Section List -->
@@ -39,7 +39,7 @@ pdoConnect();
 	</div>
 	<!-- content END -->
 
-	<?php 
+	<?php
 		include '../Shared/loginbox.php';
 	?>
 
@@ -68,13 +68,13 @@ pdoConnect();
 		</div>
 	</div>
 	<!-- Edit Section Dialog END -->
-	
+
 	<!-- New Verison Dialog START -->
 	<div id='newCourseVersion' class='loginBox' style='width:464px;display:none;'>
 		<div class='loginBoxheader'>
 			<h3>New Course Verison</h3>
 			<div onclick='closeWindows();'>x</div>
-		</div>		
+		</div>
 		<div style='padding:5px;'>
 			<input type='hidden' id='cid' value='Toddler' />
 			<div class='inputwrapper'><span>Version Name:</span><input class='textinput' type='text' id='versname' placeholder='Version Name' /></div>
@@ -87,13 +87,13 @@ pdoConnect();
 		</div>
 	</div>
 	<!-- New Verison Dialog END -->
-	
+
 	<!-- Edit Verison Dialog START -->
 	<div id='editCourseVersion' class='loginBox' style='width:464px;display:none;'>
 		<div class='loginBoxheader'>
 			<h3>Edit Course Verison</h3>
 			<div onclick='closeWindows();'>x</div>
-		</div>		
+		</div>
 		<div style='padding:5px;'>
 			<input type='hidden' id='cid' value='Toddler' />
 			<div class='inputwrapper'><span>Version Name:</span><input class='textinput' type='text' id='eversname' placeholder='Version Name' /></div>
@@ -105,7 +105,7 @@ pdoConnect();
 		</div>
 	</div>
 	<!-- Edit Verison Dialog END -->
-	
+
 	<!-- HighscoreBox START -->
 	<div id='HighscoreBox' class='loginBox' style='width:500px;display:none;'>
 		<div class='loginBoxheader'>
@@ -114,11 +114,11 @@ pdoConnect();
 		</div>
 		<table id ='HighscoreTable' width='100%'>
 			<tr>
-				
+
 			</tr>
 		</table>
 	</div>
 	<!-- HighscoreBox END -->
-				
+
 </body>
 </html>

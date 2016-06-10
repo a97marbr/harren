@@ -1,3 +1,6 @@
+<?php
+ 	session_start();
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -24,8 +27,6 @@
 	// Include basic application services!
 	include_once "../Shared/basic.php";
 	include_once "../Shared/sessions.php";
-
-	session_start();
 
 	// Connect to database and start session
 	pdoConnect();
