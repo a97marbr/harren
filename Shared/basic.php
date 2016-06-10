@@ -195,9 +195,11 @@ function logServiceEvent($uuid, $eventType, $service, $userid, $info, $timestamp
 	$query->bindParam(':userid', $userid);
 	$query->bindParam(':info', $info);
 	$referer="";
+	
 	if(isset($_SERVER['HTTP_REFERER'])){
 			$referer.=$_SERVER['HTTP_REFERER'];
 	}
+	
 	$IP="";
 	if(isset($_SERVER['REMOTE_ADDR'])){
 			$IP.=$_SERVER['REMOTE_ADDR'];
@@ -208,6 +210,7 @@ function logServiceEvent($uuid, $eventType, $service, $userid, $info, $timestamp
 	if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])){
 			$IP.=" ".$_SERVER['HTTP_X_FORWARDED_FOR'];
 	} 	
+
 	$query->bindParam(':referer', $referer);
 	$query->bindParam(':IP', $IP);
 	$query->bindParam(':userAgent', $_SERVER['HTTP_USER_AGENT']);
