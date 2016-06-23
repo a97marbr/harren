@@ -1,4 +1,5 @@
-<!-- /********************************************************************************
+<?php
+/********************************************************************************
    Documentation 
 *********************************************************************************
 
@@ -6,9 +7,7 @@ This file displays the result of each student with access under this course, the
 in this page.
 
 Execution: resulted.js has an ajax call that runs at start up and displays the returned data on this page. 
--------------==============######## Documentation End ###########==============------------- -->
-
-<?php
+-------------==============######## Documentation End ###########==============-------------*/
 session_start();
 include_once "../../coursesyspw.php";
 include_once "../Shared/sessions.php";
@@ -33,25 +32,16 @@ pdoConnect();
 
 </head>
 <body>
-	<!-- //---------------------------------------------------------------------------------------------------
-	// navheader: displays the navigation menu and is included as html along with login check
-	//--------------------------------------------------------------------------------------------------- -->
 	<?php 
 		$noup="SECTION";
-		$loginvar="RESULT";
 		include '../Shared/navheader.php';
-		setcookie("loginvar", $loginvar);
 	?>
 		
 	<div id="content"></div> 
 
 	<?php 
-		include '../Shared/loginbox.php';
+		include '../Shared/loginbox.php';	
 	?>
-	
-	<!-- // navheader:Result Popover START 
-	//--------------------------------------------------------------------------------------------------- -->
-
 	<div id='resultpopover' class='resultPopover' style='display:none'>
 		<script>
 		$(window).keyup(function(event){
@@ -64,9 +54,6 @@ pdoConnect();
 		<div id="MarkCont" style="position:absolute; left:4px; right:104px; top:34px; bottom:4px; border:2px inset #aaa;background:#bbb; overflow:scroll;"> </div>
 		<div id='markMenuPlaceholder' style="position:absolute; right:2px; top:34px; background:#bbb; width:100px;"></div>
 	</div>
-	
-	<!-- // navheader:Result Popover End, Edit VAriant Start 
-	//--------------------------------------------------------------------------------------------------- -->
 
 	<div id='editVariant' class='loginBox' style='width:464px;display:none;'>
 		
@@ -77,7 +64,7 @@ pdoConnect();
 				
 	<table width="100%">
 		<tr>
-			<input type='hidden' id='vid' value='Toddler' /></td>
+			<td><input type='hidden' id='vid' value='Toddler' /></td>
 			<td colspan='2' style='line-height:40px;'>Param: <input style='float:right;width:390px;' class='form-control textinput' type='text' id='parameter' value='Variant Param' /></td>		
 		</tr>	
 		<tr>
@@ -90,10 +77,9 @@ pdoConnect();
 			<td align='left'><input class='submit-button' type='button' value='Delete' onclick='deleteVariant();' /></td>
 			<td align='center'></td>
 			<td align='right'><input class='submit-button' type='button' value='Save' onclick='updateVariant();' /></td>
-		</tr>
-		
+		</tr>		
 	</table>
-
-	</div> <!-- Edit Variant Dialog END -->
+	
+	</div>
 </body>
 </html>
