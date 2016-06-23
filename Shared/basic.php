@@ -17,7 +17,7 @@ function makeLogEntry($userid,$entrytype,$pdo,$etext)
 function getOP($name)
 {
 		if(isset($_POST[$name]))	return urldecode($_POST[$name]);
-		else return "UNK";			
+		else return "UNK";
 }
 
 //------------------------------------------------------------------------------------------------
@@ -28,14 +28,14 @@ function gettheOP($name)
 {
 	if(isset($_POST[$name])){
 		return $_POST[$name];
-	}		
-	else return "UNK";			
+	}
+	else return "UNK";
 }
 
 function getOPG($name)
 {
 		if(isset($_GET[$name]))	return urldecode($_GET[$name]);
-		else return "UNK";			
+		else return "UNK";
 }
 
 //------------------------------------------------------------------------------------------------
@@ -130,7 +130,7 @@ $sql = '
 	);
 	CREATE TABLE IF NOT EXISTS mousemoveLogEntries (
 		id INTEGER PRIMARY KEY,
-		page TEXT,		
+		page TEXT,
 		mouseX TEXT,
 		mouseY TEXT,
 		timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -138,16 +138,16 @@ $sql = '
 	CREATE TABLE IF NOT EXISTS exampleLoadLogEntries(
 		id INTEGER PRIMARY KEY,
 		type INTEGER,
-		courseid INTEGER,	
-		exampleid INTEGER,	
+		courseid INTEGER,
+		exampleid INTEGER,
 		timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 	);
 	CREATE TABLE IF NOT EXISTS duggaLoadLogEntries(
 		id INTEGER PRIMARY KEY,
 		type INTEGER,
-		cid INTEGER,	
-		vers INTEGER,	
-		quizid INTEGER,	
+		cid INTEGER,
+		vers INTEGER,
+		quizid INTEGER,
 		timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 	);
 ';
@@ -195,27 +195,29 @@ function logServiceEvent($uuid, $eventType, $service, $userid, $info, $timestamp
 	$query->bindParam(':userid', $userid);
 	$query->bindParam(':info', $info);
 	$referer="";
-	
+
 	if(isset($_SERVER['HTTP_REFERER'])){
 			$referer.=$_SERVER['HTTP_REFERER'];
 	}
-	
+
 	$IP="";
 	if(isset($_SERVER['REMOTE_ADDR'])){
 			$IP.=$_SERVER['REMOTE_ADDR'];
-	} 	
+	}
 	if(isset($_SERVER['HTTP_CLIENT_IP'])){
 			$IP.=" ".$_SERVER['HTTP_CLIENT_IP'];
-	} 	
+	}
 	if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])){
 			$IP.=" ".$_SERVER['HTTP_X_FORWARDED_FOR'];
-	} 	
+	}
 
 	$query->bindParam(':referer', $referer);
 	$query->bindParam(':IP', $IP);
 	$query->bindParam(':userAgent', $_SERVER['HTTP_USER_AGENT']);
-	$query->bindParam(':operatingSystem', getOS());
-	$query->bindParam(':browser', getBrowser());
+	$currentOS = getOS();
+	$query->bindParam(':operatingSystem', $currentOS);
+	$currentBrowser = getBrowser();
+	$query->bindParam(':browser', $currentBrowser);
 	$query->execute();
 }
 
@@ -291,7 +293,7 @@ abstract class EventTypes {
 // EventTypes - Contains constants for log event types
 //------------------------------------------------------------------------------------------------
 
-function getOS() { 
+function getOS() {
 	$userAgent = $_SERVER['HTTP_USER_AGENT'];
     $osPlatform = "Unknown";
     $osArray = array(
@@ -319,7 +321,7 @@ function getOS() {
 		'/blackberry/i'         => 'BlackBerry',
 		'/webos/i'              => 'Mobile'
 	);
-    foreach ($osArray as $regex => $value) { 
+    foreach ($osArray as $regex => $value) {
         if (preg_match($regex, $userAgent)) {
 			$osPlatform = $value;
 		}
@@ -346,7 +348,7 @@ function getBrowser() {
 		'/konqueror/i'  => 'Konqueror',
 		'/mobile/i'     => 'Handheld Browser'
 	);
-	foreach ($browserArray as $regex => $value) { 
+	foreach ($browserArray as $regex => $value) {
         if (preg_match($regex, $userAgent)) {
 			$browser = $value;
 		}
