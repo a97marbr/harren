@@ -1,12 +1,12 @@
 <?php
 /********************************************************************************
-   Documentation 
+   Documentation
 *********************************************************************************
 
 This file displays the result of each student with access under this course, the teacher can grade students
 in this page.
 
-Execution: resulted.js has an ajax call that runs at start up and displays the returned data on this page. 
+Execution: resulted.js has an ajax call that runs at start up and displays the returned data on this page.
 -------------==============######## Documentation End ###########==============-------------*/
 session_start();
 include_once "../../coursesyspw.php";
@@ -21,26 +21,26 @@ pdoConnect();
 	<title>Result Editor</title>
 
 	<link type="text/css" href="../Shared/css/style.css" rel="stylesheet">
-	<link type="text/css" href="../Shared/css/jquery-ui-1.10.4.min.css" rel="stylesheet">  
-	<link type="text/css" href="templates/dugga.css" rel="stylesheet">  
-	
+	<link type="text/css" href="../Shared/css/jquery-ui-1.10.4.min.css" rel="stylesheet">
+	<link type="text/css" href="templates/dugga.css" rel="stylesheet">
+
 	<script src="../Shared/js/jquery-1.11.0.min.js"></script>
 	<script src="../Shared/js/jquery-ui-1.10.4.min.js"></script>
-	
+
 	<script src="../Shared/dugga.js"></script>
 	<script src="resulted.js"></script>
 
 </head>
 <body>
-	<?php 
+	<?php
 		$noup="SECTION";
+		$resultedkind = true;
 		include '../Shared/navheader.php';
 	?>
-		
-	<div id="content"></div> 
+	<div id="content"></div>
 
-	<?php 
-		include '../Shared/loginbox.php';	
+	<?php
+		include '../Shared/loginbox.php';
 	?>
 	<div id='resultpopover' class='resultPopover' style='display:none'>
 		<script>
@@ -56,19 +56,19 @@ pdoConnect();
 	</div>
 
 	<div id='editVariant' class='loginBox' style='width:464px;display:none;'>
-		
+
 	<div class='loginBoxheader'>
 	<h3>Edit Variant</h3>
 	<div onclick='closeEditVariant();'>x</div>
 	</div>
-				
+
 	<table width="100%">
 		<tr>
 			<td><input type='hidden' id='vid' value='Toddler' /></td>
-			<td colspan='2' style='line-height:40px;'>Param: <input style='float:right;width:390px;' class='form-control textinput' type='text' id='parameter' value='Variant Param' /></td>		
-		</tr>	
+			<td colspan='2' style='line-height:40px;'>Param: <input style='float:right;width:390px;' class='form-control textinput' type='text' id='parameter' value='Variant Param' /></td>
+		</tr>
 		<tr>
-			<td colspan='2' style='line-height:40px;'>Answer: <input style='float:right;width:390px;' class='form-control textinput' type='text' id='answer' value='Variant Answer' /></td>		
+			<td colspan='2' style='line-height:40px;'>Answer: <input style='float:right;width:390px;' class='form-control textinput' type='text' id='answer' value='Variant Answer' /></td>
 		</tr>
 	</table>
 
@@ -77,9 +77,9 @@ pdoConnect();
 			<td align='left'><input class='submit-button' type='button' value='Delete' onclick='deleteVariant();' /></td>
 			<td align='center'></td>
 			<td align='right'><input class='submit-button' type='button' value='Save' onclick='updateVariant();' /></td>
-		</tr>		
+		</tr>
 	</table>
-	
+
 	</div>
 </body>
 </html>

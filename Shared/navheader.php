@@ -4,7 +4,7 @@
 	<header>
 		<?php
 			echo "<table width='100%'><tr>";
-				
+
 			include_once "../Shared/basic.php";
 
 			// As we always include the navheader - we can add the code that saves the current course ID to the session here.
@@ -14,7 +14,7 @@
 			if(isset($_GET['coursevers'])){
 					$_SESSION['coursevers']=$_GET['coursevers'];
 			}
-			
+
 			// Always show home button which links to course homepage
 			echo "<td class='navButt' id='home' title='Home'><a href='../DuggaSys/courseed.php'><img src='../Shared/icons/Home.svg'></a></td>";
 
@@ -31,7 +31,7 @@
 					echo "<img src='../Shared/icons/Up.svg'></a></td>";
 			}else if($noup=='SECTION'){
 					$cid=getOPG('cid');
-					if($cid=="UNK") $cid=getOPG('courseid'); 
+					if($cid=="UNK") $cid=getOPG('courseid');
 					$coursevers=getOPG('coursevers');
 					if($coursevers=="UNK") $coursevers=getOPG('cvers');
 					echo "<a href='";
@@ -47,7 +47,7 @@
 					echo "	</td>";
 					echo "</div>";
 			}
-	
+
 			// Either generate code viewer specific nav menu or a spacer
 			if(isset($codeviewer)){
 					echo "<td class='navButt' id='templatebutton' title='Choose Template' onclick='openTemplateWindow();'><img src='../Shared/icons/choose_template.svg'  /></td>";
@@ -65,17 +65,17 @@
 					echo "<td id='navHeading' class='navHeading codeheader'>";
 					echo "<span id='exampleSection'>Example Section : </span>";
 					echo "<span id='exampleName'> Example Name</span>";
-					echo "</td>";					
+					echo "</td>";
 				}else{
-					echo "<td class='navSpacer'></td>";
+				echo "<td id='menuHook' class='navSpacer'></td>";
 			}
 
 
 			if(checklogin()) {
-					echo "<td class='navName'><label id='userName' onclick='redirectToUMV()'>".$_SESSION['loginname']."</label></td>";		
+					echo "<td class='navName'><label id='userName' onclick='redirectToUMV()'>".$_SESSION['loginname']."</label></td>";
 					echo "<td id='loginbutton' class='loggedin'><img id='loginbuttonIcon' onload='loginButtonHover(\"online\")' src='../Shared/icons/Man.svg' /></td>";
 			}else{
-					echo "<td class='navName'><label id='userName'>Guest</label></td>";		
+					echo "<td class='navName'><label id='userName'>Guest</label></td>";
 					echo "<td id='loginbutton' class='loggedout'><img id='loginbuttonIcon' onload='loginButtonHover(\"offline\")' src='../Shared/icons/Man.svg' /></td>";
 			}
 
@@ -86,5 +86,3 @@
 <script type="text/javascript">
 	setupLoginLogoutButton('<?PHP echo json_encode(checklogin()) ?>');
 </script>
-
-

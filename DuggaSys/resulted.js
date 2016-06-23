@@ -10,10 +10,11 @@ var mmx = 0, mmy = 0;
 var msx = 0, msy = 0;
 var rProbe = null;
 var needMarking=0;
+var allData;
 
 AJAXService("GET", { cid : querystring['cid'],vers : querystring['coursevers'] }, "RESULT");
 
-$(function() 
+$(function()
 {
 	$("#release").datepicker({ dateFormat : "yy-mm-dd" });
 	$("#deadline").datepicker({ dateFormat : "yy-mm-dd" });
@@ -25,11 +26,11 @@ $(function()
 
 function gradeDugga(e, gradesys, cid, vers, moment, uid, mark, ukind){
 		//console.log(e);
-		
+
 		closeWindows();
-	
+
 		var pressed = e.target.className;
-	
+
 		if (pressed === "Uc"){
 				changeGrade(1, gradesys, cid, vers, moment, uid, mark, ukind);
 		} else if (pressed === "Gc") {
@@ -38,11 +39,11 @@ function gradeDugga(e, gradesys, cid, vers, moment, uid, mark, ukind){
 				changeGrade(3, gradesys, cid, vers, moment, uid, mark, ukind);
 		} else if (pressed === "U") {
 				changeGrade(1, gradesys, cid, vers, moment, uid, mark, ukind);
-		} 
+		}
 		else {
 			//alert("This grading is not OK!");
 		}
-	
+
 }
 
 function makeImg(gradesys, cid, vers, moment, uid, mark, ukind,gfx,cls){
@@ -50,37 +51,37 @@ function makeImg(gradesys, cid, vers, moment, uid, mark, ukind,gfx,cls){
 }
 
 
-function makeSelect(gradesys, cid, vers, moment, uid, mark, ukind) 
+function makeSelect(gradesys, cid, vers, moment, uid, mark, ukind)
 {
-	
+
 		var str = "";
-	
+
 		// Irrespective of marking system we allways print - and U
 		if (mark === null || mark === 0){
-				str += makeImg(gradesys, cid, vers, moment, uid, mark, ukind,"../Shared/icons/Uc.png","Uc");			
+				str += makeImg(gradesys, cid, vers, moment, uid, mark, ukind,"../Shared/icons/Uc.png","Uc");
 		} else if (mark === 1) {
-				str += makeImg(gradesys, cid, vers, moment, uid, mark, ukind,"../Shared/icons/U.png","U");			
+				str += makeImg(gradesys, cid, vers, moment, uid, mark, ukind,"../Shared/icons/U.png","U");
 		} else {
-				str += makeImg(gradesys, cid, vers, moment, uid, mark, ukind,"../Shared/icons/Uh.png","Uh");			
+				str += makeImg(gradesys, cid, vers, moment, uid, mark, ukind,"../Shared/icons/Uh.png","Uh");
 		}
-	
+
 		// Gradesystem: 1== UGVG 2== UG 3== U345
 		if (gradesys === 1) {
 			if (mark === 2){
-					str += makeImg(gradesys, cid, vers, moment, uid, mark, ukind,"../Shared/icons/G.png","G");			
-					str += makeImg(gradesys, cid, vers, moment, uid, mark, ukind,"../Shared/icons/VGh.png","VGh");			
+					str += makeImg(gradesys, cid, vers, moment, uid, mark, ukind,"../Shared/icons/G.png","G");
+					str += makeImg(gradesys, cid, vers, moment, uid, mark, ukind,"../Shared/icons/VGh.png","VGh");
 			} else if (mark === 3) {
-					str += makeImg(gradesys, cid, vers, moment, uid, mark, ukind,"../Shared/icons/Gh.png","Gh");			
-					str += makeImg(gradesys, cid, vers, moment, uid, mark, ukind,"../Shared/icons/VG.png","VG");			
+					str += makeImg(gradesys, cid, vers, moment, uid, mark, ukind,"../Shared/icons/Gh.png","Gh");
+					str += makeImg(gradesys, cid, vers, moment, uid, mark, ukind,"../Shared/icons/VG.png","VG");
 			} else {
-					str += makeImg(gradesys, cid, vers, moment, uid, mark, ukind,"../Shared/icons/Gc.png","Gc");			
-					str += makeImg(gradesys, cid, vers, moment, uid, mark, ukind,"../Shared/icons/VGc.png","VGc");			
+					str += makeImg(gradesys, cid, vers, moment, uid, mark, ukind,"../Shared/icons/Gc.png","Gc");
+					str += makeImg(gradesys, cid, vers, moment, uid, mark, ukind,"../Shared/icons/VGc.png","VGc");
 			}
 		} else if (gradesys === 2) {
 				if (mark === 2){
-					str += makeImg(gradesys, cid, vers, moment, uid, mark, ukind,"../Shared/icons/G.png","G");			
+					str += makeImg(gradesys, cid, vers, moment, uid, mark, ukind,"../Shared/icons/G.png","G");
 				} else {
-					str += makeImg(gradesys, cid, vers, moment, uid, mark, ukind,"../Shared/icons/Gc.png","Gc");			
+					str += makeImg(gradesys, cid, vers, moment, uid, mark, ukind,"../Shared/icons/Gc.png","Gc");
 				}
 		} else if (gradesys === 3){
 			/*
@@ -106,14 +107,14 @@ function makeSelect(gradesys, cid, vers, moment, uid, mark, ukind)
 		} else {
 			//alert("Unknown Grade System: "+gradesys);
 		}
-	
+
 		return str;
 }
 
-function hoverResult(cid, vers, moment, firstname, lastname, uid, submitted, marked) 
+function hoverResult(cid, vers, moment, firstname, lastname, uid, submitted, marked)
 {
 		$("#Nameof").html(firstname + " " + lastname + " - Submitted: " + submitted + " Marked: " + marked);
-		
+
 		// Start counting pixels
 		msx = -1;
 		msy = -1;
@@ -121,7 +122,7 @@ function hoverResult(cid, vers, moment, firstname, lastname, uid, submitted, mar
 		AJAXService("DUGGA", { cid : cid, vers : vers, moment : moment, luid : uid }, "RESULT");
 }
 
-function clickResult(cid, vers, moment, firstname, lastname, uid, submitted, marked, foundgrade, gradeSystem, lid) 
+function clickResult(cid, vers, moment, firstname, lastname, uid, submitted, marked, foundgrade, gradeSystem, lid)
 {
 		$("#Nameof").html(firstname + " " + lastname + " - Submitted: " + submitted + " Marked: " + marked);
 		//console.log("course: "+ cid, " vers: " + vers + " moment: " + moment + " uid: " + uid);
@@ -136,7 +137,7 @@ function clickResult(cid, vers, moment, firstname, lastname, uid, submitted, mar
 		if (foundgrade === null && submitted === null) {
 			menu += makeSelect(parseInt(gradeSystem), querystring['cid'], querystring['coursevers'], parseInt(lid), parseInt(uid), null, "I");
 		}else if (foundgrade !== null){
-			menu += makeSelect(parseInt(gradeSystem), querystring['cid'], querystring['coursevers'], parseInt(lid), parseInt(uid), parseInt(foundgrade), "U");													
+			menu += makeSelect(parseInt(gradeSystem), querystring['cid'], querystring['coursevers'], parseInt(lid), parseInt(uid), parseInt(foundgrade), "U");
 		}else {
 			menu += makeSelect(parseInt(gradeSystem), querystring['cid'], querystring['coursevers'], parseInt(lid), parseInt(uid), null, "U");
 		}
@@ -148,16 +149,16 @@ function clickResult(cid, vers, moment, firstname, lastname, uid, submitted, mar
 		AJAXService("DUGGA", { cid : cid, vers : vers, moment : moment, luid : uid, coursevers : vers }, "RESULT");
 }
 
-function changeGrade(newMark, gradesys, cid, vers, moment, uid, mark, ukind) 
+function changeGrade(newMark, gradesys, cid, vers, moment, uid, mark, ukind)
 {
 		AJAXService("CHGR", { cid : cid, vers : vers, moment : moment, luid : uid, mark : newMark, ukind : ukind }, "RESULT");
 }
 
-function moveDist(e) 
+function moveDist(e)
 {
 		mmx = e.clientX;
 		mmy = e.clientY;
-	
+
 		if (msx == -1 && msy == -1) {
 			msx = mmx;
 			msy = mmy;
@@ -178,24 +179,24 @@ function enterCell(thisObj)
 				if(rProbe=="rgb(248, 232, 248)"){
 						cliffton="rgb(208,192,208)";
 				}else if(rProbe=="rgb(221, 255, 238)"){
-						cliffton="rgb(181,215,168)";		
+						cliffton="rgb(181,215,168)";
 				}else if(rProbe=="rgb(255, 255, 221)"){
-						cliffton="rgb(215,215,181)";		
+						cliffton="rgb(215,215,181)";
 				}else if(rProbe=="rgb(255, 238, 221)"){
-						cliffton="rgb(215,198,181)";		
+						cliffton="rgb(215,198,181)";
 				}else if(rProbe=="rgb(255, 255, 255)"){
-						cliffton="rgb(215,215,215)";		
+						cliffton="rgb(215,215,215)";
 				}else{
 						cliffton="#FFF";
 				}
-		
+
 				$(thisObj).css('backgroundColor',cliffton);
 		}
 }
 
 function leaveCell(thisObj)
 {
-		if(rProbe!==null&&rProbe!=="transparent") $(thisObj).css('backgroundColor',rProbe);		
+		if(rProbe!==null&&rProbe!=="transparent") $(thisObj).css('backgroundColor',rProbe);
 }
 
 
@@ -263,21 +264,22 @@ function renderMoment(data, userResults, userId, fname, lname)
 	// Each of the section entries (i.e. moments)
 	for ( var j = 0; j < data.length; j++) {
 			str += "<td style='padding:0px;'>";
-			
+
 			// There are results to display.
 			str += "<table width='100%' class='markinginnertable' >";
 			str += "<tr>";
-	
+
 			if (data[j][0].kind === 3 && data[j][0] === null){
 					//str += renderStandaloneDugga(data[j][0], userResults);
-	
-			} else if (data[j][0].kind === 4 && data[j][0] !== null) {
+
+			} else if (data[j][0].kind === 4 && data[j][0] !== null && data[j][0].visible == 1) {
 						str += renderMomentChild(data[j][0], userResults, userId, fname, lname, 1);
 						str += "</tr><tr>";
 				for (var k = 1; k < data[j].length; k++){
+					if(data[j][k].visible == 1){
 						str += renderMomentChild(data[j][k], userResults, userId, fname, lname, 0);
-						//console.log(data[j][k]);
-				}			
+					}
+				}
 			} else {
 					alert("Malformed data!");
 			}
@@ -311,7 +313,7 @@ function renderStandaloneDugga(data, userResults)
 				submitted = resultitem['submitted'];
 				marked = resultitem['marked'];
 				variant = resultitem['variant'];
-				
+
 				if(submitted!==null) {
 					var t = submitted.split(/[- :]/);
 					submitted=new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
@@ -324,50 +326,50 @@ function renderStandaloneDugga(data, userResults)
 		}
 	}
 
-	
+
 	/*
 	zstr = "";
-	
-	
+
+
 	if (foundgrade === null && useranswer === null && submitted === null) {
 		zstr += makeSelect(moment['gradesystem'], querystring['cid'], querystring['coursevers'], moment['lid'], user['uid'], null, "I");
 	} else if (foundgrade !== null) {
-		zstr += makeSelect(moment['gradesystem'], querystring['cid'], querystring['coursevers'], moment['lid'], user['uid'], foundgrade, "U");								
+		zstr += makeSelect(moment['gradesystem'], querystring['cid'], querystring['coursevers'], moment['lid'], user['uid'], foundgrade, "U");
 	}
 	else {
-		zstr += makeSelect(moment['gradesystem'], querystring['cid'], querystring['coursevers'], moment['lid'], user['uid'], null, "U");	
+		zstr += makeSelect(moment['gradesystem'], querystring['cid'], querystring['coursevers'], moment['lid'], user['uid'], null, "U");
 	}
-	
+
 	// Fist ... if no result is found i.e. No Fist
 	if(useranswer!==null){
 			zstr += "<img id='korf' style='padding-left:8px;margin-top:4px;' src='../Shared/icons/FistV.svg' onmouseover='hoverResult(\"" + querystring['cid'] + "\",\"" + querystring['coursevers'] + "\",\"" + moment['lid'] + "\",\"" + user['uid'] + "\",\"" + user['firstname'] + "\",\"" + user['lastname'] + "\");' />";
 	}
 
-	// If no submission,  white. 
-	// If submitted and not marked or resubmitted U, yellow. 
-	// If G or better, green. 
-	// If U, pink. 
+	// If no submission,  white.
+	// If submitted and not marked or resubmitted U, yellow.
+	// If G or better, green.
+	// If U, pink.
 	// If visited but not saved, lilac
 	if(foundgrade===1){
-			yomama="background-color:#fed";							
+			yomama="background-color:#fed";
 	}else if(foundgrade>1){
-			yomama="background-color:#dfe";							
+			yomama="background-color:#dfe";
 	}else if(variant!==null&&useranswer===null){
-			yomama="background-color:#F8E8F8";														
+			yomama="background-color:#F8E8F8";
 	}else if((useranswer!==null&&foundgrade===null)||(foundgrade!==null&&submitted>marked)){
-			yomama="background-color:#ffd";		
-			needMarking++;					
+			yomama="background-color:#ffd";
+			needMarking++;
 	}else{
-			yomama="background-color:#fff";														
+			yomama="background-color:#fff";
 	}
-	
+
 	// Standalone Dugga -- we just need to make a dugga entry with the correct marking system.
 	str += "<td style='"+yomama+"'>&nbsp;</td></tr><tr  style='border-top:2px solid #dbd0d8;' >";
 
 	str += "<td style='"+yomama+"' onmouseover='enterCell(this);' onmouseout='leaveCell(this);'>"+zstr;
 
 	str += "</td>";
-	*/	
+	*/
 }
 
 
@@ -376,7 +378,6 @@ function renderStandaloneDugga(data, userResults)
 //----------------------------------------
 function renderMomentChild(dugga, userResults, userId, fname, lname, moment)
 {
-
 		var str = "";
 		var foundgrade = null;
 		var useranswer = null;
@@ -393,7 +394,7 @@ function renderMomentChild(dugga, userResults, userId, fname, lname, moment)
 								submitted = resultitem.submitted;
 								marked = resultitem.marked;
 								variant = resultitem.variant	;
-				
+
 								if(submitted!==null) {
 									var t = submitted.split(/[- :]/);
 									submitted=new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
@@ -410,13 +411,13 @@ function renderMomentChild(dugga, userResults, userId, fname, lname, moment)
 		if (moment){
 			zttr += '<div style="display:inline-block;min-width:95px">'
 		} else {
-			zttr += '<div style="min-width:95px">'		
+			zttr += '<div style="min-width:95px">'
 		}
 		// If no result is found i.e. No Fist
 		if (foundgrade === null && useranswer === null && submitted === null) {
 			zttr += makeSelect(dugga.gradesystem, querystring['cid'], querystring['coursevers'], dugga.lid, userId, null, "I");
 		}else if (foundgrade !== null){
-			zttr += makeSelect(dugga.gradesystem, querystring['cid'], querystring['coursevers'], dugga['lid'], userId, foundgrade, "U");													
+			zttr += makeSelect(dugga.gradesystem, querystring['cid'], querystring['coursevers'], dugga['lid'], userId, foundgrade, "U");
 		}else {
 			zttr += makeSelect(dugga['gradesystem'], querystring['cid'], querystring['coursevers'], dugga['lid'], userId, null, "U");
 		}
@@ -426,16 +427,16 @@ function renderMomentChild(dugga, userResults, userId, fname, lname, moment)
 		zttr += '</div>'
 		// If no submission - white. If submitted and not marked or resubmitted U - yellow. If G or better, green. If U, pink. visited but not saved lilac
 		if(foundgrade===1 && submitted<marked){
-				yomama="background-color:#faa";							
+				yomama="background-color:#faa";
 		}else if(foundgrade>1){
-				yomama="background-color:#dfe";							
+				yomama="background-color:#dfe";
 		}else if(variant!==null&&useranswer===null){
-				yomama="background-color:#F8E8F8";															
+				yomama="background-color:#F8E8F8";
 		}else if((useranswer!==null&&foundgrade===null)||(foundgrade===1&&submitted>marked)||(useranswer!==null&&foundgrade===0)){
-				yomama="background-color:#ffd";							
+				yomama="background-color:#ffd";
 				needMarking++;
 		}else{
-				yomama="background-color:#fff";														
+				yomama="background-color:#fff";
 		}
 		if (moment){
 			str += "<td style='border-left:2px solid #dbd0d8;"+yomama+"' onmouseover='enterCell(this);' onmouseout='leaveCell(this);' colspan='0'>";
@@ -448,51 +449,64 @@ function renderMomentChild(dugga, userResults, userId, fname, lname, moment)
 		return str;
 }
 
+
+
 //----------------------------------------
 // Renderer
 //----------------------------------------
-function returnedResults(data) 
-{
-		var str = "";
-		var zstr = "";
-		var ttr = "";
-		var zttr = "";
-		needMarking=0;
-	
-		if (data['dugganame'] !== "") {
-				$.getScript(data['dugganame'], function() {
-					$("#MarkCont").html(data['duggapage']);
-		
-					//alert(data['duggaparam']+"\n"+data['useranswer'] + "\n" + data['duggaanswer']);
-					//console.log(data['duggastats']);
-					showFacit(data['duggaparam'],data['useranswer'],data['duggaanswer'], data['duggastats'], data['files'],data['moment']);
-				});
-				$("#resultpopover").css("display", "block");
-				//alert(data['duggaanswer']);
-		} else {
-	
-				results = data['results'];
-				m = orderResults(data['moments']);
-				str += "<table class='markinglist'>";
-				str += renderResultTableHeader(m);
-		
-				if (data['entries'].length > 0) {
-						for ( i = 0; i < data['entries'].length; i++) {
-								var user = data['entries'][i];
-				
+function renderResult(){
+	var str = "";
+	var zstr = "";
+	var ttr = "";
+	var zttr = "";
+	needMarking=0;
+
+	showAll = document.getElementById("teacherFilter").checked;
+
+	if (allData['dugganame'] !== "") {
+			$.getScript(allData['dugganame'], function() {
+				$("#MarkCont").html(allData['duggapage']);
+
+				//alert(data['duggaparam']+"\n"+data['useranswer'] + "\n" + data['duggaanswer']);
+				//console.log(data['duggastats']);
+				showFacit(allData['duggaparam'],allData['useranswer'],allData['duggaanswer'], allData['duggastats'], allData['files'],allData['moment']);
+			});
+			$("#resultpopover").css("display", "block");
+			//alert(data['duggaanswer']);
+	} else {
+
+			results = allData['results'];
+			m = orderResults(allData['moments']);
+			str += "<table class='markinglist'>";
+			str += renderResultTableHeader(m);
+
+			if (allData['entries'].length > 0) {
+					for ( i = 0; i < allData['entries'].length; i++) {
+							var user = allData['entries'][i];
+							if (user["role"]==="R" || showAll){
 								str += "<tr class='fumo'>";
-				
+
 								// One row for each student
 								str += "<td>";
 								str += user['firstname'] + " " + user['lastname'] + "<br/>" + user['username'] + "<br/>" + user['ssn'];
 								str += "</td>";
 								str += renderMoment(m, results[user['uid']], user['uid'], user['firstname'], user['lastname']);
 								str += "</tr>";
-						}
-				}
-				var slist = document.getElementById("content");
-				slist.innerHTML = str;
-				document.getElementById("needMarking").innerHTML = "Students: " + data['entries'].length + "<BR />Unmarked : " + needMarking;						
-		}
+							}
+					}
+			}
+			var slist = document.getElementById("content");
+			slist.innerHTML = str;
+			document.getElementById("needMarking").innerHTML = "Students: " + allData['entries'].length + "<BR />Unmarked : " + needMarking;
+	}
+
+}
+
+function returnedResults(data)
+{
+		var showAll = false;
+		allData = data;
+		document.getElementById('menuHook').innerHTML="<span><label>Show Teachers</label><input id='teacherFilter' type='checkbox' name='showAll' value='1' onchange='renderResult()'>";
+		renderResult();
 		if (data['debug'] !== "NONE!") alert(data['debug']);
 }
