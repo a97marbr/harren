@@ -29,12 +29,15 @@ $versid=getOP('versid');
 $versname=getOP('versname');
 $coursenamealt=getOP('coursenamealt');
 $coursecode=getOP('coursecode');
+$versid=getOP('versid');
+$coursename=getOP('coursename');
+$copycourse=getOP('copycourse');
 
 if(isset($_SESSION['uid'])){
 	$userid=$_SESSION['uid'];
 }else{
-	$userid="UNK";		
-} 
+	$userid="UNK";
+}
 
 $hr="";
 if(isSuperUser($userid)){
@@ -43,7 +46,7 @@ if(isSuperUser($userid)){
 	$ha=false;
 }
 
-$debug="NONE!";	
+$debug="NONE!";
 
 $log_uuid = getOP('log_uuid');
 $info=$opt." ".$cid." ".$coursename." ".$versid." ".$visibility;
@@ -56,25 +59,25 @@ logServiceEvent($log_uuid, EventTypes::ServiceServerStart, "courseedservice.php"
 if($ha){
 	// The code for modification using sessions
 	if(strcmp($opt,"DEL")===0){
-	
+
 	}else if(strcmp($opt,"NEW")===0){
 		$query = $pdo->prepare("INSERT INTO course (coursecode,coursename,visibility,creator) VALUES(:coursecode,:coursename,0,:usrid)");
-		
+
 		$query->bindParam(':usrid', $userid);
 		$query->bindParam(':coursecode', $coursecode);
 		$query->bindParam(':coursename', $coursename);
-		
+
 		if(!$query->execute()) {
 			$error=$query->errorInfo();
 			$debug="Error updating entries".$error[2];
 		}
 	}else if(strcmp($opt,"NEWVRS")===0){
 		$query = $pdo->prepare("INSERT INTO vers(cid,coursecode,vers,versname,coursename,coursenamealt) values(:cid,:coursecode,:vers,:versname,:coursename,:coursenamealt);");
-		
+
 		$query->bindParam(':cid', $cid);
 		$query->bindParam(':coursecode', $coursecode);
 		$query->bindParam(':vers', $versid);
-		$query->bindParam(':versname', $versname);				
+		$query->bindParam(':versname', $versname);
 		$query->bindParam(':coursename', $coursename);
 		$query->bindParam(':coursenamealt', $coursenamealt);
 
@@ -82,14 +85,58 @@ if($ha){
 			$error=$query->errorInfo();
 			$debug="Error updating entries".$error[2];
 		}
-	}else if(strcmp($opt,"UPDATE")===0){
+	}else if(strcmp($opt,"UPDATEVRS")===0){
+		$query = $pdo->prepare("UPDATE vers SET versname=:versname WHERE cid=:cid AND coursecode=:coursecode AND vers=:vers;");
+		$query->bindParam(':cid', $courseid);
+		$query->bindParam(':coursecode', $coursecode);
+		$query->bindParam(':vers', $versid);
+		$query->bindParam(':versname', $versname);
+
+		if(!$query->execute()) {
+			$error=$query->errorInfo();
+			$debug="Error updating entries".$error[2];
+		}
+	}else if(strcmp($opt,"CHGVERS")===0){
+		$query = $pdo->prepare("UPDATE course SET activeversion=:vers WHERE cid=:cid");
+		$query->bindParam(':cid', $courseid);
+		$query->bindParam(':vers', $versid);
+
+		if(!$query->execute()) {
+			$error=$query->errorInfo();
+			$debug="Error updating entries".$error[2];
+		}
+	}else if(strcmp($opt, "CPYVRS")===0){
+			$query = $pdo->prepare("INSERT INTO vers(cid,coursecode,vers,versname,coursename,coursenamealt) values(:cid,:coursecode,:vers,:versname,:coursename,:coursenamealt);");
+
+			$query->bindParam(':cid', $cid);
+			$query->bindParam(':coursecode', $coursecode);
+			$query->bindParam(':vers', $versid);
+			$query->bindParam(':versname', $versname);
+			$query->bindParam(':coursename', $coursename);
+			$query->bindParam(':coursenamealt', $coursenamealt);
+
+			if(!$query->execute()) {
+				$error=$query->errorInfo();
+				$debug="Error updating entries".$error[2];
+			}
+			///prepare a stored procedure call, bind params for variables
+			$query = $pdo->prepare("CALL copyVersionItems(:overs,:nvers)");
+			$query->bindParam(":overs",$copycourse,PDO::PARAM_STR);
+			$query->bindParam(":nvers",$versid,PDO::PARAM_STR);
+
+			if(!$query->execute()) {
+				$error=$query->errorInfo();
+				$debug="Error cloning course. ".$error[2];
+			}
+
+		}else if(strcmp($opt,"UPDATE")===0){
 		$query = $pdo->prepare("UPDATE course SET coursename=:coursename, visibility=:visibility, coursecode=:coursecode WHERE cid=:cid;");
-		
+
 		$query->bindParam(':cid', $cid);
 		$query->bindParam(':coursename', $coursename);
 		$query->bindParam(':visibility', $visibility);
 		$query->bindParam(':coursecode', $coursecode);
-		
+
 		if(!$query->execute()) {
 			$error=$query->errorInfo();
 			$debug="Error updating entries".$error[2];
@@ -98,7 +145,7 @@ if($ha){
 }
 
 //------------------------------------------------------------------------------------------------
-// Retrieve Information			
+// Retrieve Information
 //------------------------------------------------------------------------------------------------
 
 $entries=array();
@@ -126,7 +173,7 @@ if(!$query->execute()) {
 				)
 			);
 	}
-} 
+}
 
 $versions=array();
 $query=$pdo->prepare("SELECT cid,coursecode,vers,versname,coursename,coursenamealt FROM vers;");
@@ -163,4 +210,3 @@ echo json_encode($array);
 logServiceEvent($log_uuid, EventTypes::ServiceServerEnd, "courseedservice.php",$userid,$info);
 
 ?>
-

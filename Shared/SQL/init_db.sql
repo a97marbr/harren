@@ -28,7 +28,7 @@ INSERT INTO user(username,password,newpassword,creator) values ("Toddler","$2y$1
 INSERT INTO user(username,password,newpassword,creator,ssn) values ("Tester", "$2y$12$IHb86c8/PFyI5fa9r8B0But7rugtGKtogyp/2X0OuB3GJl9l0iJ.q",1,1,"111111-1111");
 
 
-/** 
+/**
  * Course table contains the most essential information relating to study courses in the database.
  */
 CREATE TABLE course(
@@ -38,7 +38,7 @@ CREATE TABLE course(
 		created				DATETIME,
 		creator				INT UNSIGNED NOT NULL,
 		visibility			TINYINT UNSIGNED NOT NULL DEFAULT 0,
-		updated				TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, 
+		updated				TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 		activeversion 		VARCHAR(8),
 		activeedversion 	VARCHAR(8),
 		capacity			int(5),
@@ -57,7 +57,7 @@ CREATE TABLE course_req(
 		FOREIGN KEY(req_cid) REFERENCES course(cid)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
-/** 
+/**
  * This table represents a many-to-many relation between users and courses. That is,
  * a tuple in this table joins a user with a course.
  */
@@ -91,10 +91,10 @@ CREATE TABLE listentries (
 	gradesystem 	TINYINT(1),
 	highscoremode		INT DEFAULT 0,
 	CONSTRAINT 		pk_listentries PRIMARY KEY(lid),
-	
+
 /*	FOREIGN KEY(code_id) REFERENCES codeexample(exampleid) ON UPDATE NO ACTION ON DELETE SET NULL, */
 	CONSTRAINT fk_listentries_joins_user FOREIGN KEY(creator) REFERENCES user(uid) ON DELETE NO ACTION ON UPDATE NO ACTION, FOREIGN KEY(cid) REFERENCES course(cid) ON DELETE CASCADE ON UPDATE CASCADE
-	
+
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB;
 
 /* Quiz tables */
@@ -109,14 +109,14 @@ CREATE TABLE quiz (
 	deadline 		DATETIME,
 	modified 		TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	creator 		INTEGER,
-		
+
 	CONSTRAINT 		pk_quiz PRIMARY KEY (id),
 	CONSTRAINT 		fk_quiz_joins_course FOREIGN KEY (cid) REFERENCES course(cid) ON DELETE CASCADE ON UPDATE CASCADE
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB;
 
-/** 
+/**
  * A quiz tuple has a one-to-many relation with a tuple from thea variant table.
- * An entry in the variant table is used to add questions to quiz tests. 
+ * An entry in the variant table is used to add questions to quiz tests.
  */
 CREATE TABLE variant(
   vid				INT(11) NOT NULL AUTO_INCREMENT,
@@ -132,7 +132,7 @@ CREATE TABLE variant(
 
 CREATE TABLE userAnswer (
 	aid				INT(11) NOT NULL AUTO_INCREMENT,
-	cid				INT UNSIGNED NOT NULL, 
+	cid				INT UNSIGNED NOT NULL,
 	quiz 			INT(11),
 	variant			INT,
 	moment			INT UNSIGNED NOT NULL,
@@ -143,7 +143,7 @@ CREATE TABLE userAnswer (
 	marked			TIMESTAMP NULL,
 	vers			VARCHAR(8),
 	creator 		INTEGER,
-	score		INT DEFAULT NULL, 
+	score		INT DEFAULT NULL,
 	timeUsed int(11) DEFAULT NULL,
 	totalTimeUsed int(11) DEFAULT '0',
 	stepsUsed int(11) DEFAULT NULL,
@@ -171,23 +171,23 @@ CREATE TABLE vers(
 	coursecode		VARCHAR(45) NOT NULL,
 	coursename	  	VARCHAR(45) NOT NULL,
 	coursenamealt	VARCHAR(45) NOT NULL,
-	CONSTRAINT fk_vers_joins_course FOREIGN KEY (cid) REFERENCES course(cid),		
+	CONSTRAINT fk_vers_joins_course FOREIGN KEY (cid) REFERENCES course(cid),
 	CONSTRAINT pk_vers PRIMARY KEY(cid,vers)
 );
 
 CREATE TABLE fileLink(
 	fileid				INT(11) NOT NULL AUTO_INCREMENT,
 	filename			VARCHAR(128) NOT NULL,
-	kind				INTEGER,	
+	kind				INTEGER,
 	cid					INT UNSIGNED NOT NULL,
 	isGlobal			BOOLEAN DEFAULT 0,
 	CONSTRAINT pk_filelink PRIMARY KEY (fileid),
 	CONSTRAINT fk_filelink_joins_course FOREIGN KEY (cid) REFERENCES course (cid)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB;
 
-/** 
- * An entry in this table allow file locations to be related to specific courses. 
- * For example, if an instructor wants to give students a link to a file that 
+/**
+ * An entry in this table allow file locations to be related to specific courses.
+ * For example, if an instructor wants to give students a link to a file that
  * they should be able to download from the course page.
  */
 CREATE TABLE template(
@@ -198,7 +198,7 @@ CREATE TABLE template(
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB;
 
 
-/* Code Example contains a list of the code examples for a version of a course in the database 
+/* Code Example contains a list of the code examples for a version of a course in the database
  Version of sections and examples corresponds roughly to year or semester that the course was given. */
 
 CREATE TABLE codeexample(
@@ -230,7 +230,7 @@ CREATE TABLE sequence (
 
 /* improw contains a list of the important rows for a certain example */
 CREATE TABLE wordlist(
-	wordlistid		MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,		
+	wordlistid		MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
 	wordlistname	VARCHAR(24),
 	updated 		TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	uid				INT UNSIGNED NOT NULL,
@@ -239,14 +239,14 @@ CREATE TABLE wordlist(
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB;
 
 /**
- * Delete and update all foreign keys before deleting a wordlist 
+ * Delete and update all foreign keys before deleting a wordlist
  */
 delimiter //
 CREATE TRIGGER checkwordlists BEFORE DELETE ON wordlist
 FOR EACH ROW
 BEGIN
-	 DELETE FROM word WHERE wordlistid = OLD.wordlistid;    
-     IF ((Select count(*) FROM box WHERE wordlistid=OLD.wordlistid)>"0")THEN   
+	 DELETE FROM word WHERE wordlistid = OLD.wordlistid;
+     IF ((Select count(*) FROM box WHERE wordlistid=OLD.wordlistid)>"0")THEN
      		UPDATE box SET wordlistid = (SELECT MIN(wordlistid) FROM wordlist WHERE wordlistid != OLD.wordlistid) WHERE wordlistid=OLD.wordlistid;
      END IF;
  END;//
@@ -254,7 +254,7 @@ BEGIN
 
 CREATE TABLE word(
 		wordid		  		MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
-		wordlistid			MEDIUMINT UNSIGNED NOT NULL,			
+		wordlistid			MEDIUMINT UNSIGNED NOT NULL,
 		word 				VARCHAR(64),
 		label				VARCHAR(256),
 		updated 			TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -282,7 +282,7 @@ CREATE TABLE box(
 CREATE TABLE improw(
 	impid		  	MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
 	boxid         	INTEGER UNSIGNED NOT NULL,
-	exampleid    	MEDIUMINT UNSIGNED NOT NULL,				
+	exampleid    	MEDIUMINT UNSIGNED NOT NULL,
 	istart			INTEGER,
 	iend			INTEGER,
 	irowdesc		VARCHAR(1024),
@@ -321,7 +321,7 @@ CREATE TABLE submission(
 		kind			INTEGER,
 		segment		INTEGER,
 		updtime		TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-		PRIMARY KEY(subid) 
+		PRIMARY KEY(subid)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB;
 
 CREATE TABLE eventlog(
@@ -345,7 +345,7 @@ CREATE TABLE playereditor_playbacks(
 /**
  * This table seems to be intended to store program courses. It does not seem
  * to have any relation to the rest of the database and kind of stands out oddly.
- 
+
 CREATE TABLE programkurs (
     pkid int(11) NOT NULL AUTO_INCREMENT,
     kull varchar(8) DEFAULT NULL,
@@ -366,15 +366,15 @@ CREATE TABLE class (
     regcode 	int(8) DEFAULT NULL,
 	classcode 	varchar(8) DEFAULT NULL,
     hp 			decimal(10,1) DEFAULT NULL,
-	tempo 		int(3) DEFAULT NULL,	
+	tempo 		int(3) DEFAULT NULL,
 	hpProgress 	decimal(3,1),
     PRIMARY KEY (class,responsible),
 	FOREIGN KEY (responsible) REFERENCES user (uid)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB;
 
 /**
- * this table stores the different subparts of each course. 
- */ 
+ * this table stores the different subparts of each course.
+ */
 CREATE TABLE subparts(
 	partname 	varchar(50),
 	cid 		INT UNSIGNED NOT NULL,
@@ -385,8 +385,8 @@ CREATE TABLE subparts(
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB;
 
 /**
- * this table is weak reslation to user and partcourse. 
- */ 
+ * this table is weak reslation to user and partcourse.
+ */
 CREATE TABLE partresult (
     cid 		INT UNSIGNED NOT NULL,
 	uid			INT UNSIGNED NOT NULL,
@@ -399,8 +399,8 @@ CREATE TABLE partresult (
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB;
 
 /**
- * this table many to many relation between class and course. 
- */ 
+ * this table many to many relation between class and course.
+ */
 CREATE TABLE programcourse (
     class 		varchar(10) DEFAULT NULL,
 	cid 		INT UNSIGNED NOT NULL,
@@ -413,7 +413,7 @@ CREATE TABLE programcourse (
 
 /**
  * This table seems to be intended to store student results from program courses.
- */ 
+ */
 CREATE TABLE studentresultat (
     sid 		mediumint(9) NOT NULL AUTO_INCREMENT,
     pnr 		varchar(11) DEFAULT NULL,
@@ -427,7 +427,7 @@ CREATE TABLE studentresultat (
     KEY pnr (pnr),
     KEY kurskod (kurskod)
 
-	
+
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB;
 
 /*
@@ -449,7 +449,7 @@ CREATE TABLE list (
 ) CHARACTER SET UTF8 COLLATE UTF8_UNICODE_CI ENGINE=INNODB;
 
 /*
-INSERT INTO programkurs VALUES (45,'WEBUG12h','DA135G','Datakommunikation - Introduktion G1N 7,5 hp','87524',5,NULL,'20132'),(46,'WEBUG12h','SD140G','Studieteknik G1N 1,5 hp','85621',4,NULL,'20122'),(47,'WEBUG12h','DA147G','Grundläggande programmering med C++ G1N 7,5 hp','87520',5,NULL,'20122'),(48,'WEBUG12h','IT116G','Informationssäkerhet - Introduktion G1N 7,5 hp','87510',5,NULL,'20142'),(49,'WEBUG12h','DA133G','Webbutveckling - datorgrafik G1N 7,5 hp','87518',4,NULL,'20122'),(50,'WEBUG12h','DA121G','Datorns grunder G1N 7,5 hp','87514',4,NULL,'20122'),(51,'WEBUG12h','DA330G','Webbprogrammering G1F 7,5 hp','87547',5,NULL,'20132'),(52,'WEBUG12h','DA523G','Webbteknologi - forskning och utveckling G2F 7,5 hp','87568',5,NULL,'20142'),(53,'WEBUG12h','DA524G','Webbutveckling - content management och drift G2F 7,5 hp','87569',4,NULL,'20142'),(54,'WEBUG12h','DA322G','Operativsystem G1F 7,5 hp','87531',4,NULL,'20142'),(55,'WEBUG12h','IS130G','IT i organisationer - Introduktion G1N 7,5 hp','88317',4,NULL,'20132'),(56,'WEBUG12h','IS317G','Databaskonstruktion G1F 7,5 hp','88344',4,NULL,'20132'),(57,'WEBUG12h','KB111G','Interaktion, design och användbarhet I G1N 7,5 hp','88417',5,NULL,'20122'),(58,'WEBUG12h','DA348G','Objektorienterad programmering G1F 7,5 hp','97543',1,NULL,'20131'),(59,'WEBUG12h','MA113G','Algebra och logik G1N 7,5 hp','93612',1,NULL,'20141'),(60,'WEBUG12h','DA338G','Projekt i webbutveckling G1F 15 hp','97545',2,NULL,'20141'),(61,'WEBUG12h','DA345G','Examensarbete i datalogi med inriktning mot webbutveckling G2E 30 hp','97560',1,NULL,'20151'),(62,'WEBUG12h','DV123G','Webbutveckling - webbplatsdesign G1N 7,5 hp','97703',1,NULL,'20131'),(63,'WEBUG12h','DV313G','Webbutveckling - XML API G1F 7,5 hp','97737',2,NULL,'20131'),(64,'WEBUG12h','DV318G','Programvaruutveckling - programvaruprojekt G1F 15 hp','97744',2,NULL,'20141'),(65,'WEBUG12h','DV316G','Programvaruutveckling G1F 7,5 hp','97745',1,NULL,'20141'),(66,'WEBUG12h','IS114G','Databassystem G1N 7,5 hp','98324',2,NULL,'20131'),(67,'WEBUG13h','DA147G','Grundläggande programmering med C++ G1N 7,5 hp','87501',5,NULL,'20132');
+INSERT INTO programkurs VALUES (45,'WEBUG12h','DA135G','Datakommunikation - Introduktion G1N 7,5 hp','87524',5,NULL,'20132'),(46,'WEBUG12h','SD140G','Studieteknik G1N 1,5 hp','85621',4,NULL,'20122'),(47,'WEBUG12h','DA147G','Grundlï¿½ggande programmering med C++ G1N 7,5 hp','87520',5,NULL,'20122'),(48,'WEBUG12h','IT116G','Informationssï¿½kerhet - Introduktion G1N 7,5 hp','87510',5,NULL,'20142'),(49,'WEBUG12h','DA133G','Webbutveckling - datorgrafik G1N 7,5 hp','87518',4,NULL,'20122'),(50,'WEBUG12h','DA121G','Datorns grunder G1N 7,5 hp','87514',4,NULL,'20122'),(51,'WEBUG12h','DA330G','Webbprogrammering G1F 7,5 hp','87547',5,NULL,'20132'),(52,'WEBUG12h','DA523G','Webbteknologi - forskning och utveckling G2F 7,5 hp','87568',5,NULL,'20142'),(53,'WEBUG12h','DA524G','Webbutveckling - content management och drift G2F 7,5 hp','87569',4,NULL,'20142'),(54,'WEBUG12h','DA322G','Operativsystem G1F 7,5 hp','87531',4,NULL,'20142'),(55,'WEBUG12h','IS130G','IT i organisationer - Introduktion G1N 7,5 hp','88317',4,NULL,'20132'),(56,'WEBUG12h','IS317G','Databaskonstruktion G1F 7,5 hp','88344',4,NULL,'20132'),(57,'WEBUG12h','KB111G','Interaktion, design och anvï¿½ndbarhet I G1N 7,5 hp','88417',5,NULL,'20122'),(58,'WEBUG12h','DA348G','Objektorienterad programmering G1F 7,5 hp','97543',1,NULL,'20131'),(59,'WEBUG12h','MA113G','Algebra och logik G1N 7,5 hp','93612',1,NULL,'20141'),(60,'WEBUG12h','DA338G','Projekt i webbutveckling G1F 15 hp','97545',2,NULL,'20141'),(61,'WEBUG12h','DA345G','Examensarbete i datalogi med inriktning mot webbutveckling G2E 30 hp','97560',1,NULL,'20151'),(62,'WEBUG12h','DV123G','Webbutveckling - webbplatsdesign G1N 7,5 hp','97703',1,NULL,'20131'),(63,'WEBUG12h','DV313G','Webbutveckling - XML API G1F 7,5 hp','97737',2,NULL,'20131'),(64,'WEBUG12h','DV318G','Programvaruutveckling - programvaruprojekt G1F 15 hp','97744',2,NULL,'20141'),(65,'WEBUG12h','DV316G','Programvaruutveckling G1F 7,5 hp','97745',1,NULL,'20141'),(66,'WEBUG12h','IS114G','Databassystem G1N 7,5 hp','98324',2,NULL,'20131'),(67,'WEBUG13h','DA147G','Grundlï¿½ggande programmering med C++ G1N 7,5 hp','87501',5,NULL,'20132');
 INSERT INTO studentresultat VALUES (1,'111111-1111',NULL,'IT111G','H14',5.0,NULL),(2,'111111-1111',NULL,'IT115G','H14',7.5,NULL),(3,'111111-1111',NULL,'IT118G','H14',7.5,NULL),(4,'111111-1111',NULL,'IT120G','H14',0.0,NULL),(5,'111111-1111',NULL,'IT108G','V15',0.0,NULL),(6,'111111-1111',NULL,'IT121G','V15',0.0,NULL),(7,'111111-1111',NULL,'IT308G','V15',0.0,NULL);
 */
 
@@ -464,7 +464,7 @@ INSERT INTO studentresultat VALUES (1,'111111-1111',NULL,'IT111G','H14',5.0,NULL
 
 create view studentresultCourse  as
 	select partresult.uid as username, partresult.cid, partresult.hp  from partresult
-	inner join subparts on partresult.partname = subparts.partname 
+	inner join subparts on partresult.partname = subparts.partname
 		and subparts.cid = partresult.cid
 		and subparts.parthp = partresult.hp
 	where partresult.grade != 'u';
@@ -481,7 +481,7 @@ update user set superuser=1 where username="Toddler";
  * Clears the eventlog table on a weekly basis
  * If this is for some reason needed - comment out. In all other cases, this should not run by default.
 DELIMITER $$
-CREATE EVENT weekly_eventlog_delete ON SCHEDULE EVERY 1 WEEK 
+CREATE EVENT weekly_eventlog_delete ON SCHEDULE EVERY 1 WEEK
 		DO
 	BEGIN
 	SET SQL_SAFE_UPDATES = 0;
@@ -490,6 +490,28 @@ CREATE EVENT weekly_eventlog_delete ON SCHEDULE EVERY 1 WEEK
 END $$
 DELIMITER ;
  */
+
+ /*
+ 	A procedure that creates a temporary table to hold all the items from
+ 	a copied course. Then changes all the version numbers and inserts it
+ 	back into the database as new data. Ending on dropping the temp table.
+ */
+ DELIMITER //
+ CREATE PROCEDURE copyVersionItems(IN oldvers VARCHAR(8),IN newvers VARCHAR(8))
+ BEGIN
+ SET @oldvers = oldvers;
+ SET @newvers = newvers;
+ CREATE TEMPORARY TABLE tmpListEntry SELECT cid,entryname,link,kind,pos,creator,ts,code_id,visible,vers,moment,gradesystem,highscoremode FROM listentries WHERE vers = oldvers COLLATE utf8_unicode_ci;
+ UPDATE tmpListEntry SET vers = newvers WHERE vers = oldvers COLLATE utf8_unicode_ci;
+ INSERT INTO listentries (cid,entryname,link,kind,pos,creator,ts,code_id,visible,vers,moment,gradesystem,highscoremode) SELECT cid,entryname,link,kind,pos,creator,ts,code_id,visible,vers,moment,gradesystem,highscoremode FROM tmpListEntry WHERE vers = newvers COLLATE utf8_unicode_ci;
+ DROP TABLE tmpListEntry;
+
+ CREATE TEMPORARY TABLE tmpSubmission SELECT uid, cid, vers, did, seq, fieldnme, filepath, filename, extension, mime, kind FROM submission WHERE vers = oldvers COLLATE utf8_unicode_ci;
+ UPDATE tmpSubmission SET vers = newvers WHERE vers = oldvers COLLATE utf8_unicode_ci;
+ INSERT INTO submission (uid, cid, vers, did, seq, fieldnme, filepath, filename, extension, mime, kind) SELECT uid,cid,vers,did,seq,fieldnme,filepath,filename,extension,mime,kind FROM tmpSubmission WHERE vers = newvers COLLATE utf8_unicode_ci;
+ DROP TABLE tmpSubmission;
+ END //
+ DELIMITER ;
 
 /* Templates for codeexamples */
 
@@ -502,14 +524,14 @@ INSERT INTO template(templateid,stylesheet, numbox) VALUES (5,"template5.css",4)
 INSERT INTO template(templateid,stylesheet, numbox) VALUES (6,"template6.css",4);
 
 /* Programming languages that decide highlighting */
- 
+
 INSERT INTO wordlist(wordlistname,uid) VALUES ("JS",1);
 INSERT INTO wordlist(wordlistname,uid) VALUES ("PHP",1);
 INSERT INTO wordlist(wordlistname,uid) VALUES ("HTML",1);
 INSERT INTO wordlist(wordlistname,uid) VALUES ("Plain Text",1);
 INSERT INTO wordlist(wordlistname,uid) VALUES ("Java",1);
 INSERT INTO wordlist(wordlistname,uid) VALUES ("SR",1);
- 
+
 /* Wordlist for different programming languages */
 
 INSERT INTO word(wordlistid, word,label,uid) VALUES (1,"for","A",1);
@@ -574,4 +596,3 @@ INSERT INTO word(wordlistid, word,label,uid) VALUES (5,"float","B",1);
 INSERT INTO word(wordlistid, word,label,uid) VALUES (5,"native","C",1);
 INSERT INTO word(wordlistid, word,label,uid) VALUES (5,"super","D",1);
 INSERT INTO word(wordlistid, word,label,uid) VALUES (5,"while","A",1);
-
