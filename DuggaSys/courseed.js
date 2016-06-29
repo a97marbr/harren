@@ -7,6 +7,7 @@
 var sessionkind = 0;
 var querystring = parseGet();
 var versions;
+var entries;
 
 AJAXService("GET", {}, "COURSE");
 
@@ -171,10 +172,35 @@ function selectCourse(cid, coursename, coursecode, visi, vers, edvers)
 	return false;
 }
 
-function editVersion(cid, cname) {
+function getCurrentVersion(cid){
+	var currentVersion = "None";
+	if (entries.length > 0) {
+		for ( i = 0; i < entries.length; i++) {
+			var item = entries[i];
+			if (cid == item['cid']) {
+				currentVersion = item['activeversion'];
+			}
+		}
+	}
+	return currentVersion;
+}
+
+function editVersion(cid, cname, ccode) {
 		document.getElementById('newCourseVersion').style.display = "block";
 		document.getElementById('cid').value = cid;
+		document.getElementById('coursename1').value = cname;
+		document.getElementById('coursecode1').value = ccode;
+		var currentVersion = getCurrentVersion(cid);
+
 		var str = "<select class='course-dropdown'>";
+		str += "<option value='None'"	;
+		
+		if(currentVersion=="None"){
+			str += "selected";
+			var versionname=vname;
+		}
+		str += ">-</option>";
+		
 		if (versions.length > 0) {
 			for ( i = 0; i < versions.length; i++) {
 				var item = versions[i];
@@ -182,11 +208,10 @@ function editVersion(cid, cname) {
 					var vvers = item['vers'];
 					var vname = item['versname'];
 					str += "<option value='"+ vvers + "'";
-					/*
-					if(retdata['coursevers']==vvers){
+					if(currentVersion==vvers){
 						str += "selected";
 						var versionname=vname;
-					}*/
+					}
 					str += ">" + vname + " - " + vvers + "</option>";
 				}
 			}
@@ -207,39 +232,44 @@ function createVersion(){
 	var coursevers = $("#course-coursevers").text();
 	var copycourse = $("#copyvers").val();
 
-	if(coursevers=="null"){
-		makeactive=true;
+	if (versid=="" || versname=="") {
+		alert("Version Name and Version ID must be entered!");
+	} else {
+		if(coursevers=="null"){
+			makeactive=true;
+		}
+	
+		if (copycourse != "None"){
+				//create a copy of course version 
+				AJAXService("CPYVRS", {
+					cid : cid,
+					versid : versid,
+					versname : versname,
+					coursecode : coursecode,
+					coursename : coursename,
+					copycourse : copycourse
+				}, "COURSE");
+			
+		} else {
+			//create a fresh course version
+			AJAXService("NEWVRS", {
+				cid : cid,
+				versid : versid,
+				versname : versname,
+				coursecode : coursecode,
+				coursename : coursename
+			}, "COURSE");		
+		}
+	
+		if(makeactive){
+			AJAXService("CHGVERS", {
+				cid : cid,
+				versid : versid,
+			}, "COURSE");
+		}
+	
+		$("#newCourseVersion").css("display","none");		
 	}
-
-	//create a fresh course version
-	/*
-	AJAXService("NEWVRS", {
-		cid : cid,
-		versid : versid,
-		versname : versname,
-		coursecode : coursecode,
-		coursename : coursename
-	}, "COURSE");
-*/
-	//if copy course is not 0, run the copy call
-		//create a copy of course version
-		AJAXService("CPYVRS", {
-			cid : cid,
-			versid : versid,
-			versname : versname,
-			coursecode : coursecode,
-			coursename : coursename,
-			copycourse : copycourse
-		}, "COURSE");
-
-	if(makeactive){
-		AJAXService("CHGVERS", {
-			cid : cid,
-			versid : versid,
-		}, "COURSE");
-	}
-
-	$("#newCourseVersion").css("display","none");
 
 }
 
@@ -250,6 +280,7 @@ function createVersion(){
 function returnedCourse(data)
 {
 	versions = data['versions'];
+	entries = data['entries'];
 
 	// Fill section list with information
 	str = "";
@@ -283,7 +314,7 @@ function returnedCourse(data)
 
 			if (data['writeaccess']) {
 				//str += "<a style='margin-right:15px;' href='sectioned.php?courseid=" + item['cid'] + "&coursename=" + item['coursename'] + "&coursevers=" + item['activeedversion'] + "'><img id='dorf' src='../Shared/icons/PenV.svg'></a>";
-				str += "<img id='dorf' src='../Shared/icons/PenV.svg' onclick='editVersion("+item['cid']+",\""+item['coursename']+"\")'>";
+				str += "<img id='dorf' src='../Shared/icons/PenV.svg' onclick='editVersion("+item['cid']+",\""+item['coursename']+"\",\""+item['coursecode']+"\")'>";
 				str += "<img id='dorf' style='float:right;' src='../Shared/icons/Cogwheel.svg' ";
 				str += " onclick='selectCourse(\"" + item['cid'] + "\",\"" + item['coursename'] + "\",\"" + item['coursecode'] + "\",\"" + item['visibility'] + "\",\"" + item['activeversion'] + "\",\"" + item['activeedversion'] + "\");' >";
 			}
