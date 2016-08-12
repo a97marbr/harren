@@ -452,9 +452,6 @@ function returnedSection(data)
 		}else{
 			// No version selector for students
 		}
-	
-		// Course Name
-		str+="<div class='course'><div id='course-coursename' style='display: inline-block; margin-right:10px;'>"+data.coursename+"</div><div id='course-coursecode' style='display: inline-block; margin-right:10px;'>"+data.coursecode+"</div><div id='course-versname' style='display: inline-block; margin-right:10px;'>"+versionname+"</div><div id='course-coursevers' style='display: none; margin-right:10px;'>"+data.coursevers+"</div><div id='course-courseid' style='display: none; margin-right:10px;'>"+data.courseid+"</div>";
 
 		if(retdata["writeaccess"]){
       str += "<td><input class='submit-button' type='button' value='New Item' onclick='newItem();'/><td>";
@@ -464,6 +461,15 @@ function returnedSection(data)
 			str+="</tr></table>";
 		}
 
+		// Course Name
+		str+="<div class='course'>";
+			str+="<div id='course-coursename' style='display: inline-block; margin-right:10px;'>"+data.coursename+"</div>";
+			str+="<div id='course-coursecode' style='display: inline-block; margin-right:10px;'>"+data.coursecode+"</div>";
+			str+="<div id='course-versname' style='display: inline-block; margin-right:10px;'>"+versionname+"</div>";
+			str+="<div id='course-coursevers' style='display: none; margin-right:10px;'>"+data.coursevers+"</div>";
+			str+="<div id='course-courseid' style='display: none; margin-right:10px;'>"+data.courseid+"</div>";
+		str+="</div>";
+	
 		str+="<div id='Sectionlistc' >";
 			
 		var groupitems = 0;
