@@ -94,8 +94,9 @@ if(checklogin()){
 			if($link==-1){
 
 					// Find section name - Last preceding section name if none - assigns UNK - so we know that nothing was found
+					// kind 0 == Header || 1 == Section || 2 == Code  || 3 == Test (Dugga)|| 4 == Moment || 5 == Link
 					$sname = "UNK";
-					$queryz = $pdo->prepare("SELECT entryname FROM listentries WHERE vers=:cversion AND cid=:cid AND (kind=1 or kind=0) AND (pos < (SELECT pos FROM listentries WHERE lid=:lid)) ORDER BY pos DESC LIMIT 1;");
+					$queryz = $pdo->prepare("SELECT entryname FROM listentries WHERE vers=:cversion AND cid=:cid AND (kind=1 or kind=0 or kind=4) AND (pos < (SELECT pos FROM listentries WHERE lid=:lid)) ORDER BY pos DESC LIMIT 1;");
 					$queryz->bindParam(':cid', $courseid);
 					$queryz->bindParam(':cversion', $coursevers);
 					$queryz->bindParam(':lid', $sectid);
