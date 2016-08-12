@@ -89,7 +89,7 @@ if(checklogin()){
 				}
 			}
 		}else if(strcmp($opt,"UPDATE")===0){
-
+			
 			// Insert a new code example and update variables accordingly.
 			if($link==-1){
 

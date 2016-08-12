@@ -157,9 +157,9 @@ function selectItem(lid,entryname,kind,evisible,elink,moment,gradesys,highscorem
 		for(var ii=0;ii<retdata['codeexamples'].length;ii++){
 			var iitem=retdata['codeexamples'][ii];
 			if(xelink==iitem['exampleid']){
-				iistr+="<option selected='selected' value='"+iitem['exampleid']+"'>"+iitem['sectionname']+"</option>";
+				iistr+="<option selected='selected' value='"+iitem['exampleid']+"'>"+iitem['examplename']+"</option>";
 			}else{
-				iistr+="<option value='"+iitem['exampleid']+"'>"+iitem['sectionname']+"</option>";
+				iistr+="<option value='"+iitem['exampleid']+"'>"+iitem['examplename']+"</option>";
 			}
 		}
 		$("#link").html(iistr);
