@@ -416,10 +416,10 @@ function returnedSection(data)
 		// Fill section list with information
 		str="";
 
+		str+="<table width='100%' border='1'><tr>";			
+
 		if(data['writeaccess']) {
-			str+="<div class='course-menu-wrapper clearfix'>";			
-			str+="<div class='course-menu--settings'>";
-			str+="<select class='course-dropdown' onchange='goToVersion(this)'>";
+			str+="<td style='width:112px;'><select class='course-dropdown' onchange='goToVersion(this)'>";
 			if (retdata['versions'].length > 0) {
 				for ( i = 0; i < retdata['versions'].length; i++) {
 					var item = retdata['versions'][i];
@@ -435,60 +435,34 @@ function returnedSection(data)
 					}
 				}
 			}
-			str+="</select>";
-			str+="<input type='button' class='submit-button' value='Edit version' title='Edit the selected version' onclick='showEditVersion";
+			str+="</select></td>";
+			
+			str+="<td style='width:112px;'><input type='button' class='submit-button' value='Edit version' title='Edit the selected version' onclick='showEditVersion";
 			str+='("'+querystring['coursevers']+'","'+versionname+'")';
-			str+=";'>";	
-			str+="<input type='button' class='submit-button' value='New version' title='Create a new version of this course' onclick='showCreateVersion();'>";
-			str+="</div>";
+			str+=";'></td>";	
+
+			str+="<td style='width:112px;'><input type='button' class='submit-button' value='New version' title='Create a new version of this course' onclick='showCreateVersion();'></td>";
+			str+="<td style='width:112px;'><input type='button' class='submit-button' value='Access' title='Give students access to the selected version' onclick='accessCourse();'/></td>";
+			str+="<td style='width:112px;'><input type='button' class='submit-button' value='Results' title='Edit student results' onclick='changeURL(\"resulted.php?cid="+querystring['courseid']+"&coursevers="+querystring['coursevers']+"\")' /></td>";
 			
-			str+="<div class='course-menu--options'>";
-			str+="<input type='button' class='submit-button' value='Access' title='Give students access to the selected version' onclick='accessCourse();'/>";
-			str+="<div class='submit-button' style='display:inline;' type='button' value='Results' onclick='changeURL(\"resulted.php?cid="+querystring['courseid']+"&coursevers="+querystring['coursevers']+"\")'/>Results"
+			str+="<td style='width:112px;'><input class='submit-button' type='button' value='Tests' id='testbutton' onclick='changeURL(\"duggaed.php?cid="+querystring['courseid']+"&coursevers="+querystring['coursevers']+"\")'/></td>";
+			str+="<td style='width:112px;'><input class='submit-button' type='button' value='Files' onclick='changeURL(\"fileed.php?cid="+querystring['courseid']+"&coursevers="+querystring['coursevers']+"\")'/></td>";
+			str+="<td style='width:112px;'><input class='submit-button' type='button' value='List' onclick='changeURL(\"resultlisted.php?cid="+querystring['courseid']+"&coursevers="+querystring['coursevers']+"\")'/></td>";
 			
-			if(data['unmarked']>0){
-				str+="<span class='badge' id='unmarked'>";
-				str+=data['unmarked'];
-				str+="</span>";
-			}
-			str+="</div>";
-			str+="<input class='submit-button' type='button' value='Tests' id='testbutton' onclick='changeURL(\"duggaed.php?cid="+querystring['courseid']+"&coursevers="+querystring['coursevers']+"\")'/>";
-			str+="<input class='submit-button' type='button' value='Files' onclick='changeURL(\"fileed.php?cid="+querystring['courseid']+"&coursevers="+querystring['coursevers']+"\")'/>";
-			str+="<input class='submit-button' type='button' value='List' onclick='changeURL(\"resultlisted.php?cid="+querystring['courseid']+"&coursevers="+querystring['coursevers']+"\")'/>";
-			str+="</div>";
-			str+="</div>";
 		}else{
-			str+="<div class='course-menu--settings'>";
-			str+="<select class='course-dropdown' onchange='goToVersion(this)'>";
-			if (retdata['versions'].length > 0) {
-				for ( i = 0; i < retdata['versions'].length; i++) {
-					var item = retdata['versions'][i];
-					if (retdata['courseid'] == item['cid']) {
-						var vvers = item['vers'];
-						var vname = item['versname'];
-						str += "<option value='?courseid=" + retdata['courseid'] + "&coursename=" + retdata['coursename'] + "&coursevers=" + vvers + "'";
-						if(retdata['coursevers']==vvers){
-							str += "selected";
-							var versionname=vname;
-						}
-						str += ">" + vname + " - " + vvers + "</option>";
-					}
-				}
-			}
-			str+="</select>";
-			str += "</div>";	
+			// No version selector for students
 		}
 	
 		// Course Name
 		str+="<div class='course'><div id='course-coursename' style='display: inline-block; margin-right:10px;'>"+data.coursename+"</div><div id='course-coursecode' style='display: inline-block; margin-right:10px;'>"+data.coursecode+"</div><div id='course-versname' style='display: inline-block; margin-right:10px;'>"+versionname+"</div><div id='course-coursevers' style='display: none; margin-right:10px;'>"+data.coursevers+"</div><div id='course-courseid' style='display: none; margin-right:10px;'>"+data.courseid+"</div>";
 
 		if(retdata["writeaccess"]){
-      str += "<td><input class='new-item-button' type='button' value='New Item' onclick='newItem();'/><td></div>";
+      str += "<td><input class='submit-button' type='button' value='New Item' onclick='newItem();'/><td>";
+			str+="</tr></table>";
       str += "<button style='position:fixed;width:50px;height:50px;border-radius:25px;line-height:50px;box-shadow:0px 0px 15px #888;bottom:50px;right:50px;font-size:24px; text-align:center; background-color:#927b9e;color:#FFF;z-index:4000;border:none;' onclick='newItem();'>+</button>";
 		}else{
-			str += "</div>";
+			str+="</tr></table>";
 		}
-
 
 		str+="<div id='Sectionlistc' >";
 			
