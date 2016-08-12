@@ -409,6 +409,9 @@ function updateExample()
 		addedWords = [];
 		removedWords = [];
 	}
+	
+	$("#editExample").css("display","none");
+
 }
 
 //----------------------------------------------------------------------------------
