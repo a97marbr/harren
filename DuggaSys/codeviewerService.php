@@ -2,6 +2,11 @@
 
 	//----------------------------------------------------------------------------------
 	// TODO:
+	//	78: Better handle a situation where there are no examples available
+	//	84: Redundant? Is set a couple of rows above
+	//	106: Check what viktig is and what it's for
+	//	107: Should only bind with the file used (if used) and not to one by default
+	//	128: Check for better way to get and set before/afterId
 	//	Change variables to a fitting or standardized manner: 
 	//		forward_examples
 	//		currid
@@ -24,6 +29,12 @@
 	// Connect to database and start session
 	pdoConnect();
 	session_start();
+
+	$log_uuid = getOP('log_uuid');
+	$log_timestamp = getOP('log_timestamp');
+
+//	logServiceEvent($log_uuid, EventTypes::ServiceClientStart, "codeviewerService.php", $log_timestamp);
+//	logServiceEvent($log_uuid, EventTypes::ServiceServerStart, "codeviewerService.php");
 	
 	// Global variables
 	$exampleId=getOP('exampleid');
@@ -80,7 +91,7 @@
 			$writeAccess="w"; // TODO: Redundant? Is set a couple of rows above
 			if(strcmp('SETTEMPL',$opt)===0){
 				// Add word to wordlist
-				$query = $pdo->prepare( "UPDATE codeexample SET templateid = :templateno WHERE exampleid = :exampleid and cid = :cid and cversion = :cvers;");		
+				$query = $pdo->prepare( "UPDATE codeexample SET templateid = :templateno WHERE exampleid = :exampleid AND cid = :cid AND cversion = :cvers;");		
 				$query->bindParam(':templateno', $templateNumber);
 				$query->bindParam(':exampleid', $exampleId);
 				$query->bindParam(':cid', $courseId);
@@ -89,8 +100,10 @@
 				
 				// There are at least two boxes, create two boxes to start with
 				if($templateNumber==1||$templateNumber==2) $boxCount=2;
-				if($templateNumber==3||$templateNumber==4) $boxCount=3;
-				if($templateNumber==5||$templateNumber==6) $boxCount=4;
+				if($templateNumber==3||$templateNumber==4 ||$templateNumber==8) $boxCount=3;
+				if($templateNumber==5||$templateNumber==6 ||$templateNumber==7) $boxCount=4;
+				if($templateNumber==9) $boxCount=5;
+				
 				
 				// Create appropriate number of boxes
 				for($i=1;$i<$boxCount+1;$i++){
@@ -111,7 +124,7 @@
 				if(isset($_POST['afterid'])) {$afterId = $_POST['afterid'];}
 
 				// Change content of example
-				$query = $pdo->prepare( "UPDATE codeexample SET runlink = :playlink , examplename = :examplename, sectionname = :sectionname WHERE exampleid = :exampleid and cid = :cid and cversion = :cvers;");		
+				$query = $pdo->prepare( "UPDATE codeexample SET runlink = :playlink , examplename = :examplename, sectionname = :sectionname WHERE exampleid = :exampleid AND cid = :cid AND cversion = :cvers;");		
 				$query->bindParam(':playlink', $playlink);
 				$query->bindParam(':examplename', $exampleName);
 				$query->bindParam(':sectionname', $sectionName);
@@ -122,7 +135,7 @@
 				
 				// TODO: Check for better way to get and set before/afterId
 				if($beforeId!="UNK"){
-					$query = $pdo->prepare( "UPDATE codeexample SET beforeid = :beforeid WHERE exampleid = :exampleid and cid = :cid and cversion = :cvers;");		
+					$query = $pdo->prepare( "UPDATE codeexample SET beforeid = :beforeid WHERE exampleid = :exampleid AND cid = :cid AND cversion = :cvers;");		
 					$query->bindParam(':beforeid', $beforeId);
 					$query->bindParam(':exampleid', $exampleId);
 					$query->bindParam(':cid', $courseId);
@@ -130,7 +143,7 @@
 					$query->execute();
 				}
 				if($afterId!="UNK"){
-					$query = $pdo->prepare( "UPDATE codeexample SET afterid = :afterid WHERE exampleid = :exampleid and cid = :cid and cversion = :cvers;");		
+					$query = $pdo->prepare( "UPDATE codeexample SET afterid = :afterid WHERE exampleid = :exampleid AND cid = :cid AND cversion = :cvers;");		
 					$query->bindParam(':afterid', $afterId);
 					$query->bindParam(':exampleid', $exampleId);
 					$query->bindParam(':cid', $courseId);
@@ -169,14 +182,16 @@
 				$boxContent = $_POST['boxcontent'];
 				$wordlist = $_POST['wordlist'];
 				$filename = $_POST['filename'];
+				$fontsize = $_POST['fontsize'];
 				$addedRows = $_POST['addedRows'];
 				$removedRows = $_POST['removedRows'];
 
-				$query = $pdo->prepare("UPDATE box SET boxtitle=:boxtitle, boxcontent=:boxcontent, filename=:filename, wordlistid=:wordlist WHERE boxid=:boxid AND exampleid=:exampleid;");	
+				$query = $pdo->prepare("UPDATE box SET boxtitle=:boxtitle, boxcontent=:boxcontent, filename=:filename, fontsize=:fontsize, wordlistid=:wordlist WHERE boxid=:boxid AND exampleid=:exampleid;");	
 				$query->bindParam(':boxtitle', $boxTitle);
 				$query->bindParam(':boxcontent', $boxContent);
 				$query->bindParam(':wordlist', $wordlist);
 				$query->bindParam(':filename', $filename);
+				$query->bindParam(':fontsize', $fontsize);
 				$query->bindParam(':boxid', $boxId);
 				$query->bindParam(':exampleid', $exampleId);
 				$query->execute();
@@ -224,7 +239,7 @@
 		$public="";
 		$entryname="";
 		
-		$query = $pdo->prepare("SELECT exampleid, examplename, sectionname, runlink, public, template.templateid as templateid, stylesheet, numbox FROM codeexample LEFT OUTER JOIN template ON template.templateid = codeexample.templateid WHERE exampleid = :exampleid and cid = :courseID;");		
+		$query = $pdo->prepare("SELECT exampleid, examplename, sectionname, runlink, public, template.templateid AS templateid, stylesheet, numbox FROM codeexample LEFT OUTER JOIN template ON template.templateid = codeexample.templateid WHERE exampleid = :exampleid AND cid = :courseID;");		
 		$query->bindParam(':exampleid', $exampleId);
 		$query->bindParam(':courseID', $courseId);
 		$query->execute();
@@ -244,7 +259,7 @@
 		$beforeAfter = array();
 		$beforeAfters = array();
 		
-		$query = $pdo->prepare( "select exampleid, sectionname, examplename, beforeid, afterid from codeexample where cid = :cid and cversion = :cvers order by sectionname, examplename;");
+		$query = $pdo->prepare( "SELECT exampleid, sectionname, examplename, beforeid, afterid FROM codeexample WHERE cid = :cid AND cversion = :cvers ORDER BY sectionname, examplename;");
 		$query->bindParam(':cid', $courseId);
 		$query->bindParam(':cvers', $courseVersion);
 		$query->execute();
@@ -361,15 +376,19 @@
 		// Collects information for each box
 		$box=array();   
 		// Array to be filled with the primary keys to all boxes of the example
-		$queryy = $pdo->prepare( "SELECT boxid, boxcontent, boxtitle, filename, wordlistid, segment FROM box WHERE exampleid = :exampleid ORDER BY boxid;");
+		$queryy = $pdo->prepare("SELECT boxid, boxcontent, boxtitle, filename, wordlistid, segment, fontsize FROM box WHERE exampleid = :exampleid ORDER BY boxid;");
 		$queryy->bindParam(':exampleid', $exampleId);
-		$queryy->execute();
+		
+		if(!$queryy->execute()) {
+			$error=$queryy->errorInfo();
+			$debug="Error reading boxes ".$error[2];
+		}
 		while ($row = $queryy->FETCH(PDO::FETCH_ASSOC)){
 			$boxContent=strtoupper($row['boxcontent']);
 			$filename=$row['filename'];
 			$content="";
 						
-			$ruery = $pdo->prepare("SELECT filename,kind from fileLink WHERE cid=:cid and UPPER(filename)=UPPER(:fname) LIMIT 1;");
+			$ruery = $pdo->prepare("SELECT filename,kind FROM fileLink WHERE cid=:cid AND UPPER(filename)=UPPER(:fname) LIMIT 1;");
 			$ruery->bindParam(':cid', $courseId);
 			$ruery->bindParam(':fname', $filename);
 			$sesult = $ruery->execute();
@@ -412,7 +431,7 @@
 					$content.="File: ".$filename." not found.";
 			}
 				
-			array_push($box,array($row['boxid'],$boxContent,$content,$row['wordlistid'],$row['boxtitle'],$row['filename']));
+			array_push($box,array($row['boxid'],$boxContent,$content,$row['wordlistid'],$row['boxtitle'],$row['filename'], $row['fontsize']));
 		}
 
 		$array = array(
@@ -443,5 +462,8 @@
 		 	'debug' => $debug
 		);		
 		echo json_encode($array);
+
 	}
+
+//	logServiceEvent($log_uuid, EventTypes::ServiceServerEnd, "editorService.php");
 ?>

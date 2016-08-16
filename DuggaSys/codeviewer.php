@@ -1,7 +1,5 @@
-<?php
-/*-----------------------------------------------------------------------------------------
-                         Code Viewer V5.20 (CV5)  
--------------------------------------------------------------------------------------------
+<!--
+Code Viewer V5.20 (CV5)  
 
 Version History
 
@@ -35,19 +33,18 @@ Version History
 			Updated database with real data
 			Cleaning of code
 			Documentation of functions added
--------------------------------------------------------------------------------------------
 Bugs:
 	Some examples are not properly functioning
--------------------------------------------------------------------------------------------
+
 Fixed Bugs:
--------------------------------------------------------------------------------------------
 Missing/desired Features:
 	Collapsible code
-	Changing language -- All Strings in File that can be translated to fit other languages.... including language change.
--------------------------------------------------------------------------------------------
+	Changing language - All Strings in File that can be translated to fit other languages.... including language change.
+
 Testing Link: 
-	EditorV50.php?exampleid=1&courseid=1&cvers=2013
--------------------------------------------------------------------------------------------*/
+	codeviewer.php?exampleid=1&courseid=1&cvers=2013
+-->
+<?php
 	session_start();
 	include_once("../../coursesyspw.php");
 	include_once("../Shared/basic.php");
@@ -56,7 +53,6 @@ Testing Link:
 	include_once("../Shared/courses.php");
 	// Database connection
 	pdoConnect();
-	
 	
 	// Fetch examplename from database to use for title		
 	$exampleid = getOPG('exampleid');		
@@ -72,13 +68,13 @@ Testing Link:
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<title><?php echo $title; ?></title>
 		<link type="text/css" href="../Shared/css/jquery-ui-1.10.4.min.css" rel="stylesheet">  
-		<link type="text/css" href="../Shared/css/style.css" rel="stylesheet" />
-		<link type="text/css" href="../Shared/css/whiteTheme.css" rel="stylesheet" />
 		<link type="text/css" href="../Shared/css/codeviewer.css" rel="stylesheet" />
 		<link type="text/css" href="../Shared/css/markdown.css" rel="stylesheet" />
+		<link type="text/css" href="../Shared/css/whiteTheme.css" rel="stylesheet" />
+		<link type="text/css" href="../Shared/css/style.css" rel="stylesheet" />
 		<link rel="shortcut icon" href="../Shared/icons/placeholder.ico"/>
 		<script type="text/javascript" src="../Shared/markdown.js"></script>
 		<script type="text/javascript" src="../Shared/js/jquery-1.11.0.min.js"></script>
@@ -94,7 +90,7 @@ Testing Link:
 			$exampleid = getOPG('exampleid');
 			$courseID = getOPG('courseid');
 			$cvers = getOPG('cvers');
-
+			
 			// Fetch content from database
 			$query = $pdo->prepare( "SELECT public FROM codeexample WHERE exampleid = :exampleid';");
 			$query->bindParam(':exampleid', $exampleid);
@@ -106,7 +102,7 @@ Testing Link:
 			$codeviewerkind=false;	// Is used in navheader.php@line61/62: This checks if the user have rights to change the settings in codeviewer by using true or false. True means yes, the user have the rights. Codeviewerkind is in use in navheader.php to make the settings button visible.
 			
 			// userid is set, either as a registered user or as guest
-			// TODO: Check if possible bug; userid is set to 1 if guest in editorService.php, should userid be set there or here?
+			// TODO: Check if possible bug; userid is set to 1 if guest in codeviewerService.php, should userid be set there or here?
 			if(isset($_SESSION['uid'])){
 				$userid=$_SESSION['uid'];	// userid of registered users
 			}else{
@@ -126,7 +122,7 @@ Testing Link:
 				$username = "Guest" . $userid . rand(0,50000); // Guests have a random number between 0 and 50k added, this means there's a very small chance some guests have the same ID. These are only used for logging at the moment so this should not be an issue
 			}
 			// Logs users who view example, along with the example they have viewed
-			makeLogEntry($username,1,$pdo,$exampleid." ".$courseID." ".$cvers);
+			logUserEvent($username, EventTypes::DuggaRead, $exampleid." ".$courseID." ".$cvers);
 
 			// This checks if courseID and exampleid is not UNK and if it is UNK then it will appliances codeviewer "false" and a error message will be presented
 			if($courseID!="UNK"&&$exampleid!="UNK"){
@@ -167,17 +163,17 @@ Testing Link:
 				// This will show an error message if the courseid or the Code Example doesnt exist. 
 				$codeviewer = false;
 				include '../Shared/navheader.php';
-				echo "<div class='err'><span style='font-weight:bold;'>Bummer!</span> Course or Code Example does not seem to exist! <a href='./EditorV50.php?exampleid=1&courseid=1&cvers=2013'>Click here</a> to redirect to example 1.</div>";
+				echo "<div class='err'><span style='font-weight:bold;'>Bummer!</span> Course or Code Example does not seem to exist! <a href='./codeviewer.php?exampleid=1&courseid=1&cvers=2013'>Click here</a> to redirect to example 1.</div>";
 			}
 			echo "</div>";
 			//This text is always shown at the beginning of the page load but is removed if all checks succeeds and all is well. It also serves as error message is all checks weren't successful
 			if($codeviewer) echo "<div id='div2'>If this text remains this means there is an uncaught error. Please contact the administrators</div>";
 		?>						
-		<!--- Dropdowns START --->
+		<!-- Dropdowns START -->
 		<span id='backwdrop' style='left:40px;display:none;' class='dropdown dropdownStyle backwdrop'><div class='dropdownback dropdownbackStyle'>Backw</div><span id='backwdropc'>oii</span></span>
 		<span id='forwdrop' style='left:100px;display:none;' class='dropdown dropdownStyle forwdrop'><div class='dropdownback dropdownbackStyle'>Forw</div><span id='forwdropc'>bii</span></span>
-		<!--- Dropdowns END --->
-		<!--- Example Content Cog Wheel Dialog START --->
+		<!-- Dropdowns END -->
+		<!-- Example Content Cog Wheel Dialog START -->
 		<div id='editContent' class='loginBox' style='width:464px;display:none;'>
 			<div class='loginBoxheader'>
 				<h3>Edit Content</h3>
@@ -201,6 +197,15 @@ Testing Link:
 					<td><select id='filename'></select></td>
 				</tr>
 				<tr>
+					<td>Font size:</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td><select id='fontsize'><?php for($i = 9; $i <= 22; $i++) echo '<option value="' . $i . '">' . $i .' px</option>'; ?></select></td>
+					<td>&nbsp;</td>
+				</td>
+				</tr>
+				<tr>
 					<td>Important Rows:</td>
 				</tr>
 				<tr>
@@ -218,8 +223,8 @@ Testing Link:
 				</tr>
 			</table>
 		</div>
-		<!--- Example Content Cog Wheel Dialog END --->
-		<!--- Code Example Cog Wheel Dialog START --->
+		<!-- Example Content Cog Wheel Dialog END -->
+		<!-- Code Example Cog Wheel Dialog START -->
 		<div id='editExample' class='loginBox' style='width:464x;display:none;'>
 			<div class='loginBoxheader'>
 				<h3>Edit Example</h3>
@@ -249,7 +254,7 @@ Testing Link:
 				</table>
 			</fieldset>
 		</div>
-		<!--- Code Example Cog Wheel Dialog END --->
+		<!-- Code Example Cog Wheel Dialog END -->
 		<div id='chooseTemplate' class='loginBox' style='width:464px;display:none;'>
 			<div class='loginBoxheader'>
 				<h3>Edit Example</h3>
@@ -265,6 +270,9 @@ Testing Link:
 					<td id="templat4" class="tmpl"><img class='templatethumbicon wiggle' onclick='changetemplate("4");' src='../Shared/icons/template4_butt.svg' /></td>
 					<td id="templat5" class="tmpl"><img class='templatethumbicon wiggle' onclick='changetemplate("5");' src='../Shared/icons/template5_butt.svg' /></td>
 					<td id="templat6" class="tmpl"><img class='templatethumbicon wiggle' onclick='changetemplate("6");' src='../Shared/icons/template6_butt.svg' /></td>
+					<td id="templat7" class="tmpl"><img class='templatethumbicon wiggle' onclick='changetemplate("7");' src='../Shared/icons/template7_butt.svg' /></td>
+					<td id="templat8" class="tmpl"><img class='templatethumbicon wiggle' onclick='changetemplate("8");' src='../Shared/icons/template8_butt.svg' /></td>
+					<td id="templat9" class="tmpl"><img class='templatethumbicon wiggle' onclick='changetemplate("9");' src='../Shared/icons/template9_butt.svg' /></td>
 				</tr>		
 			</table>
 			<table width="100%">
@@ -273,8 +281,11 @@ Testing Link:
 				</tr>
 			</table>
 		</div>		
-		<!--- Template Choosing Box --->
+		<!-- Template Choosing Box -->
 		<?php
+			// Adding page logging 
+			logExampleLoadEvent($courseID, $exampleid, EventTypes::pageLoad);
+			
 			include '../Shared/loginbox.php';
 		?>		
 	</body>

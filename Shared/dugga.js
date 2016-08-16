@@ -151,7 +151,7 @@ function navigateExample(exampleno)
 {
 		surl=window.location.href;
 		surl=surl.substring(0,surl.lastIndexOf("/")); 
-		window.location.href = surl+"/EditorV50.php?exampleid="+exampleno+"&courseid="+querystring['courseid']+"&cvers="+querystring['cvers'];
+		window.location.href = surl+"/codeviewer.php?exampleid="+exampleno+"&courseid="+querystring['courseid']+"&cvers="+querystring['cvers'];
 }
 
 //----------------------------------------------------------------------------------
@@ -364,7 +364,7 @@ function AJAXService(opt,apara,kind)
 			});
 	}else if(kind=="CODEVIEW"){
 			$.ajax({
-				url: "editorService.php",
+				url: "codeviewerService.php",
 				type: "POST",
 				data: "opt="+opt+para,
 				dataType: "json",
@@ -372,7 +372,7 @@ function AJAXService(opt,apara,kind)
 			});
 	}else if(kind=="BOXCONTENT"){
 		$.ajax({
-			url: "editorService.php",
+			url: "codeviewerService.php",
 			type: "POST",
 			data: "opt="+opt+para,
 			dataType: "json",

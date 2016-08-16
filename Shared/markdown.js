@@ -6,30 +6,29 @@
 
 Markdown support javascript
 
-	gif clip support javascript
  
 -------------==============######## Documentation End ###########==============-------------
 
 */
 
-function showGif(fname){
-		document.getElementById("figmd").style.display="block";
-		document.getElementById("bigmd").src=fname;
-		document.getElementById("backmd").style.display="block";
+//Functions for gif image
+//Fetches the picture and sets its properties
+function showGif(url, size){
+		document.getElementById("gifpicture").src = url;
+		document.getElementById("gifpicture").style.width = size;
+		$(".playbutton").toggle();
 }
 
-function screenClick(evt)
-{
-		if(evt.target.className!="gifimage"){
-				document.getElementById("figmd").style.display="none";
-				document.getElementById("backmd").style.display="none";
-		}
+//Toggles between thumbnail and gif animation
+function toggleGif(url1, url2){
+	if(document.getElementById("gifpicture").src == url1){
+		showGif(url2, 150 + "px"); //Show thumbnail
+	}
+	else{
+		showGif(url1, 100 + "%"); //Show big animation gif
+	}
 }
 
-function loadedmd()
-{
-		document.addEventListener("click", screenClick);						
-}
 
 function highlightRows(filename,startRow,endRow){
 	if (startRow<=endRow){
@@ -45,6 +44,15 @@ function dehighlightRows(filename,startRow,endRow){
 			document.getElementById(filename+"-line"+(startRow+i)).className="normtext";
 		}
 	}
+}
+
+//Functions for markdown image zoom rollover
+function originalImg(x,size) {
+	x.style.width = size + "px";
+}
+
+function thumbnailImg(x,size) {
+	x.style.width = size + "px";
 }
 
 /********************************************************************************
@@ -82,7 +90,7 @@ function parseMarkdown(inString)
 					workstr = workstr.substr(3);
 			}			
 
-			if(kodblock){
+			if(kodblock && workstr != ""){
 
 					workstr='<pre><code>'+workstr+'</code></pre>';
 			}else{
@@ -118,36 +126,58 @@ function markdownBlock(inString)
 	inString = inString.replace(/^\#{2}\s(.*)=*/gm, '<h2>$1</h2>');
 	inString = inString.replace(/^\#{1}\s(.*)=*/gm, '<h1>$1</h1>');
 	
-	//Regular expressions for lists
-	inString = inString.replace(/^\s*\d*\.\s(.*)/gm, '<ol><li>$1</li></ol>');
-	inString = inString.replace(/^\s*[\-\*]\s(.*)/gm, '<ul><li>$1</li></ul>');
-
-	// Fix for superflous ul tags
-	inString = inString.replace(/\<\/ol\>(\r\n|\n|\r)\<ol\>/gm,"");
-	inString = inString.replace(/\<\/ul\>(\r\n|\n|\r)\<ul\>/gm,"");
+	//Regular expressions for ordered lists
+	// (###) to start a list
+	// 1. Digit dot space
+	// 2. Digit dot space
+	// 		(###) to start a sublist
+	// 		1. Digit dot space
+	// 		(/###) to close the sublist
+	// (/###) to close the list
+	inString = inString.replace(/[(]\#{3}[)]/gm, '<ol>');
+	inString = inString.replace(/[\d]{1,}\.\s(.*)/gm, '<li>$1</li>');
+	inString = inString.replace(/[(][\/]\#{3}[)]/gm, '</ol>');
+	
+	//Regular expressions for unordered lists
+	// (***) to start a list
+	// * Bullet
+	// 		(***) to start a sublist
+	// 		* Sub-bullet
+	// 		(/***) to close the sublist
+	// (/***) to close the list
+	inString = inString.replace(/[(]\*{3}[)]/gm, '<ul>');
+	inString = inString.replace(/[\-\*]{1}\s(.*)/gm, '<li>$1</li>');
+	inString = inString.replace(/[(][\/]\*{3}[)]/gm, '</ul>');
 
 	//Regular expression for line
-	inString = inString.replace(/^(\-{3}\n)/gm, '<hr>');
+	inString = inString.replace(/\-{3,}/g, '<hr>');
 	
 	// Markdown for hard new lines -- \n\n and \n\n\n (supports windows \r\n, unix \n, and mac \r styles for new lines)
-	inString = inString.replace(/(\r\n|\n|\r){3}/gm,"<br><br>");
-	inString = inString.replace(/(\r\n|\n|\r){2}/gm,"<br>");
+	inString = inString.replace(/(\r\n){3}/gm,"<br><br>");
+	inString = inString.replace(/(\r\n){2}/gm,"<br>");
+	
+	inString = inString.replace(/(\n){3}/gm,"<br><br>");
+	inString = inString.replace(/(\n){2}/gm,"<br>");
+	
+	inString = inString.replace(/(\r){3}/gm,"<br><br>");
+	inString = inString.replace(/(\r){2}/gm,"<br>");
 	
 	// Hyperlink !!!
 	// !!!url,text to show!!!	
 	inString = inString.replace(/\!{3}(.*?\S),(.*?\S)\!{3}/g, '<a href="$1" target="_blank">$2</a>');
 
 	// External img src !!!
-	// |||src|||	
-	inString = inString.replace(/\|{3}(.*?\S)\|{3}/g, '<img src="$1" />');
+	// |||src,thumbnail width in px,full size width in px|||
+	// Markdown image zoom rollover: All images are normally shown as a thumbnail but when rollover original image size will appear
+	inString = inString.replace(/\|{3}(.*?\S),(.*?\S),(.*?\S)\|{3}/g, '<img class="imgzoom" src="$1" onmouseover="originalImg(this, $3)" onmouseout="thumbnailImg(this, $2)" width="$2px" style="border: 3px solid #614875;" />');
 
 	// External mp4 src !!!
 	// ==[src]==	
 	inString = inString.replace(/\={2}\[(.*?\S)\]\={2}/g, '<video width="80%" style="display:block; margin: 10px auto;" controls><source src="$1" type="video/mp4"></video>');
 
-	// Image Movie Link format: <img src="pngname.png" class="gifimage" onclick="showGif('gifname.gif');"/>
-	// +++image.png,image.gif+++	
-	inString = inString.replace(/\+{3}(.*?\S),(.*?\S)\+{3}/g,"<div><img src='../../Shared/icons/PlayT.svg'><img class='gifimage' src='$1' onclick=\"showGif('$2');\" target='_blank' /></div>");
+	// Link to gif animation with thumbnail
+	// +++thumbnail.png,animation.gif+++	
+	inString = inString.replace(/\+{3}(.*?\S),(.*?\S)\+{3}/g,"<div class='gifwrapper'><img class='gifimage' id='gifpicture' src='$1' onclick=\"toggleGif('$2', '$1');\" /><div class='playbutton'><img src='../Shared/icons/PlayT.svg' onclick=\"toggleGif('$2', '$1');\"></div></div>");
 
 	// Right Arrow for discussing menu options
 	inString = inString.replace(/\s[\-][\>]\s/gm, "&rarr;");
@@ -159,6 +189,29 @@ function markdownBlock(inString)
 	// ===filename,start row,end row, text to show===
 	inString = inString.replace(/\={3}(.*?\S),(.*?\S),(.*?\S),(.*?\S)\={3}/g, '<span class="impword2" onmouseover="highlightRows(\'$1\',$2,$3)" onmouseout="dehighlightRows(\'$1\',$2,$3)">$4</span>');
 
+	// Three or more dots should always be converted to an ellipsis.
+	inString = inString.replace(/\.{3,}/g, "&hellip;");
+	
+	// Iframe, website inside a inline frame - (--url,width,height--)
+	inString = inString.replace(/\(\-{2}(.*?\S),(.*?\S),(.*?\S)\-{2}\)/g, '<iframe src="$1" style="width:$2px; height:$3px;"></iframe>');
+	
+	// Quote text, this will be displayed in an additional box
+	// ^ Text you want to quote ^
+	inString = inString.replace(/\^{1}\s(.*?\S)\s\^{1}/g, "<blockquote>$1</blockquote><br/>");
+	
+	//Markdown smileys
+	//Supported: :D :) ;) :( :'( :P :/ :o <3 (Y) (N)
+	inString = inString.replace(/:D/g, "<img class='smileyjs' src='../Shared/icons/happy.svg'/>");
+	inString = inString.replace(/:\)/g, "<img class='smileyjs' src='../Shared/icons/smiling.svg'/>");
+	inString = inString.replace(/;\)/g, "<img class='smileyjs' src='../Shared/icons/wink.gif'/>");
+	inString = inString.replace(/:\(/g, "<img class='smileyjs' src='../Shared/icons/sad.svg'/>");
+	inString = inString.replace(/:'\(/g, "<img class='smileyjs' src='../Shared/icons/crying.svg'/>");
+	inString = inString.replace(/:p|:P/g, "<img class='smileyjs' src='../Shared/icons/tongue.svg'/>");
+	inString = inString.replace(/(:\/)(?!\/|\w|\d)/gm, "<img class='smileyjs' src='../Shared/icons/confused.svg'/>");
+	inString = inString.replace(/:o|:O/g, "<img class='smileyjs' src='../Shared/icons/gasp.svg'/>");
+	inString = inString.replace(/&lt;3/i, "<img class='smileyjs' src='../Shared/icons/heart.svg'/>");
+	inString = inString.replace(/\(Y\)|\(y\)/g, "<img class='smileyjs' src='../Shared/icons/thumbsup.svg'/>");
+	inString = inString.replace(/\(N\)|\(n\)/g, "<img class='smileyjs' src='../Shared/icons/thumbsdown.svg'/>");
+
 	return inString;
 }
-
