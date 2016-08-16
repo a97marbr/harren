@@ -1,5 +1,5 @@
 @font-face{ 
-    font-family: 'MyWebFont';
+    font-family: 'Ubuntu Mono';
     src: url('ubuntu-mono-webfont.eot');
     src: url('ubuntu-mono-webfont.eot?iefix') format('eot'),
          url('ubuntu-mono-webfont.woff') format('woff'),
@@ -19,7 +19,7 @@
 
 #docucontent span.codestyle{
     color: grey;
-    font-family: MyWebFont,Arial,Sans-Serif;
+    font-family: 'Ubuntu Mono',Arial,Sans-Serif;
     font-style: italic;
 }
 /* DOCUMENT CONTENT STYLE STOP */
@@ -53,7 +53,7 @@
 
 .box span.codestyle{
     color: #666;
-    font-family: MyWebFont,Arial,Sans-Serif;
+    font-family: 'Ubuntu Mono',Arial,Sans-Serif;
     font-size: 12px;
     line-height: 14px;
 }

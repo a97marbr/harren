@@ -1,10 +1,53 @@
-
-@import url("hack-extended.min.css");
-
+/* --------------================################================-------------- *
+ *                               Fonts                                          *
+ * --------------================################================-------------- */
+@font-face{
+  font-family:'Hack';
+  src:url('../fonts/eot/hack-regular-webfont.eot?v=2.019');
+  src:url('../fonts/eot/hack-regular-webfont.eot?#iefix&v=2.019') 
+  format('embedded-opentype'),url('../fonts/woff2/hack-regular-webfont.woff2?v=2.019') 
+  format('woff2'),url('../fonts/woff/hack-regular-webfont.woff?v=2.019') 
+  format('woff'),url('../fonts/web-ttf/hack-regular-webfont.ttf?v=2.019') 
+  format('truetype');font-weight:400;font-style:normal
+}
+@font-face{
+  font-family:'Hack';
+  src:url('../fonts/eot/hack-bold-webfont.eot?v=2.019');
+  src:url('../fonts/eot/hack-bold-webfont.eot?#iefix&v=2.019') 
+  format('embedded-opentype'),url('../fonts/woff2/hack-bold-webfont.woff2?v=2.019') 
+  format('woff2'),url('../fonts/woff/hack-bold-webfont.woff?v=2.019') 
+  format('woff'),url('../fonts/web-ttf/hack-bold-webfont.ttf?v=2.019') 
+  format('truetype');font-weight:700;font-style:normal
+}
+@font-face{
+  font-family:'Hack';
+  src:url('../fonts/eot/hack-italic-webfont.eot?v=2.019');
+  src:url('../fonts/eot/hack-italic-webfont.eot?#iefix&v=2.019') 
+  format('embedded-opentype'),url('../fonts/woff2/hack-italic-webfont.woff2?v=2.019') 
+  format('woff2'),url('../fonts/woff/hack-italic-webfont.woff?v=2.019') 
+  format('woff'),url('../fonts/web-ttf/hack-italic-webfont.ttf?v=2.019') 
+  format('truetype');font-weight:400;font-style:italic
+}
+@font-face{
+  font-family:'Hack';
+  src:url('../fonts/eot/hack-bolditalic-webfont.eot?v=2.019');
+  src:url('../fonts/eot/hack-bolditalic-webfont.eot?#iefix&v=2.019') 
+  format('embedded-opentype'),url('../fonts/woff2/hack-bolditalic-webfont.woff2?v=2.019') 
+  format('woff2'),url('../fonts/woff/hack-bolditalic-webfont.woff?v=2.019') 
+  format('woff'),url('../fonts/web-ttf/hack-bolditalic-webfont.ttf?v=2.019') 
+  format('truetype');font-weight:700;font-style:italic
+}
+@font-face{ 
+  font-family: 'Ubuntu Mono';
+  src: url('../fonts/eot/ubuntu-mono-webfont.eot');
+  src: url('../fonts/eot/ubuntu-mono-webfont.eot?iefix') format('eot'),
+  url('../fonts/woff/ubuntu-mono-webfont.woff') format('woff'),
+  url('../fonts/web-ttf/ubuntu-mono-webfont.ttf') format('truetype'),
+  url('../fonts/svg/ubuntu-mono-webfont.svg#webfont') format('svg');
+}
 /* --------------================################================-------------- *
  *                                   Generics                                   *
  * --------------================################================-------------- */
-
 html, body, div, span, applet, object,
 iframe,h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -93,16 +136,13 @@ p {
     text-align:center;
     padding: 10px;
     font-size: 10pt;
-    font-family: Calibri,Sans-Serif;
 }
 
 .err{
-
     color:#FFE;
     background-color:#964C4D;
     /* border:2px solid #964C4D; */
     border-radius:10px;
-    font-family: Calibri,Sans-Serif;
     display: block;
     box-shadow:0px 2px 4px #DCD;
     padding:8px;
@@ -179,7 +219,6 @@ p {
     text-align: center;
     color:#775886;
     font-size: 18pt;
-    font-family: Calibri,Sans-Serif;
     display: block;
     background-color: #FFF;
     padding-top:7px;
@@ -195,7 +234,6 @@ p {
     text-align: center;
     color:#775886;
     font-size: 14pt;
-    font-family: Calibri,Sans-Serif;
     display: block;
     background-color: #fff;
     padding-top:7px;
@@ -213,7 +251,6 @@ p {
 }
 
 .item {
-    font-family: Calibri,Sans-Serif;
     padding-top:4px;
     min-height:30px;
     font-size: 14pt;
