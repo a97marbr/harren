@@ -76,9 +76,9 @@ Testing Link:
 		<title><?php echo $title; ?></title>
 		<link type="text/css" href="../Shared/css/jquery-ui-1.10.4.min.css" rel="stylesheet">  
 		<link type="text/css" href="../Shared/css/style.css" rel="stylesheet" />
+		<link type="text/css" href="../Shared/css/whiteTheme.css" rel="stylesheet" />
 		<link type="text/css" href="../Shared/css/codeviewer.css" rel="stylesheet" />
 		<link type="text/css" href="../Shared/css/markdown.css" rel="stylesheet" />
-		<link type="text/css" href="../Shared/css/whiteTheme.css" rel="stylesheet" />
 		<link rel="shortcut icon" href="../Shared/icons/placeholder.ico"/>
 		<script type="text/javascript" src="../Shared/markdown.js"></script>
 		<script type="text/javascript" src="../Shared/js/jquery-1.11.0.min.js"></script>

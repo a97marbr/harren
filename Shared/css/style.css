@@ -38,12 +38,12 @@
   format('truetype');font-weight:700;font-style:italic
 }
 @font-face{ 
-    font-family: 'Ubuntu Mono';
-    src: url('../fonts/eot/ubuntu-mono-webfont.eot');
-    src: url('../fonts/eot/ubuntu-mono-webfont.eot?iefix') format('eot'),
-         url('../fonts/woff/ubuntu-mono-webfont.woff') format('woff'),
-         url('../fonts/web-ttf/ubuntu-mono-webfont.ttf') format('truetype'),
-         url('../fonts/svg/ubuntu-mono-webfont.svg#webfont') format('svg');
+  font-family: 'Ubuntu Mono';
+  src: url('../fonts/eot/ubuntu-mono-webfont.eot');
+  src: url('../fonts/eot/ubuntu-mono-webfont.eot?iefix') format('eot'),
+  url('../fonts/woff/ubuntu-mono-webfont.woff') format('woff'),
+  url('../fonts/web-ttf/ubuntu-mono-webfont.ttf') format('truetype'),
+  url('../fonts/svg/ubuntu-mono-webfont.svg#webfont') format('svg');
 }
 html, body, div, span, applet, object,
 iframe,h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -116,16 +116,13 @@ hr {
     text-align:center;
     padding: 10px;
     font-size: 10pt;
-    font-family: Calibri,Sans-Serif;
 }
 
 .err{
-
     color:#FFE;
     background-color:#964C4D;
     /* border:2px solid #964C4D; */
     border-radius:10px;
-    font-family: Calibri,Sans-Serif;
     display: block;
     box-shadow:0px 2px 4px #DCD;
     padding:8px;
@@ -202,7 +199,6 @@ hr {
     text-align: center;
     color:#775886;
     font-size: 18pt;
-    font-family: Calibri,Sans-Serif;
     display: block;
     background-color: #FFF;
     padding-top:7px;
@@ -218,7 +214,6 @@ hr {
     text-align: center;
     color:#775886;
     font-size: 14pt;
-    font-family: Calibri,Sans-Serif;
     display: block;
     background-color: #fff;
     padding-top:7px;
@@ -236,7 +231,6 @@ hr {
 }
 
 .item {
-    font-family: Calibri,Sans-Serif;
     padding-top:7px;
     min-height:30px;
     font-size: 14pt;
