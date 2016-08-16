@@ -1,4 +1,9 @@
+
 @import url("hack-extended.min.css");
+
+/* --------------================################================-------------- *
+ *                                   Generics                                   *
+ * --------------================################================-------------- */
 
 html, body, div, span, applet, object,
 iframe,h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -59,6 +64,23 @@ hr {
     border: 0;
     border-bottom: 1px dashed #ccc;
     background: #999;
+}
+
+
+.hidden {
+	opacity:0.5;
+	border-radius:4px;
+	margin-left:16px;
+}
+
+p {
+    margin: .5em auto .5em auto;
+}
+
+/* ---- ---- ---- --- Files page --- ---- ---- ---- */
+
+.fileed-row-wrapper{
+	margin-top: 10px;
 }
 
 /* --------------================################================-------------- *
@@ -192,7 +214,7 @@ hr {
 
 .item {
     font-family: Calibri,Sans-Serif;
-    padding-top:7px;
+    padding-top:4px;
     min-height:30px;
     font-size: 14pt;
 }
@@ -221,16 +243,16 @@ hr {
 }
 
 #Sectionlist .spacerLeft {
-    height:32px;
+    height:34px;
     width:20px;
-    margin-left:22px;
+    margin-left:20px;
     border-left:2px solid black;
 }
 
 #Sectionlist .spacerEnd {
-    height:16px;
+    height:18px;
     width:20px;
-    margin-left:22px;
+    margin-left:20px;
     margin-bottom: 14px;
     border-left:2px solid black;
     border-bottom: 2px solid black;
@@ -294,57 +316,42 @@ hr {
 			background-color:#eae8eb;
 }
 
-.WhiteLight{
-		width:22px;
-		height:22px;
-		margin: 0px 10px;
+#Sectionlist .LightBox {
+		width:36px;
+		vertical-align:bottom;
+		overflow:hidden;
+}
+
+
+#Sectionlist .StopLight {
+		vertical-align:bottom;
+		overflow:hidden;
+		border:1px solid yellow;
+		width:26px;
+		height:26px;
+		margin-left: 6px;
+		margin-right: 2px;
+		margin-top: 4px;
+		margin-bottom: 0px;
+		border-radius:14px;
+		border:1px solid #000;
+}
+
+#Sectionlist .WhiteLight{
 		background: radial-gradient(white, grey, white);
-		border-radius:11px;
-		border:1px solid #000;
 }
 
 
-.YellowLight{
-        width:22px;
-        height:22px;
-        margin: 0px 10px;
+#Sectionlist .YellowLight{
 		background: radial-gradient(yellow 50%, grey, white 60%);
-        border-radius:11px;
-        border:1px solid #000;
 }
 
-.RedLight{
-		width:22px;
-		height:22px;
-		margin: 0px 10px;
+#Sectionlist .RedLight{
 		background: radial-gradient(red 55%, grey, white 60%);
-		border-radius:11px;
-        border:1px solid #000;
 }
 
-.GreenLight{
-		width:22px;
-		height:22px;
-		margin: 0px 10px;
+#Sectionlist .GreenLight{
 		background: radial-gradient(green 55%, grey, white 60%);
-		border-radius:11px;
-		border:1px solid #000;
-}
-
-.hidden {
-	opacity:0.5;
-	border-radius:4px;
-	margin-left:16px;
-}
-
-p {
-    margin: .5em auto .5em auto;
-}
-
-/* ---- ---- ---- --- Files page --- ---- ---- ---- */
-
-.fileed-row-wrapper{
-	margin-top: 10px;
 }
 
 /* --------------================################================-------------- *
