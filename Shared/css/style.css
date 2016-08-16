@@ -251,12 +251,7 @@ p {
 }
 
 .item {
-<<<<<<< HEAD
-    padding-top:7px;
-=======
-    font-family: Calibri,Sans-Serif;
     padding-top:4px;
->>>>>>> Graham-Chapman
     min-height:30px;
     font-size: 14pt;
 }
