@@ -1,14 +1,3 @@
-@font-face{ 
-    font-family: 'MyWebFont';
-    src: url('ubuntu-mono-webfont.eot');
-    src: url('ubuntu-mono-webfont.eot?iefix') format('eot'),
-         url('ubuntu-mono-webfont.woff') format('woff'),
-         url('ubuntu-mono-webfont.ttf') format('truetype'),
-         url('ubuntu-mono-webfont.svg#webfont') format('svg');
-}
-
-<link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.010/css/hack-extended.min.css">
-
 .descbox {
 		font-family: arial;
 		color: #000;
@@ -82,7 +71,7 @@
 }
 
 .descbox code {
-    font-family: Hack, MyWebFont,Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
+    font-family: Hack, 'Ubuntu Mono',Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
     font-size: 10px;
     line-height: 12px;
     white-space: pre;
