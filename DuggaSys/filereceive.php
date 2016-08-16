@@ -85,6 +85,7 @@ if($ha){
 		}else if($kind=="LFILE"||$kind=="MFILE"){
 				//  if it is a local file or a Course Local File, check if the folder exists under "/courses", if not create the directory
 				if(!file_exists ($currcvd."/courses/".$cid)){ 
+						echo $currcvd."/courses/".$cid;
 						$storefile=mkdir($currcvd."/courses/".$cid);
 				}else{
 						$storefile=true;
