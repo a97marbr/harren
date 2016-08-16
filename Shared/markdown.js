@@ -126,6 +126,7 @@ function markdownBlock(inString)
 	inString = inString.replace(/^\#{2}\s(.*)=*/gm, '<h2>$1</h2>');
 	inString = inString.replace(/^\#{1}\s(.*)=*/gm, '<h1>$1</h1>');
 	
+/*
 	//Regular expressions for ordered lists
 	// (###) to start a list
 	// 1. Digit dot space
@@ -148,6 +149,17 @@ function markdownBlock(inString)
 	inString = inString.replace(/[(]\*{3}[)]/gm, '<ul>');
 	inString = inString.replace(/[\-\*]{1}\s(.*)/gm, '<li>$1</li>');
 	inString = inString.replace(/[(][\/]\*{3}[)]/gm, '</ul>');
+*/
+
+	// Reverting to old way of handling ordered lists - as new way breaks old type of list
+
+	//Regular expressions for lists
+	inString = inString.replace(/^\s*\d*\.\s(.*)/gm, '<ol><li>$1</li></ol>');
+	inString = inString.replace(/^\s*[\-\*]\s(.*)/gm, '<ul><li>$1</li></ul>');
+
+	// Fix for superflous ul tags
+	inString = inString.replace(/\<\/ol\>(\r\n|\n|\r)\<ol\>/gm,"");
+	inString = inString.replace(/\<\/ul\>(\r\n|\n|\r)\<ul\>/gm,"");
 
 	//Regular expression for line
 	inString = inString.replace(/\-{3,}/g, '<hr>');
