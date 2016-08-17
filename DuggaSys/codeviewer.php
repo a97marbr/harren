@@ -1,3 +1,43 @@
+<?php
+	session_start();
+	include_once("../../coursesyspw.php");
+	include_once("../Shared/basic.php");
+	include_once("../Shared/sessions.php");
+	include_once("../Shared/database.php");
+	include_once("../Shared/courses.php");
+	// Database connection
+	pdoConnect();
+	
+	// Fetch examplename from database to use for title		
+	$exampleid = getOPG('exampleid');		
+	$query = $pdo->prepare( "SELECT examplename FROM codeexample WHERE exampleid = :exampleid;");		
+	$query->bindParam(':exampleid', $exampleid);		
+	$query-> execute();		
+			
+	$row = $query -> fetch(PDO::FETCH_ASSOC);		
+	$exampleName = $row['examplename'];		
+	//Title used for the codeviewer page		
+	$title = $exampleName;
+?>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title><?php echo $title; ?></title>
+		<link type="text/css" href="../Shared/css/jquery-ui-1.10.4.min.css" rel="stylesheet">  
+		<link type="text/css" href="../Shared/css/codeviewer.css" rel="stylesheet" />
+		<link type="text/css" href="../Shared/css/markdown.css" rel="stylesheet" />
+		<link type="text/css" href="../Shared/css/whiteTheme.css" rel="stylesheet" />
+		<link type="text/css" href="../Shared/css/style.css" rel="stylesheet" />
+		<link rel="shortcut icon" href="../Shared/icons/placeholder.ico"/>
+		<script type="text/javascript" src="../Shared/markdown.js"></script>
+		<script type="text/javascript" src="../Shared/js/jquery-1.11.0.min.js"></script>
+		<script type="text/javascript" src="../Shared/js/jquery-ui-1.10.4.min.js"></script>
+		<script type="text/javascript" src="../Shared/dugga.js"></script>
+		<script type="text/javascript" src="codeviewer.js"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	</head>
+
 <!--
 Code Viewer V5.20 (CV5)  
 
@@ -44,45 +84,7 @@ Missing/desired Features:
 Testing Link: 
 	codeviewer.php?exampleid=1&courseid=1&cvers=2013
 -->
-<?php
-	session_start();
-	include_once("../../coursesyspw.php");
-	include_once("../Shared/basic.php");
-	include_once("../Shared/sessions.php");
-	include_once("../Shared/database.php");
-	include_once("../Shared/courses.php");
-	// Database connection
-	pdoConnect();
-	
-	// Fetch examplename from database to use for title		
-	$exampleid = getOPG('exampleid');		
-	$query = $pdo->prepare( "SELECT examplename FROM codeexample WHERE exampleid = :exampleid;");		
-	$query->bindParam(':exampleid', $exampleid);		
-	$query-> execute();		
-			
-	$row = $query -> fetch(PDO::FETCH_ASSOC);		
-	$exampleName = $row['examplename'];		
-	//Title used for the codeviewer page		
-	$title = $exampleName;
-?>
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title><?php echo $title; ?></title>
-		<link type="text/css" href="../Shared/css/jquery-ui-1.10.4.min.css" rel="stylesheet">  
-		<link type="text/css" href="../Shared/css/codeviewer.css" rel="stylesheet" />
-		<link type="text/css" href="../Shared/css/markdown.css" rel="stylesheet" />
-		<link type="text/css" href="../Shared/css/whiteTheme.css" rel="stylesheet" />
-		<link type="text/css" href="../Shared/css/style.css" rel="stylesheet" />
-		<link rel="shortcut icon" href="../Shared/icons/placeholder.ico"/>
-		<script type="text/javascript" src="../Shared/markdown.js"></script>
-		<script type="text/javascript" src="../Shared/js/jquery-1.11.0.min.js"></script>
-		<script type="text/javascript" src="../Shared/js/jquery-ui-1.10.4.min.js"></script>
-		<script type="text/javascript" src="../Shared/dugga.js"></script>
-		<script type="text/javascript" src="codeviewer.js"></script>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-	</head>
+
 	<body onload="setup();">
 		<!-- content START -->
 		<div id="content">

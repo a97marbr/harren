@@ -1307,6 +1307,7 @@ function rendercode(codestring,boxid,wordlistid,boxfilename)
 	var iwcounter=0;
 	for(i=0;i<tokens.length;i++){
 		tokenvalue=String(tokens[i].val);
+		
 		// Make white space characters
 		tokenvalue=tokenvalue.replace(/ /g, '&nbsp;');
 		tokenvalue=tokenvalue.replace(/\\t/g, '&nbsp;&nbsp;');
@@ -1429,28 +1430,27 @@ function rendercode(codestring,boxid,wordlistid,boxfilename)
 		}
 		// tokens.length-1 so the last line will be printed out
 		if(tokens[i].kind=="newline" || i==tokens.length-1){  
-			// Prevent empty lines to be printed out
-			if(cont != ""){
-				// Count how many linenumbers that'll be needed
-				lineno++;
-				// Print out normal rows if no important exists
-				if(improws.length==0){
-					str+="<div id='"+boxfilename+"-line"+lineno+"' class='normtext'>"+cont+"</div>";
-				}else{	
-					// Print out important lines
-					for(var kp=0;kp<improws.length;kp++){
-						if(lineno>=parseInt(improws[kp][1])&&lineno<=parseInt(improws[kp][2])){
-							str+="<div id='"+boxfilename+"-line"+lineno+"' class='impo'>"+cont+"</div>";
-							break;
-						}else{
-							if(kp == (improws.length-1)){
-								str+="<div id='"+boxfilename+"-line"+lineno+"' class='normtext'>"+cont+"</div>";
-							}
-						}						
-					}
-				}	
-				cont="";
+			// Help empty lines to be printed out
+			if(cont=="") cont="&nbsp;";
+			// Count how many linenumbers that'll be needed
+			lineno++;
+			// Print out normal rows if no important exists
+			if(improws.length==0){
+				str+="<div id='"+boxfilename+"-line"+lineno+"' class='normtext'>"+cont+"</div>";
+			}else{	
+				// Print out important lines
+				for(var kp=0;kp<improws.length;kp++){
+					if(lineno>=parseInt(improws[kp][1])&&lineno<=parseInt(improws[kp][2])){
+						str+="<div id='"+boxfilename+"-line"+lineno+"' class='impo'>"+cont+"</div>";
+						break;
+					}else{
+						if(kp == (improws.length-1)){
+							str+="<div id='"+boxfilename+"-line"+lineno+"' class='normtext'>"+cont+"</div>";
+						}
+					}						
+				}
 			}	
+			cont="";
 		}
 	}
 	str+="</div>";
@@ -1520,7 +1520,8 @@ function rendercode(codestring,boxid,wordlistid,boxfilename)
 			}else if(tokenvalue=="]"){
 				pid=bracket.pop();
 				cont+="<span id='P"+pid+"' class='oper' onmouseover='highlightop(\""+pid+"\",\"P"+pid+"\");' onmouseout='dehighlightop(\""+pid+"\",\"P"+pid+"\");'>"+tokenvalue+"</span>";																						
-			}else*/ if(tokenvalue=="{"){
+			}else*/ 
+			if(tokenvalue=="{"){
 				pid="CBR"+cbcount+boxid;
 				cbcount++;
 				cbracket.push(pid);
@@ -1587,29 +1588,28 @@ function rendercode(codestring,boxid,wordlistid,boxfilename)
 			cont+=tokenvalue;
 		}
 		// tokens.length-1 so the last line will be printed out
-		if(tokens[i].kind=="newline" || i==tokens.length-1){  
-			// Prevent empty lines to be printed out
-			if(cont != ""){
-				// Count how many linenumbers that'll be needed
-				lineno++;
-				// Print out normal rows if no important exists
-				if(improws.length==0){
-					str+="<div id='"+boxfilename+"-line"+lineno+"' class='normtext'>"+cont+"</div>";
-				}else{	
-					// Print out important lines
-					for(var kp=0;kp<improws.length;kp++){
-						if(lineno>=parseInt(improws[kp][1])&&lineno<=parseInt(improws[kp][2])){
-							str+="<div id='"+boxfilename+"-line"+lineno+"' class='impo'>"+cont+"</div>";
-							break;
-						}else{
-							if(kp == (improws.length-1)){
-								str+="<div id='"+boxfilename+"-line"+lineno+"' class='normtext'>"+cont+"</div>";
-							}
-						}						
-					}
-				}	
-				cont="";
+		if(tokens[i].kind=="newline" || i==tokens.length-1){
+			// Help empty lines to be printed out
+			if(cont=="") cont="&nbsp;";
+			// Count how many linenumbers that'll be needed
+			lineno++;
+			// Print out normal rows if no important exists
+			if(improws.length==0){
+				str+="<div id='"+boxfilename+"-line"+lineno+"' class='normtext'>"+cont+"</div>";
+			}else{	
+				// Print out important lines
+				for(var kp=0;kp<improws.length;kp++){
+					if(lineno>=parseInt(improws[kp][1])&&lineno<=parseInt(improws[kp][2])){
+						str+="<div id='"+boxfilename+"-line"+lineno+"' class='impo'>"+cont+"</div>";
+						break;
+					}else{
+						if(kp == (improws.length-1)){
+							str+="<div id='"+boxfilename+"-line"+lineno+"' class='normtext'>"+cont+"</div>";
+						}
+					}						
+				}
 			}	
+			cont="";
 		}
 	}
 	str+="</div>";
