@@ -1309,17 +1309,17 @@ function rendercode(codestring,boxid,wordlistid,boxfilename)
 	var iwcounter=0;
 	for(i=0;i<tokens.length;i++){
 		tokenvalue=String(tokens[i].val);
-		
-		// Make white space characters
-		tokenvalue=tokenvalue.replace(/ /g, '&nbsp;');
-		tokenvalue=tokenvalue.replace(/\\t/g, '&nbsp;&nbsp;');
-
+				
 		if(tokens[i].kind=="rowcomment"||tokens[i].kind=="blockcomment"||tokens[i].kind=="string"||tokens[i].kind=="number"||tokens[i].kind=="name"){
 				// Fix to remove html tags in strings
 				tokenvalue = tokenvalue.replace(/\</g, "&lt;");
 				tokenvalue = tokenvalue.replace(/\>/g, "&gt;");
 				tokenvalue = tokenvalue.replace(/&/g,"&amp;");
 		}
+
+		// Make white space characters
+		tokenvalue=tokenvalue.replace(/ /g, '&nbsp;');
+		tokenvalue=tokenvalue.replace(/\\t/g, '&nbsp;&nbsp;');
 
 		if(tokens[i].kind=="rowcomment"){
 			cont+="<span class='comment'>"+tokenvalue+"</span>";
@@ -1433,6 +1433,7 @@ function rendercode(codestring,boxid,wordlistid,boxfilename)
 		// tokens.length-1 so the last line will be printed out
 		if(tokens[i].kind=="newline" || i==tokens.length-1){  
 			// Help empty lines to be printed out
+//			console.log("C:"+cont);
 			if(cont=="") cont="&nbsp;";
 			// Count how many linenumbers that'll be needed
 			lineno++;
@@ -1592,6 +1593,7 @@ function rendercode(codestring,boxid,wordlistid,boxfilename)
 		// tokens.length-1 so the last line will be printed out
 		if(tokens[i].kind=="newline" || i==tokens.length-1){
 			// Help empty lines to be printed out
+//			console.log("C2:"+cont);
 			if(cont=="") cont="&nbsp;";
 			// Count how many linenumbers that'll be needed
 			lineno++;
