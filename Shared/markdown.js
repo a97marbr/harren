@@ -164,6 +164,15 @@ function markdownBlock(inString)
 	//Regular expression for line
 	inString = inString.replace(/\-{3,}/g, '<hr>');
 	
+	// External img src !!!
+	// |||src,thumbnail width in px,full size width in px|||
+	// Markdown image zoom rollover: All images are normally shown as a thumbnail but when rollover original image size will appear
+	inString = inString.replace(/\|{3}(.*?\S),(.*?\S),(.*?\S)\|{3}/g, '<img class="imgzoom" src="$1" onmouseover="originalImg(this, $3)" onmouseout="thumbnailImg(this, $2)" width="$2px" style="border: 3px solid #614875;" />');
+
+	// If not ||| we can now modify |TABLE|TABLE| using two steps? One for <tr></tr> and another for <td></td>
+	inString = inString.replace(/\|(.*)\|/g, '<tr>|$1|</tr>');
+	inString = inString.replace(/\|(.*?)\|/g,'<td>$1</td>');
+
 	// Markdown for hard new lines -- \n\n and \n\n\n (supports windows \r\n, unix \n, and mac \r styles for new lines)
 	inString = inString.replace(/(\r\n){3}/gm,"<br><br>");
 	inString = inString.replace(/(\r\n){2}/gm,"<br>");
@@ -177,11 +186,6 @@ function markdownBlock(inString)
 	// Hyperlink !!!
 	// !!!url,text to show!!!	
 	inString = inString.replace(/\!{3}(.*?\S),(.*?\S)\!{3}/g, '<a href="$1" target="_blank">$2</a>');
-
-	// External img src !!!
-	// |||src,thumbnail width in px,full size width in px|||
-	// Markdown image zoom rollover: All images are normally shown as a thumbnail but when rollover original image size will appear
-	inString = inString.replace(/\|{3}(.*?\S),(.*?\S),(.*?\S)\|{3}/g, '<img class="imgzoom" src="$1" onmouseover="originalImg(this, $3)" onmouseout="thumbnailImg(this, $2)" width="$2px" style="border: 3px solid #614875;" />');
 
 	// External mp4 src !!!
 	// ==[src]==	
