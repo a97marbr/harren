@@ -647,7 +647,6 @@ Array.prototype.move = function (old_index, new_index) {
 // Latest version of any file in a field - unsure about naming of the function
 function findfilevers(filez,cfield,ctype)
 {
-
 		// Iterate over elements in files array
 		var foundfile=null;
 		var oldfile="";
@@ -656,45 +655,20 @@ function findfilevers(filez,cfield,ctype)
 		tab +="<tbody>";
 		for (var i=filez.length-1;i>=0;i--){
 				if(cfield==filez[i].fieldnme){
-						if(ctype=="zip"||ctype=="pdf"||ctype=="link"||ctype=="text"){
-								foundfile=filez[i];
-								break;							
-						}else{
-								// Each new filename make row in table.
-								if(oldfile!=filez[i].filename){
-										var filelink=filez[i].filepath+filez[i].filename+filez[i].seq+"."+filez[i].extension;											
-										tab+="<tr'><td style='padding:4px;'>";
-										tab+="<a href='"+filelink+"' >"+filez[i].filename+"."+filez[i].extension+"</a>";
-										tab+="</td><td style='padding:4px;'>";
-										tab+=filez[i].updtime;
-										tab+="</td></tr>";		
-								}
-								oldfile=filez[i].filename;
-						}
+						var filelink=filez[i].filepath+filez[i].filename+filez[i].seq+"."+filez[i].extension;											
+						tab+="<tr'><td style='padding:4px;'>";
+						tab+="<a href='"+filelink+"' >"+filez[i].filename+"."+filez[i].extension+"</a>";
+						tab+="</td><td style='padding:4px;'>";
+						tab+=filez[i].updtime;
+						tab+="<td>";
+						tab+=filez[i].feedback;
+						tab+="</td></tr>";		
 				}
 		}
 		tab+="</tbody>"
 		tab+="</table>"			
 
-		if(foundfile!=null){
-				var filelink=foundfile.filepath+foundfile.filename+foundfile.seq+"."+foundfile.extension;
-				if(ctype=="pdf"){
-						// Copy the file name and generate the preview if we are submitting a .pdf
-						document.getElementById(cfield+"File").innerHTML=foundfile.filename+"."+foundfile.extension;
-						document.getElementById(cfield+"Date").innerHTML=foundfile.updtime;
-						document.getElementById(cfield+"Prev").innerHTML="<embed src='"+filelink+"' width='100%' height='1000px' type='application/pdf'>";
-				}else if(ctype=="zip"){
-						document.getElementById(cfield+"File").innerHTML="<a href='"+filelink+"'>"+foundfile.filename+"."+foundfile.extension;+"</a>";
-						document.getElementById(cfield+"Date").innerHTML=foundfile.updtime;					
-				} else if(ctype=="link"){
-						// Copy the file name and generate the preview if we are submitting a .pdf
-						document.getElementById(cfield+"File").innerHTML=foundfile.filepath;
-						document.getElementById(cfield+"Date").innerHTML=foundfile.updtime;
-						document.getElementById(cfield+"Prev").innerHTML="<iframe src='"+foundfile.filepath+"' width='100%' height='1000px'></iframe>";
-				}
-		}else if(ctype=="multi"){
-				document.getElementById(cfield+"Prev").innerHTML=tab;
-		}	
+		document.getElementById(cfield+"Prev").innerHTML=tab;
 } 
 	
 

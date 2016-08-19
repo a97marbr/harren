@@ -281,7 +281,7 @@ function renderMoment(data, userResults, userId, fname, lname)
 					}
 				}
 			} else {
-					alert("Malformed data!");
+					alert("Malformed data!\nThe test may not have an existing moment");
 			}
 			str += "</tr>";
 			str += "</table>";

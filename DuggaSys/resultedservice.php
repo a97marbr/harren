@@ -242,20 +242,31 @@ if(!$query->execute()) {
 	$error=$query->errorInfo();
 	$debug="Error retreiving submissions. (row ".__LINE__.") ".$query->rowCount()." row(s) were found. Error code: ".$error[2];
 }
+
+
 foreach($query->fetchAll() as $row) {
 		$content = "UNK";
+		$feedback = "UNK";
+
+		$currcvd=getcwd();
+		$fedbname=$currcvd."/".$row['filepath'].$row['filename'].$row['seq']."_FB.txt";				
+		if(!file_exists($fedbname)) {
+				$feedback="UNKO";
+		} else {
+				$feedback=file_get_contents($fedbname);
+		}
+
 		if($row['kind']=="3"){
 				// Read file contents
-
-				$currcvd=getcwd();
 				$movname=$currcvd."/".$row['filepath']."/".$row['filename'].$row['seq'].".".$row['extension'];
-
+				$fedbname=$currcvd."/".$row['filepath'].$row['filename'].$row['seq']."_FB.txt";				
 
 				if(!file_exists($movname)) {
 						$content="UNK!";
 				} else {
 						$content=file_get_contents($movname);
 				}
+
 
 		}else{
 				$content="Egon!";
@@ -275,7 +286,8 @@ foreach($query->fetchAll() as $row) {
 			'kind' => $row['kind'],
 			'seq' => $row['seq'],
 			'segment' => $row['segment'],
-			'content' => $content
+			'content' => $content,
+			'feedback' => $feedback
 		);
 
 		// If the filednme key isn't set, create it now

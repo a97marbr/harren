@@ -264,102 +264,17 @@ function createFileUploadArea(fileuploadfileds){
 		form +="<input type='hidden' name='field' value='"+fieldname+"' />";
 		form +="</form>";
 		
+		str += "<div style='border:1px solid #614875; margin: 5px auto;'>";
+		str += "<div class='loginBoxheader'>";
 		if (type === "pdf"){
-			str += "<div style='border:1px solid #614875; margin: 5px auto;'>";
-			str += "<div class='loginBoxheader'>";
 			str += "<h3>Pdf Submission and Preview</h3>";
-			str += "</div>";
-			str += "<div style='padding:5px;'>";
-			str +="<div id='"+fieldname+"Instruction' style='font-style: italic;'></div>"
-			str +="<div id='"+fieldname+"Prev' style='background:#f8f8ff;border-radius:8px;box-shadow: 2px 2px 4px #888 inset;padding:4px;'>&lt;PDF Preview&gt;</div>";
-			str +="Pdf Upload:<br/>"; 
-			str +="<table>";
-			str +="<tr>";
-			str +="<td id='"+fieldname+"'>";
-			str += form;
-			str += "</td>";
-			str += "<td>";
-			str += "<span id='"+fieldname+"File' style='margin:4px;' >No file uploaded</span>";
-			str += "</td>";
-			str += "<td>";
-			str += "<span id='"+fieldname+"Date' style='margin:4px;' ></span>";
-			str += "</td>";
-			str += "</tr>";
-			str += "</table>";
-			str += "</div>";
-			str += "</div>"
 		} else if (type === "link"){
-			str += "<div style='border:1px solid #614875; margin: 5px auto;'>";
-			str += "<div class='loginBoxheader'>";
 			str += "<h3>Link Submission and Preview</h3>";
-			str += "</div>";
-			str += "<div style='padding:5px;'>";
-			str +="<div id='"+fieldname+"Instruction' style='font-style: italic;'></div>"
-			str +="<div id='"+fieldname+"Prev' style='background:#f8f8ff;border-radius:8px;box-shadow: 2px 2px 4px #888 inset;padding:4px;'>&lt;HTML Link Preview&gt;</div>";
-			str +="<table>";
-			str +="<tr>";
-			str +="<td id='"+fieldname+"'>";
-			str += form;
-			str += "</td>";
-			str += "<td>";
-			str += "<span id='"+fieldname+"File' style='margin:4px;' >No Link Uploaded</span>";
-			str += "</td>";
-			str += "<td>";
-			str += "<span id='"+fieldname+"Date' style='margin:4px;' ></span>";
-			str += "</td>";
-			str += "</tr>";
-			str += "</table>";
-			str += "</div>"
-			str += "</div>"			
 		} else if (type === "zip") {
-			str += "<div style='border:1px solid #614875'; margin: 5px auto;>";
-			str += "<div class='loginBoxheader'>";
 			str += "<h3>Zip / Rar file Upload</h3>";
-			str += "</div>";
-			str += "<div style='padding:5px;'>";
-			str +="<div id='"+fieldname+"Instruction' style='font-style: italic;'></div>"
-			str +="<table>";
-			str +="<tr>";
-			str +="<td id='"+fieldname+"'>";
-			str += form;
-			str += "</td>";
-			str += "<td>";
-			str += "<span id='"+fieldname+"File' style='margin:4px;' >No file uploaded</span>";
-			str += "</td>";
-			str += "<td>";
-			str += "<span id='"+fieldname+"Date' style='margin:4px;' ></span>";
-			str += "</td>";
-			str += "</tr>";
-			str += "</table>";
-			str += "</div>"
-			str += "</div>"
 		} else if (type === "multi"){
-			str += "<div style='border:1px solid #614875; margin: 5px auto;'>";
-			str += "<div class='loginBoxheader'>";
 			str += "<h3>Multiple file Upload</h3>";
-			str += "</div>";
-			str += "<div style='padding:5px;'>";
-			str +="<div id='"+fieldname+"Instruction' style='font-style: italic;'></div>"
-			str +="<div id='"+fieldname+"Prev' style='background:#f8f8ff;border-radius:8px;box-shadow: 2px 2px 4px #888 inset;padding:4px;'>&lt;Multilist preview&gt;</div>";
-			str +="Multiple File Upload:<br/>"; 
-			str +="<table>";
-			str +="<tr>";
-			str +="<td id='"+fieldname+"'>";
-			str += form;
-			str += "</td>";
-			str += "<td>";
-			str += "<span id='"+fieldname+"File' style='margin:4px;' ></span>";
-			str += "</td>";
-			str += "<td>";
-			str += "<span id='"+fieldname+"Date' style='margin:4px;' ></span>";
-			str += "</td>";
-			str += "</tr>";
-			str += "</table>";
-			str += "</div>"
-			str += "</div>"
 		} else if (type === "text"){
-			str += "<div style='border:1px solid #614875; margin: 5px auto;'>";
-			str += "<div class='loginBoxheader'>";
 			str += "<h3>Text Submission</h3>";
 			str += "</div>";
 			str += "<div style='padding:5px;'>";
@@ -374,6 +289,28 @@ function createFileUploadArea(fileuploadfileds){
 			str += "</div>"
 			str += "</div>"			
 		}
+		str += "</div>";
+		str += "<div style='padding:5px;'>";
+		str +="<div id='"+fieldname+"Instruction' style='font-style: italic;'></div>"
+		str +="<div id='"+fieldname+"Prev' style='background:#f8f8ff;border-radius:8px;box-shadow: 2px 2px 4px #888 inset;padding:4px;'>&lt;Submission history&gt;</div>";
+		if (type !== "text"){	
+			str +="New submission:<br/>"; 
+			str +="<table>";
+			str +="<tr>";
+			str +="<td id='"+fieldname+"'>";
+			str += form;
+		}
+		str += "</td>";
+		str += "<td>";
+		str += "<span id='"+fieldname+"File' style='margin:4px;' ></span>";
+		str += "</td>";
+		str += "<td>";
+		str += "<span id='"+fieldname+"Date' style='margin:4px;' ></span>";
+		str += "</td>";
+		str += "</tr>";
+		str += "</table>";
+		str += "</div>"
+		str += "</div>"
 
 	}
 	document.getElementById("tomten").innerHTML=str;	
