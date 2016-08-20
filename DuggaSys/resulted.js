@@ -199,6 +199,32 @@ function leaveCell(thisObj)
 		if(rProbe!==null&&rProbe!=="transparent") $(thisObj).css('backgroundColor',rProbe);
 }
 
+//----------------------------------------
+// Adds Canned Response to Response Dialog
+//----------------------------------------
+
+function displayPreview()
+{
+		$("#previewpopover").css("display", "block");
+}
+
+//----------------------------------------
+// Adds Canned Response to Response Dialog
+//----------------------------------------
+
+function addCanned()
+{
+		document.getElementById("responseArea").innerHTML+=document.getElementById("cannedResponse").value;
+}
+
+//----------------------------------------
+// Sort results
+//----------------------------------------
+
+function saveResponse()
+{
+		alert("Saving Response");
+}
 
 //----------------------------------------
 // Sort results
@@ -326,56 +352,12 @@ function renderStandaloneDugga(data, userResults)
 		}
 	}
 
-
-	/*
-	zstr = "";
-
-
-	if (foundgrade === null && useranswer === null && submitted === null) {
-		zstr += makeSelect(moment['gradesystem'], querystring['cid'], querystring['coursevers'], moment['lid'], user['uid'], null, "I");
-	} else if (foundgrade !== null) {
-		zstr += makeSelect(moment['gradesystem'], querystring['cid'], querystring['coursevers'], moment['lid'], user['uid'], foundgrade, "U");
-	}
-	else {
-		zstr += makeSelect(moment['gradesystem'], querystring['cid'], querystring['coursevers'], moment['lid'], user['uid'], null, "U");
-	}
-
-	// Fist ... if no result is found i.e. No Fist
-	if(useranswer!==null){
-			zstr += "<img id='korf' style='padding-left:8px;margin-top:4px;' src='../Shared/icons/FistV.svg' onmouseover='hoverResult(\"" + querystring['cid'] + "\",\"" + querystring['coursevers'] + "\",\"" + moment['lid'] + "\",\"" + user['uid'] + "\",\"" + user['firstname'] + "\",\"" + user['lastname'] + "\");' />";
-	}
-
-	// If no submission,  white.
-	// If submitted and not marked or resubmitted U, yellow.
-	// If G or better, green.
-	// If U, pink.
-	// If visited but not saved, lilac
-	if(foundgrade===1){
-			yomama="background-color:#fed";
-	}else if(foundgrade>1){
-			yomama="background-color:#dfe";
-	}else if(variant!==null&&useranswer===null){
-			yomama="background-color:#F8E8F8";
-	}else if((useranswer!==null&&foundgrade===null)||(foundgrade!==null&&submitted>marked)){
-			yomama="background-color:#ffd";
-			needMarking++;
-	}else{
-			yomama="background-color:#fff";
-	}
-
-	// Standalone Dugga -- we just need to make a dugga entry with the correct marking system.
-	str += "<td style='"+yomama+"'>&nbsp;</td></tr><tr  style='border-top:2px solid #dbd0d8;' >";
-
-	str += "<td style='"+yomama+"' onmouseover='enterCell(this);' onmouseout='leaveCell(this);'>"+zstr;
-
-	str += "</td>";
-	*/
 }
-
 
 //----------------------------------------
 // Render Moment child
 //----------------------------------------
+
 function renderMomentChild(dugga, userResults, userId, fname, lname, moment)
 {
 		var str = "";
@@ -449,8 +431,6 @@ function renderMomentChild(dugga, userResults, userId, fname, lname, moment)
 		return str;
 }
 
-
-
 //----------------------------------------
 // Renderer
 //----------------------------------------
@@ -466,13 +446,9 @@ function renderResult(){
 	if (allData['dugganame'] !== "") {
 			$.getScript(allData['dugganame'], function() {
 				$("#MarkCont").html(allData['duggapage']);
-
-				//alert(data['duggaparam']+"\n"+data['useranswer'] + "\n" + data['duggaanswer']);
-				//console.log(data['duggastats']);
 				showFacit(allData['duggaparam'],allData['useranswer'],allData['duggaanswer'], allData['duggastats'], allData['files'],allData['moment']);
 			});
 			$("#resultpopover").css("display", "block");
-			//alert(data['duggaanswer']);
 	} else {
 
 			results = allData['results'];

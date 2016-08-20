@@ -251,7 +251,7 @@ foreach($query->fetchAll() as $row) {
 		$currcvd=getcwd();
 		$fedbname=$currcvd."/".$row['filepath'].$row['filename'].$row['seq']."_FB.txt";				
 		if(!file_exists($fedbname)) {
-				$feedback="UNKO";
+				$feedback="UNK";
 		} else {
 				$feedback=file_get_contents($fedbname);
 		}

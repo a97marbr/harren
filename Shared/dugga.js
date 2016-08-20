@@ -656,12 +656,20 @@ function findfilevers(filez,cfield,ctype)
 		for (var i=filez.length-1;i>=0;i--){
 				if(cfield==filez[i].fieldnme){
 						var filelink=filez[i].filepath+filez[i].filename+filez[i].seq+"."+filez[i].extension;											
-						tab+="<tr'><td style='padding:4px;'>";
+						tab+="<tr'>"
+						tab+="<td>";
+						tab+="<button onclick='displayPreview();'>P</button>";
+						tab+="</td>";
+						tab+="<td style='padding:4px;'>";
 						tab+="<a href='"+filelink+"' >"+filez[i].filename+"."+filez[i].extension+"</a>";
 						tab+="</td><td style='padding:4px;'>";
 						tab+=filez[i].updtime;
 						tab+="<td>";
-						tab+=filez[i].feedback;
+						if(filez[i].feedback!=="UNK"){
+								tab+=filez[i].feedback.substring(0,64)+"&#8230;";						
+						}else{
+								tab+="&nbsp;";												
+						}
 						tab+="</td></tr>";		
 				}
 		}

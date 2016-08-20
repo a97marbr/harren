@@ -292,7 +292,7 @@ function createFileUploadArea(fileuploadfileds){
 		str += "</div>";
 		str += "<div style='padding:5px;'>";
 		str +="<div id='"+fieldname+"Instruction' style='font-style: italic;'></div>"
-		str +="<div id='"+fieldname+"Prev' style='background:#f8f8ff;border-radius:8px;box-shadow: 2px 2px 4px #888 inset;padding:4px;'>&lt;Submission history&gt;</div>";
+		str +="<div id='"+fieldname+"Prev' style='height:100px;overflow:scroll;background:#f8f8ff;border-radius:8px;box-shadow: 2px 2px 4px #888 inset;padding:4px;'>&lt;Submission history&gt;</div>";
 		if (type !== "text"){	
 			str +="New submission:<br/>"; 
 			str +="<table>";
