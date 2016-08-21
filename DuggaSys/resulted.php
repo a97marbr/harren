@@ -68,10 +68,10 @@ pdoConnect();
 		<div style="position:absolute;left:0px;top:34px;bottom:0px;right:0px;">
 			<table width="100%" height="100%">
 					<tr>
-							<td width="50%" height="100%" id="MarkCont" style="border:2px inset #aaa;background:#bbb; overflow:scroll;">
+							<td width="75%" height="100%" id="MarkCont" style="border:2px inset #aaa;background:#bbb; overflow:scroll;">
 									<embed src="http://localhost/a.pdf" width="100%" height="100%" type='application/pdf' />
 							</td>
-							<td width="50%" height="100%" id='markMenuPlaceholder' style="background:#bbb;">
+							<td width="25%" height="100%" id='markMenuPlaceholder' style="background:#bbb;">
 										<table width="100%" height="100%">
 											<tr height="24px">
 													<td>

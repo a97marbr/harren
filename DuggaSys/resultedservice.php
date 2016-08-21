@@ -11,10 +11,16 @@ pdoConnect();
 session_start();
 
 if(isset($_SESSION['uid'])){
-		$userid=$_SESSION['uid'];
+	$userid=$_SESSION['uid'];
+	$loginname=$_SESSION['loginname'];
+	$lastname=$_SESSION['lastname'];
+	$firstname=$_SESSION['firstname'];
 }else{
-		$userid="1";
-}
+	$userid=1;
+	$loginname="UNK";		
+	$lastname="UNK";
+	$firstname="UNK";
+} 	
 
 $opt = getOP('opt');
 $cid = getOP('cid');
@@ -24,6 +30,9 @@ $moment = getOP('moment');
 $mark = getOP('mark');
 $ukind = getOP('ukind');
 $coursevers=getOP('coursevers');
+
+$responsetext=getOP('resptext');
+$responsefile=getOP('respfile');
 
 $duggapage="";
 $dugganame="";
@@ -111,6 +120,44 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 			}
 		}
 	}
+	
+	if(strcmp($opt,"RESP")==0){
+/*			
+			$currcvd=getcwd();
+			$fedbname=$currcvd."/".$row['filepath'].$row['filename'].$row['seq']."_FB.txt";				
+			if(!file_exists($fedbname)) {
+					$feedback="UNK";
+			} else {
+					$feedback=file_get_contents($fedbname);
+			}
+*/
+
+			$currcvd=getcwd();
+
+			// Create a file area with format Lastname-Firstname-Login
+			$userdir = $lastname."_".$firstname."_".$loginname;
+			
+			// First replace a predefined list of national characters
+			// Then replace any additional character that is not a-z, a number, period or underscore
+			$national = array("&ouml;", "&Ouml;", "&auml;", "&Auml;", "&aring;", "&Aring;","&uuml;","&Uuml;");
+			$nationalReplace = array("o", "O", "a", "A", "a", "A","u","U");
+			$userdir = str_replace($national, $nationalReplace, $userdir);
+			$userdir=preg_replace("/[^a-zA-Z0-9._]/", "", $userdir);				
+	
+			$duggaid="GREGER";
+	/*
+			if(!file_exists ($currcvd."/submissions/".$cid."/".$vers."/".$duggaid."/".$userdir)){
+					if(!mkdir($currcvd."/submissions/".$cid."/".$vers."/".$duggaid."/".$userdir)){
+							echo "Error creating folder: ".$currcvd."/submissions/cid/vers/duggaid/".$userdir;
+							$error=true;
+					}
+			}
+*/
+			$movname=$currcvd."/submissions/".$cid."/".$vers."/".$duggaid."/".$userdir."/";
+				
+			$debug="RESZPONZY\n".$movname;
+			
+	}	
 }
 
 //------------------------------------------------------------------------------------------------

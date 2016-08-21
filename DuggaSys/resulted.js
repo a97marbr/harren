@@ -11,6 +11,8 @@ var msx = 0, msy = 0;
 var rProbe = null;
 var needMarking=0;
 var allData;
+var clickedmoment="UNK";
+var clickeduser="UNK";
 
 AJAXService("GET", { cid : querystring['cid'],vers : querystring['coursevers'] }, "RESULT");
 
@@ -125,8 +127,6 @@ function hoverResult(cid, vers, moment, firstname, lastname, uid, submitted, mar
 function clickResult(cid, vers, moment, firstname, lastname, uid, submitted, marked, foundgrade, gradeSystem, lid)
 {
 		$("#Nameof").html(firstname + " " + lastname + " - Submitted: " + submitted + " Marked: " + marked);
-		//console.log("course: "+ cid, " vers: " + vers + " moment: " + moment + " uid: " + uid);
-		//console.log("gs "+gradeSystem+ " cid: " + querystring['cid'] + " cvers: " + querystring['coursevers']);
 
 		var menu = "<div class='' style='width:100px;display:block;'>";
 		menu +=	"<div class='loginBoxheader'>";
@@ -145,6 +145,9 @@ function clickResult(cid, vers, moment, firstname, lastname, uid, submitted, mar
 		menu += "</table>";
 		menu += "</div> <!-- Menu Dialog END -->";
 		document.getElementById('markMenuPlaceholder').innerHTML=menu;
+		
+		clickedmoment=moment;
+		clickeduser=uid;
 
 		AJAXService("DUGGA", { cid : cid, vers : vers, moment : moment, luid : uid, coursevers : vers }, "RESULT");
 }
@@ -223,7 +226,14 @@ function addCanned()
 
 function saveResponse()
 {
-		alert("Saving Response");
+		alert(clickeduser+" "+clickedmoment);
+		
+		respo=document.getElementById("responseArea").innerHTML;
+			
+		AJAXService("RESP", { cid : querystring['cid'],vers : querystring['coursevers'],resptext:respo, respfile:"flubmo/kummo/gruu" }, "RESULT");	
+		AJAXService("DUGGA", { cid : querystring['cid'], vers : querystring['coursevers'], moment : clickedmoment, luid : clickeduser }, "RESULT");
+		
+		$("#previewpopover").css("display", "none");
 }
 
 //----------------------------------------
