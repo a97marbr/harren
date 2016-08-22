@@ -65,45 +65,43 @@ $ha = checklogin();
 if($ha){
 
 		// Create folder if link textinput or file
-		if($link=="UNK"){
-				$currcvd=getcwd();
+		$currcvd=getcwd();
 
-				if(!file_exists ($currcvd."/submissions/".$cid)){
-						if(!mkdir($currcvd."/submissions/".$cid)){
-								echo "Error creating folder: ".$currcvd."/submissions/cid";
-								$error=true;
-						}
+		if(!file_exists ($currcvd."/submissions/".$cid)){
+				if(!mkdir($currcvd."/submissions/".$cid)){
+						echo "Error creating folder: ".$currcvd."/submissions/cid";
+						$error=true;
 				}
-		
-				if(!file_exists ($currcvd."/submissions/".$cid."/".$vers)){
-						if(!mkdir($currcvd."/submissions/".$cid."/".$vers)){
-								echo "Error creating folder: ".$currcvd."/submissions/cid/vers";
-								$error=true;
-						}
+		}
+
+		if(!file_exists ($currcvd."/submissions/".$cid."/".$vers)){
+				if(!mkdir($currcvd."/submissions/".$cid."/".$vers)){
+						echo "Error creating folder: ".$currcvd."/submissions/cid/vers";
+						$error=true;
 				}
-		
-				if(!file_exists ($currcvd."/submissions/".$cid."/".$vers."/".$duggaid)){
-						if(!mkdir($currcvd."/submissions/".$cid."/".$vers."/".$duggaid)){
-								echo "Error creating folder: ".$currcvd."/submissions/cid/vers/duggaid";
-								$error=true;
-						}
+		}
+
+		if(!file_exists ($currcvd."/submissions/".$cid."/".$vers."/".$duggaid)){
+				if(!mkdir($currcvd."/submissions/".$cid."/".$vers."/".$duggaid)){
+						echo "Error creating folder: ".$currcvd."/submissions/cid/vers/duggaid";
+						$error=true;
 				}
+		}
+
+		// Create a file area with format Lastname-Firstname-Login
+		$userdir = $lastname."_".$firstname."_".$loginname;
 		
-				// Create a file area with format Lastname-Firstname-Login
-				$userdir = $lastname."_".$firstname."_".$loginname;
-				
-				// First replace a predefined list of national characters
-				// Then replace any additional character that is not a-z, a number, period or underscore
-				$national = array("&ouml;", "&Ouml;", "&auml;", "&Auml;", "&aring;", "&Aring;","&uuml;","&Uuml;");
-				$nationalReplace = array("o", "O", "a", "A", "a", "A","u","U");
-				$userdir = str_replace($national, $nationalReplace, $userdir);
-				$userdir=preg_replace("/[^a-zA-Z0-9._]/", "", $userdir);				
-		
-				if(!file_exists ($currcvd."/submissions/".$cid."/".$vers."/".$duggaid."/".$userdir)){
-						if(!mkdir($currcvd."/submissions/".$cid."/".$vers."/".$duggaid."/".$userdir)){
-								echo "Error creating folder: ".$currcvd."/submissions/cid/vers/duggaid/".$userdir;
-								$error=true;
-						}
+		// First replace a predefined list of national characters
+		// Then replace any additional character that is not a-z, a number, period or underscore
+		$national = array("&ouml;", "&Ouml;", "&auml;", "&Auml;", "&aring;", "&Aring;","&uuml;","&Uuml;");
+		$nationalReplace = array("o", "O", "a", "A", "a", "A","u","U");
+		$userdir = str_replace($national, $nationalReplace, $userdir);
+		$userdir=preg_replace("/[^a-zA-Z0-9._]/", "", $userdir);				
+
+		if(!file_exists ($currcvd."/submissions/".$cid."/".$vers."/".$duggaid."/".$userdir)){
+				if(!mkdir($currcvd."/submissions/".$cid."/".$vers."/".$duggaid."/".$userdir)){
+						echo "Error creating folder: ".$currcvd."/submissions/cid/vers/duggaid/".$userdir;
+						$error=true;
 				}
 		}
 
@@ -154,25 +152,32 @@ if($ha){
 				}			 				
 
 		}else if($link!="UNK"){
-
-				$query = $pdo->prepare("SELECT COUNT(*) AS Dusty FROM submission WHERE uid=:uid AND did=:did AND filepath=:fname AND cid=:cid;", array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));  
+				// Create a MD5 hash from url to use as file marker - used when giving responsible
+				$md5_filename = md5 ( $link );	
+				$query = $pdo->prepare("SELECT COUNT(*) AS Dusty FROM submission WHERE uid=:uid AND did=:did AND filename=:fname AND cid=:cid;", array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));  
 				$query->bindParam(':uid', $userid);
 				$query->bindParam(':did', $duggaid);
 				$query->bindParam(':cid', $cid);
-				$query->bindParam(':fname', $link);
+				$query->bindParam(':fname', $md5_filename);
 				$query->execute();
 				foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row){
-							$seq=$row['Dusty']+1;
-				}			
+							$seq=$row['Dusty'];
+				}
+				$seq++;		  
 
-				$query = $pdo->prepare("INSERT INTO submission(fieldnme,uid,cid,vers,did,filepath,filename,extension,mime,kind,seq,segment,updtime) VALUES(:field,:uid,:cid,:vers,:did,:filepath,null,null,null,:kind,:seq,:segment,now());");
-				
+				$filepath="submissions/".$cid."/".$vers."/".$duggaid."/".$userdir."/";
+
+				$movname = $currcvd."/submissions/".$cid."/".$vers."/".$duggaid."/".$userdir."/".$md5_filename.$seq;
+				file_put_contents($movname, $link);
+
+				$query = $pdo->prepare("INSERT INTO submission(fieldnme,uid,cid,vers,did,filepath,filename,extension,mime,kind,seq,segment,updtime) VALUES(:field,:uid,:cid,:vers,:did,:filepath,:filename,null,null,:kind,:seq,:segment,now());");				
 			
 				$query->bindParam(':uid', $userid);
 				$query->bindParam(':cid', $cid);
 				$query->bindParam(':vers', $vers);
 				$query->bindParam(':did', $duggaid);
-				$query->bindParam(':filepath', $link);
+				$query->bindParam(':filepath', $filepath);
+				$query->bindParam(':filename', $md5_filename);
 				$query->bindParam(':field', $fieldtype);
 				$query->bindParam(':kind', $fieldkind);
 				$query->bindParam(':seq', $seq);

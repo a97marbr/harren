@@ -647,8 +647,6 @@ Array.prototype.move = function (old_index, new_index) {
 // Latest version of any file in a field - unsure about naming of the function
 function findfilevers(filez,cfield,ctype, k)
 {
-	console.log(filez);
-	console.log(ctype);
 		// Iterate over elements in files array
 		var foundfile=null;
 		var oldfile="";
@@ -666,7 +664,11 @@ function findfilevers(filez,cfield,ctype, k)
 
 						tab+="</td>";
 						tab+="<td style='padding:4px;'>";
-						tab+="<a href='"+filelink+"' >"+filez[i].filename+"."+filez[i].extension+"</a>";
+						if (ctype == "link"){
+								tab+="<a href='"+filez[i].content+"' >"+filez[i].content+"</a>";	
+						} else {
+								tab+="<a href='"+filelink+"' >"+filez[i].filename+"."+filez[i].extension+"</a>";	
+						}
 						tab+="</td><td style='padding:4px;'>";
 						tab+=filez[i].updtime;
 						tab+="<td>";

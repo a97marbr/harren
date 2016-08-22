@@ -211,7 +211,7 @@ function displayPreview(filepath, filename, fileseq, filetype, fileext, fileinde
 		if (filetype === "text") {
 				str+="<textarea style='width: 100%;height: 100%;box-sizing: border-box;'>"+allData["files"][allData["duggaentry"]][fileindex].content+"</textarea>";
 		} else if (filetype === "link"){
-				str += '<iframe src="'+filepath+filename+fileseq+'.'+fileext+'" width="100%" height="100%" type="application/pdf" />';			
+				str += '<iframe src="'+allData["files"][allData["duggaentry"]][fileindex].content+'" width="100%" height="100%" />';			
 		} else {
 		 		if (fileext === "pdf"){
 						str += '<embed src="'+filepath+filename+fileseq+'.'+fileext+'" width="100%" height="100%" type="application/pdf" />'; 			
@@ -222,6 +222,7 @@ function displayPreview(filepath, filename, fileseq, filetype, fileext, fileinde
 		 		}
 		}
 		document.getElementById("popPrev").innerHTML=str;
+		document.getElementById("responseArea").value = allData["files"][allData["duggaentry"]][clickedindex].feedback;
 		
 		$("#previewpopover").css("display", "block");
 }

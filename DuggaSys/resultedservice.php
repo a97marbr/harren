@@ -296,26 +296,35 @@ foreach($query->fetchAll() as $row) {
 		$feedback = "UNK";
 
 		$currcvd=getcwd();
+		
 		$fedbname=$currcvd."/".$row['filepath'].$row['filename'].$row['seq']."_FB.txt";				
 		if(!file_exists($fedbname)) {
-				$feedback="UNK";
+				$feedback="No feedback yet...";
 		} else {
 				$feedback=file_get_contents($fedbname);
-		}
-
+		}			
+		
+		
 		if($row['kind']=="3"){
 				// Read file contents
 				$movname=$currcvd."/".$row['filepath']."/".$row['filename'].$row['seq'].".".$row['extension'];
-				$fedbname=$currcvd."/".$row['filepath'].$row['filename'].$row['seq']."_FB.txt";				
 
 				if(!file_exists($movname)) {
 						$content="UNK!";
 				} else {
 						$content=file_get_contents($movname);
 				}
+		}	else if($row['kind']=="2"){
+				// File content is an URL
+				$movname=$currcvd."/".$row['filepath']."/".$row['filename'].$row['seq'];
+
+				if(!file_exists($movname)) {
+						$content="UNK URL!";
+				} else {
+						$content=file_get_contents($movname);
+				}
 		}else{
-				$content="UNK";
-				$feedback="UNK";
+				$content="Not a text-submit or URL";
 		}
 
 		$entry = array(
