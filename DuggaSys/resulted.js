@@ -12,6 +12,8 @@ var rProbe = null;
 var needMarking=0;
 var allData;
 
+var clickedindex;
+
 AJAXService("GET", { cid : querystring['cid'],vers : querystring['coursevers'] }, "RESULT");
 
 $(function()
@@ -203,6 +205,8 @@ function leaveCell(thisObj)
 
 function displayPreview(filepath, filename, fileseq, filetype, fileext, fileindex)
 {
+		clickedindex=fileindex;
+		
 		var str ="";
 		if (filetype === "text") {
 				str+="<textarea style='width: 100%;height: 100%;box-sizing: border-box;'>"+allData["files"][allData["duggaentry"]][fileindex].content+"</textarea>";
@@ -237,9 +241,11 @@ function addCanned()
 
 function saveResponse()
 {
-		respo=document.getElementById("responseArea").innerHTML;
-			
-		AJAXService("RESP", { cid : querystring['cid'],vers : querystring['coursevers'],resptext:respo, respfile:"flubmo/kummo/gruu", duggaid: allData["duggaid"] }, "RESULT");	
+		respo=document.getElementById("responseArea").value;
+	
+		var filename=allData["files"][allData["duggaentry"]][clickedindex].filename+allData["files"][allData["duggaentry"]][clickedindex].seq;
+	
+		AJAXService("RESP", { cid : querystring['cid'],vers : querystring['coursevers'],resptext:respo, respfile:filename, duggaid: allData["duggaid"] }, "RESULT");	
 		AJAXService("DUGGA", { cid : querystring['cid'], vers : querystring['coursevers'], moment : "clickedmoment", luid : "clickeduser" }, "RESULT");
 		
 		$("#previewpopover").css("display", "none");

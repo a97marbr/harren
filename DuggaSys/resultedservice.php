@@ -132,15 +132,6 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 	}
 	
 	if(strcmp($opt,"RESP")==0){
-/*			
-			$currcvd=getcwd();
-			$fedbname=$currcvd."/".$row['filepath'].$row['filename'].$row['seq']."_FB.txt";				
-			if(!file_exists($fedbname)) {
-					$feedback="UNK";
-			} else {
-					$feedback=file_get_contents($fedbname);
-			}
-*/
 
 			$currcvd=getcwd();
 
@@ -154,15 +145,15 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 			$userdir = str_replace($national, $nationalReplace, $userdir);
 			$userdir=preg_replace("/[^a-zA-Z0-9._]/", "", $userdir);				
 	
-	/*
 			if(!file_exists ($currcvd."/submissions/".$cid."/".$vers."/".$duggaid."/".$userdir)){
 					if(!mkdir($currcvd."/submissions/".$cid."/".$vers."/".$duggaid."/".$userdir)){
 							echo "Error creating folder: ".$currcvd."/submissions/cid/vers/duggaid/".$userdir;
 							$error=true;
 					}
 			}
-*/
-			$movname=$currcvd."/submissions/".$cid."/".$vers."/".$duggaid."/".$userdir."/";
+			
+			$movname=$currcvd."/submissions/".$cid."/".$vers."/".$duggaid."/".$userdir."/".$responsefile."_FB.txt";
+			file_put_contents($movname,$responsetext);
 				
 			$debug="RESZPONZY\n".$movname;
 			
