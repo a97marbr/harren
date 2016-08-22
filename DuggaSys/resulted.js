@@ -11,8 +11,6 @@ var msx = 0, msy = 0;
 var rProbe = null;
 var needMarking=0;
 var allData;
-var clickedmoment="UNK";
-var clickeduser="UNK";
 
 AJAXService("GET", { cid : querystring['cid'],vers : querystring['coursevers'] }, "RESULT");
 
@@ -146,9 +144,6 @@ function clickResult(cid, vers, moment, firstname, lastname, uid, submitted, mar
 		menu += "</div> <!-- Menu Dialog END -->";
 		document.getElementById('markMenuPlaceholder').innerHTML=menu;
 		
-		clickedmoment=moment;
-		clickeduser=uid;
-
 		AJAXService("DUGGA", { cid : cid, vers : vers, moment : moment, luid : uid, coursevers : vers }, "RESULT");
 }
 
@@ -206,8 +201,24 @@ function leaveCell(thisObj)
 // Adds Canned Response to Response Dialog
 //----------------------------------------
 
-function displayPreview()
+function displayPreview(filepath, filename, fileseq, filetype, fileext, fileindex)
 {
+		var str ="";
+		if (filetype === "text") {
+				str+="<textarea style='width: 100%;height: 100%;box-sizing: border-box;'>"+allData["files"][allData["duggaentry"]][fileindex].content+"</textarea>";
+		} else if (filetype === "link"){
+				str += '<iframe src="'+filepath+filename+fileseq+'.'+fileext+'" width="100%" height="100%" type="application/pdf" />';			
+		} else {
+		 		if (fileext === "pdf"){
+						str += '<embed src="'+filepath+filename+fileseq+'.'+fileext+'" width="100%" height="100%" type="application/pdf" />'; 			
+		 		} else if (fileext === "zip" || fileext === "rar"){
+		 				str += '<a href="'+filepath+filename+fileseq+'.'+fileext+'"/>'+filename+'.'+fileext+'</a>'; 			
+		 		} else if (fileext === "txt"){
+		 				str+="<pre style='width: 100%;height: 100%;box-sizing: border-box;'>"+allData["files"][allData["duggaentry"]][fileindex].content+"</pre>";
+		 		}
+		}
+		document.getElementById("popPrev").innerHTML=str;
+		
 		$("#previewpopover").css("display", "block");
 }
 
@@ -226,12 +237,10 @@ function addCanned()
 
 function saveResponse()
 {
-		alert(clickeduser+" "+clickedmoment);
-		
 		respo=document.getElementById("responseArea").innerHTML;
 			
-		AJAXService("RESP", { cid : querystring['cid'],vers : querystring['coursevers'],resptext:respo, respfile:"flubmo/kummo/gruu" }, "RESULT");	
-		AJAXService("DUGGA", { cid : querystring['cid'], vers : querystring['coursevers'], moment : clickedmoment, luid : clickeduser }, "RESULT");
+		AJAXService("RESP", { cid : querystring['cid'],vers : querystring['coursevers'],resptext:respo, respfile:"flubmo/kummo/gruu", duggaid: allData["duggaid"] }, "RESULT");	
+		AJAXService("DUGGA", { cid : querystring['cid'], vers : querystring['coursevers'], moment : "clickedmoment", luid : "clickeduser" }, "RESULT");
 		
 		$("#previewpopover").css("display", "none");
 }
@@ -444,55 +453,54 @@ function renderMomentChild(dugga, userResults, userId, fname, lname, moment)
 //----------------------------------------
 // Renderer
 //----------------------------------------
-function renderResult(){
-	var str = "";
-	var zstr = "";
-	var ttr = "";
-	var zttr = "";
-	needMarking=0;
-
-	showAll = document.getElementById("teacherFilter").checked;
-
-	if (allData['dugganame'] !== "") {
-			$.getScript(allData['dugganame'], function() {
-				$("#MarkCont").html(allData['duggapage']);
-				showFacit(allData['duggaparam'],allData['useranswer'],allData['duggaanswer'], allData['duggastats'], allData['files'],allData['moment']);
-			});
-			$("#resultpopover").css("display", "block");
-	} else {
-
-			results = allData['results'];
-			m = orderResults(allData['moments']);
-			str += "<table class='markinglist'>";
-			str += renderResultTableHeader(m);
-
-			if (allData['entries'].length > 0) {
-					for ( i = 0; i < allData['entries'].length; i++) {
-							var user = allData['entries'][i];
-							if (user["role"]==="R" || showAll){
-								str += "<tr class='fumo'>";
-
-								// One row for each student
-								str += "<td>";
-								str += user['firstname'] + " " + user['lastname'] + "<br/>" + user['username'] + "<br/>" + user['ssn'];
-								str += "</td>";
-								str += renderMoment(m, results[user['uid']], user['uid'], user['firstname'], user['lastname']);
-								str += "</tr>";
-							}
-					}
-			}
-			var slist = document.getElementById("content");
-			slist.innerHTML = str;
-			document.getElementById("needMarking").innerHTML = "Students: " + allData['entries'].length + "<BR />Unmarked : " + needMarking;
-	}
-
-}
 
 function returnedResults(data)
 {
+		var str = "";
+		var zstr = "";
+		var ttr = "";
+		var zttr = "";
+		needMarking=0;
+
 		var showAll = false;
 		allData = data;
-		document.getElementById('menuHook').innerHTML="<span><label>Show Teachers</label><input id='teacherFilter' type='checkbox' name='showAll' value='1' onchange='renderResult()'>";
-		renderResult();
+	
+		if (allData['dugganame'] !== "") {
+				$.getScript(allData['dugganame'], function() {
+					$("#MarkCont").html(allData['duggapage']);
+					showFacit(allData['duggaparam'],allData['useranswer'],allData['duggaanswer'], allData['duggastats'], allData['files'],allData['moment']);
+				});
+				$("#resultpopover").css("display", "block");
+		} else {
+	
+//				str+="<span><label>Show Teachers</label><input id='teacherFilter' type='checkbox' name='showAll' value='1' onchange='returnedResults(allData)'>";
+//				showAll = document.getElementById("teacherFilter").checked;
+				showAll=true;
+
+				results = allData['results'];
+				m = orderResults(allData['moments']);
+				str += "<table class='markinglist'>";
+				str += renderResultTableHeader(m);
+	
+				if (allData['entries'].length > 0) {
+						for ( i = 0; i < allData['entries'].length; i++) {
+								var user = allData['entries'][i];
+								if (user["role"]==="R" || showAll){
+									str += "<tr class='fumo'>";
+	
+									// One row for each student
+									str += "<td>";
+									str += user['firstname'] + " " + user['lastname'] + "<br/>" + user['username'] + "<br/>" + user['ssn'];
+									str += "</td>";
+									str += renderMoment(m, results[user['uid']], user['uid'], user['firstname'], user['lastname']);
+									str += "</tr>";
+								}
+						}
+				}
+				var slist = document.getElementById("content");
+				slist.innerHTML = str;
+				document.getElementById("needMarking").innerHTML = "Students: " + allData['entries'].length + "<BR />Unmarked : " + needMarking;
+		}
+
 		if (data['debug'] !== "NONE!") alert(data['debug']);
 }

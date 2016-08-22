@@ -38,14 +38,6 @@
 					echo ($cid != (string)"UNK" ? "../DuggaSys/sectioned.php?courseid=".$cid."&coursevers=".$coursevers : "../DuggaSys/courseed.php");
 					echo "'>";
 					echo "<img src='../Shared/icons/Up.svg'></a></td>";
-			}else if($noup=='TEACHERVIEW'){
-					echo "<div class='searchfieldTV clearfix'>";
-					echo "<td class='search'>";
-					echo "	<input type='text' id='inputSearch' class='UmvSearchInput my-pull-left' list='searchOptions' placeholder=' Search...' name='studyprogram/Pnr'>";
-					echo "	<datalist id='searchOptions'> </datalist>";
-					echo "	<div class='UmvButton my-pull-left' id='searchbutton' onclick='display_search_data();'>Search</span></div>";
-					echo "	</td>";
-					echo "</div>";
 			}
 
 			// Either generate code viewer specific nav menu or a spacer

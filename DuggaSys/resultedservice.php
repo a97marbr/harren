@@ -26,7 +26,7 @@ $opt = getOP('opt');
 $cid = getOP('cid');
 $luid = getOP('luid');
 $vers = getOP('vers');
-$moment = getOP('moment');
+$listentry = getOP('moment');
 $mark = getOP('mark');
 $ukind = getOP('ukind');
 $coursevers=getOP('coursevers');
@@ -34,17 +34,21 @@ $coursevers=getOP('coursevers');
 $responsetext=getOP('resptext');
 $responsefile=getOP('respfile');
 
+$duggaid = getOP('duggaid');
+
 $duggapage="";
 $dugganame="";
 $duggaparam="";
 $duggaanswer="";
 $useranswer="";
 $duggastats="";
+$duggaentry="";
+$duggauser="";
 
 $debug="NONE!";
 
 $log_uuid = getOP('log_uuid');
-$info=$opt." ".$cid." ".$coursevers." ".$luid." ".$vers." ".$moment." ".$mark;
+$info=$opt." ".$cid." ".$coursevers." ".$luid." ".$vers." ".$listentry." ".$mark;
 logServiceEvent($log_uuid, EventTypes::ServiceServerStart, "resultedservice.php",$userid,$info);
 
 //------------------------------------------------------------------------------------------------
@@ -58,7 +62,7 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 			$query->bindParam(':cuser', $userid);
 
 			$query->bindParam(':cid', $cid);
-			$query->bindParam(':moment', $moment);
+			$query->bindParam(':moment', $listentry);
 			$query->bindParam(':vers', $vers);
 			$query->bindParam(':uid', $luid);
 
@@ -72,7 +76,7 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 			$query->bindParam(':cuser', $userid);
 
 			$query->bindParam(':cid', $cid);
-			$query->bindParam(':moment', $moment);
+			$query->bindParam(':moment', $listentry);
 			$query->bindParam(':vers', $vers);
 			$query->bindParam(':uid', $luid);
 
@@ -84,11 +88,13 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 	}
 
 	if(strcmp($opt,"DUGGA")==0){
-		$query = $pdo->prepare("SELECT userAnswer.useranswer as aws,entryname,quizFile,qrelease,deadline,param,variant.variantanswer as facit,timeUsed,totalTimeUsed,stepsUsed,totalStepsUsed FROM userAnswer,listentries,quiz,variant WHERE variant.vid=userAnswer.variant AND userAnswer.cid=listentries.cid AND listentries.cid=quiz.cid AND userAnswer.vers=listentries.vers AND listentries.link=quiz.id AND listentries.lid=userAnswer.moment AND uid=:luid AND userAnswer.moment=:moment AND listentries.cid=:cid AND listentries.vers=:vers;");
+
+		// in this case moment refers to the listentry and not the parent moment listentry
+		$query = $pdo->prepare("SELECT userAnswer.useranswer as aws,entryname,quizFile,qrelease,deadline,param,variant.variantanswer as facit,timeUsed,totalTimeUsed,stepsUsed,totalStepsUsed,link FROM userAnswer,listentries,quiz,variant WHERE variant.vid=userAnswer.variant AND userAnswer.cid=listentries.cid AND listentries.cid=quiz.cid AND userAnswer.vers=listentries.vers AND listentries.link=quiz.id AND listentries.lid=userAnswer.moment AND uid=:luid AND userAnswer.moment=:moment AND listentries.cid=:cid AND listentries.vers=:vers;");
 
 		$query->bindParam(':cid', $cid);
 		$query->bindParam(':vers', $vers);
-		$query->bindParam(':moment', $moment);
+		$query->bindParam(':moment', $listentry);
 		$query->bindParam(':luid', $luid);
 
 		if(!$query->execute()) {
@@ -101,6 +107,10 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 			$duggafile=$row['quizFile'];
 			$duggarel=$row['qrelease'];
 			$duggadead=$row['deadline'];
+
+			$duggaid=$row['link'];
+			$duggauser=$luid;
+			$duggaentry=$listentry;
 
 			$useranswer=$row['aws'];
 			$useranswer = str_replace("*##*", '"', $useranswer);
@@ -144,7 +154,6 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 			$userdir = str_replace($national, $nationalReplace, $userdir);
 			$userdir=preg_replace("/[^a-zA-Z0-9._]/", "", $userdir);				
 	
-			$duggaid="GREGER";
 	/*
 			if(!file_exists ($currcvd."/submissions/".$cid."/".$vers."/".$duggaid."/".$userdir)){
 					if(!mkdir($currcvd."/submissions/".$cid."/".$vers."/".$duggaid."/".$userdir)){
@@ -313,10 +322,9 @@ foreach($query->fetchAll() as $row) {
 				} else {
 						$content=file_get_contents($movname);
 				}
-
-
 		}else{
-				$content="Egon!";
+				$content="UNK";
+				$feedback="UNK";
 		}
 
 		$entry = array(
@@ -351,13 +359,17 @@ $array = array(
 	'versions' => $sentries,
 	'debug' => $debug,
 	'results' => $lentries,
+
+	'duggauser' => $duggauser,
+	'duggaentry' => $duggaentry,
+	'duggaid' => $duggaid,
 	'duggapage' => $duggapage,
 	'dugganame' => $dugganame,
 	'duggaparam' => $duggaparam,
 	'duggaanswer' => $duggaanswer,
 	'useranswer' => $useranswer,
 	'duggastats' => $duggastats,
-	'moment' => $moment,
+	'moment' => $listentry,
 	'files' => $files
 );
 

@@ -645,8 +645,10 @@ Array.prototype.move = function (old_index, new_index) {
 };
 
 // Latest version of any file in a field - unsure about naming of the function
-function findfilevers(filez,cfield,ctype)
+function findfilevers(filez,cfield,ctype, k)
 {
+	console.log(filez);
+	console.log(ctype);
 		// Iterate over elements in files array
 		var foundfile=null;
 		var oldfile="";
@@ -658,7 +660,10 @@ function findfilevers(filez,cfield,ctype)
 						var filelink=filez[i].filepath+filez[i].filename+filez[i].seq+"."+filez[i].extension;											
 						tab+="<tr'>"
 						tab+="<td>";
-						tab+="<button onclick='displayPreview();'>P</button>";
+
+						// Button for making / viewing feedback - note - only button for given feedback to students.
+						tab+="<button onclick='displayPreview(\""+filez[i].filepath+"\",\""+filez[i].filename+"\",\""+filez[i].seq+"\",\""+ctype+"\",\""+filez[i].extension+"\","+i+");'>P</button>";
+
 						tab+="</td>";
 						tab+="<td style='padding:4px;'>";
 						tab+="<a href='"+filelink+"' >"+filez[i].filename+"."+filez[i].extension+"</a>";
