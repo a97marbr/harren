@@ -44,6 +44,7 @@ $insertparam = false;
 $score = 0;
 $timeUsed;
 $stepsUsed;
+$feedback="UNK";
 
 $debug="NONE!";	
 
@@ -56,7 +57,7 @@ logServiceEvent($log_uuid, EventTypes::ServiceServerStart, "showDuggaservice.php
 
 if($userid!="UNK"){
 		// See if we already have a result i.e. a chosen variant.
-	$query = $pdo->prepare("SELECT score,aid,cid,quiz,useranswer,variant,moment,vers,uid,marked FROM userAnswer WHERE uid=:uid AND cid=:cid AND moment=:moment AND vers=:coursevers;");
+	$query = $pdo->prepare("SELECT score,aid,cid,quiz,useranswer,variant,moment,vers,uid,marked,feedback FROM userAnswer WHERE uid=:uid AND cid=:cid AND moment=:moment AND vers=:coursevers;");
 	$query->bindParam(':cid', $courseid);
 	$query->bindParam(':coursevers', $coursevers);
 	$query->bindParam(':uid', $userid);
@@ -75,6 +76,7 @@ if($userid!="UNK"){
 		$savedanswer=$row['useranswer'];
 		$score = $row['score'];
 		$isIndb=true;
+		$feedback = $row['feedback'];
 	}
 	
 	// Get type of dugga
@@ -184,16 +186,16 @@ if($userid!="UNK"){
 	}
 	// Retrieve variant
 	if($insertparam == false){
-	$param="NONE!";
+			$param="NONE!";
 	}
 	foreach ($variants as $variant) {
 		if($variant["vid"] == $savedvariant || $quizfile == "kryss"){
-			$param.=html_entity_decode($variant['param']);
+				$param.=html_entity_decode($variant['param']);
 		}
 	}
 
 }else{
-	$param="FORBIDDEN!!";
+		$param="FORBIDDEN!!";
 }
 //------------------------------------------------------------------------------------------------
 // Services
@@ -271,7 +273,7 @@ if(strcmp($opt,"GETVARIANTANSWER")==0){
 	$second = $temp[1];
 	$thrid = $temp[2];
 
-	$query = $pdo->prepare("SELECT variant.variantanswer,useranswer FROM variant,userAnswer WHERE userAnswer.quiz = variant.quizID and userAnswer.uid = :uid and userAnswer.cid = :cid and userAnswer.vers = :vers");
+	$query = $pdo->prepare("SELECT variant.variantanswer,useranswer,feedback FROM variant,userAnswer WHERE userAnswer.quiz = variant.quizID and userAnswer.uid = :uid and userAnswer.cid = :cid and userAnswer.vers = :vers");
 	
 	$query->bindParam(':uid', $userid);
 	$query->bindParam(':cid', $first);
@@ -356,6 +358,7 @@ $array = array(
 		"answer" => $savedanswer,
 		"score" => $score,
 		"highscoremode" => $highscoremode,
+		"feedback" => $feedback,
 		"files" => $files,
 	);
 

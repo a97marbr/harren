@@ -55,8 +55,8 @@ pdoConnect();
 		<div class='loginBoxheader'>
 			<h3 style='width:100%;' id='Nameof'>Show Results</h3><div onclick='closeWindows();'>x</div>
 		</div>
-		<div id="MarkCont" style="position:absolute; left:4px; right:104px; top:34px; bottom:4px; border:2px inset #aaa;background:#bbb; overflow:scroll;"> </div>
-		<div id='markMenuPlaceholder' style="position:absolute; right:2px; top:34px; background:#bbb; width:100px;"></div>
+		<div id="MarkCont" style="position:absolute; left:4px; right:204px; top:34px; bottom:4px; border:2px inset #aaa;background:#bbb; overflow:scroll;"> </div>
+		<div style="position:absolute; right:2px; top:34px; background:#bbb; width:200px;"><div id='markMenuPlaceholder'></div><div id="teacherFeedbackTable"></div></div>
 	</div>
 
 	<!---------------------=============####### Preview Popover #######=============--------------------->
@@ -69,7 +69,7 @@ pdoConnect();
 			<table width="100%" height="100%">
 					<tr>
 							<td width="75%" height="100%" id="popPrev" style="border:2px inset #aaa;background:#bbb; overflow:scroll;">
-									<embed src="http://localhost/a.pdf" width="100%" height="100%" type='application/pdf' />
+									<embed src="" width="100%" height="100%" type='application/pdf' />
 							</td>
 							<td width="25%" height="100%" id='markMenuPlaceholder' style="background:#bbb;">
 										<table width="100%" height="100%">

@@ -77,6 +77,21 @@ function returnedDugga(data)
 			}
 		}			
 	}	  
+	// Teacher feedback
+	if (data["feedback"] == null || data["feedback"] === "") {
+			// No feedback
+	} else {
+			var fb = "<table><thead><tr><th>Date</th><th>Feedback</th></tr></thead><tbody>";
+			var feedbackArr = data["feedback"].split("||");
+			for (var k=feedbackArr.length-1;k>=0;k--){
+				var fb_tmp = feedbackArr[k].split("%%");
+				fb+="<tr><td>"+fb_tmp[0]+"</td><td>"+fb_tmp[1]+"</td></tr>";
+			} 
+			fb += "</tbody></table>";
+			document.getElementById('feedbackTable').innerHTML = fb;		
+			document.getElementById('feedbackBox').style.display = "block";
+	}
+
 }
 
 //----------------------------------------------------------------------------------
@@ -131,7 +146,7 @@ function reset()
 	document.getElementById('H5').innerHTML="0";
 }
 
-function showFacit(param, uanswer, danswer, userStats, files, moment)
+function showFacit(param, uanswer, danswer, userStats, files, moment, feedback)
 {
 	if (userStats != null){
 		document.getElementById('duggaTime').innerHTML=userStats[0];
@@ -140,8 +155,8 @@ function showFacit(param, uanswer, danswer, userStats, files, moment)
 		document.getElementById('duggaTotalClicks').innerHTML=userStats[3];
 		$("#duggaStats").css("display","block");
 	}
+	$("#feedbackBox").css("display","none");
 	var p = jQuery.parseJSON(param.replace(/\*/g, '"'));
-		
 	$("#fargnamn").html(p['colorname']);
 	$("#fargen").attr("src", "templates/color_"+p['color']+".png");
 	
@@ -157,6 +172,16 @@ function showFacit(param, uanswer, danswer, userStats, files, moment)
 			document.getElementById('H5').innerHTML=previous[9];
 		}
 	}			
+	
+	// Teacher feedback
+	var fb = "<table><thead><tr><th>Date</th><th>Feedback</th></tr></thead><tbody>";
+	var feedbackArr = feedback.split("||");
+	for (var k=feedbackArr.length-1;k>=0;k--){
+		var fb_tmp = feedbackArr[k].split("%%");
+		fb+="<tr><td>"+fb_tmp[0]+"</td><td>"+fb_tmp[1]+"</td></tr>";
+	} 
+	fb += "</tbody></table><br><textarea id='newFeedback'></textarea>";
+	document.getElementById('teacherFeedbackTable').innerHTML = fb;
 	
 	$('.fouter').css("background","#"+previous[4]+previous[5]+previous[6]+previous[7]+previous[8]+previous[8]);
 		

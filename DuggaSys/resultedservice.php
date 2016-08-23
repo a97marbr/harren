@@ -29,6 +29,7 @@ $vers = getOP('vers');
 $listentry = getOP('moment');
 $mark = getOP('mark');
 $ukind = getOP('ukind');
+$newDuggaFeedback = getOP('newFeedback');
 $coursevers=getOP('coursevers');
 
 $responsetext=getOP('resptext');
@@ -44,6 +45,7 @@ $useranswer="";
 $duggastats="";
 $duggaentry="";
 $duggauser="";
+$duggafeedback="";
 
 $debug="NONE!";
 
@@ -70,6 +72,18 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 				$error=$query->errorInfo();
 				$debug="Error updating entries".$error[2];
 			}
+			if ($newDuggaFeedback != ""){
+					$query = $pdo->prepare("update userAnswer set feedback = :newDuggaFeedback WHERE cid=:cid AND moment=:moment AND vers=:vers AND uid=:uid");
+					$query->bindParam(':newDuggaFeedback', $newDuggaFeedback);
+					$query->bindParam(':cid', $cid);
+					$query->bindParam(':moment', $listentry);
+					$query->bindParam(':vers', $vers);
+					$query->bindParam(':uid', $luid);
+					if(!$query->execute()) {
+						$error=$query->errorInfo();
+						$debug="Error updating dugga feedback".$error[2];
+					}
+			}
 		}else if($ukind=="I"){
 			$query = $pdo->prepare("INSERT INTO userAnswer(grade,creator,cid,moment,vers,uid,marked) VALUES(:mark,:cuser,:cid,:moment,:vers,:uid,NOW());");
 			$query->bindParam(':mark', $mark);
@@ -90,7 +104,7 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 	if(strcmp($opt,"DUGGA")==0){
 
 		// in this case moment refers to the listentry and not the parent moment listentry
-		$query = $pdo->prepare("SELECT userAnswer.useranswer as aws,entryname,quizFile,qrelease,deadline,param,variant.variantanswer as facit,timeUsed,totalTimeUsed,stepsUsed,totalStepsUsed,link FROM userAnswer,listentries,quiz,variant WHERE variant.vid=userAnswer.variant AND userAnswer.cid=listentries.cid AND listentries.cid=quiz.cid AND userAnswer.vers=listentries.vers AND listentries.link=quiz.id AND listentries.lid=userAnswer.moment AND uid=:luid AND userAnswer.moment=:moment AND listentries.cid=:cid AND listentries.vers=:vers;");
+		$query = $pdo->prepare("SELECT userAnswer.useranswer as aws,entryname,quizFile,qrelease,deadline,param,variant.variantanswer as facit,timeUsed,totalTimeUsed,stepsUsed,totalStepsUsed,link,feedback as duggaFeedback FROM userAnswer,listentries,quiz,variant WHERE variant.vid=userAnswer.variant AND userAnswer.cid=listentries.cid AND listentries.cid=quiz.cid AND userAnswer.vers=listentries.vers AND listentries.link=quiz.id AND listentries.lid=userAnswer.moment AND uid=:luid AND userAnswer.moment=:moment AND listentries.cid=:cid AND listentries.vers=:vers;");
 
 		$query->bindParam(':cid', $cid);
 		$query->bindParam(':vers', $vers);
@@ -124,6 +138,8 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 			$duggastats = array($row['timeUsed'],$row['totalTimeUsed'],$row['stepsUsed'],$row['totalStepsUsed']);
 
 			$dugganame="templates/".$duggafile.".js";
+
+			$duggafeedback = html_entity_decode($row['duggaFeedback']);
 
 			if(file_exists ( "templates/".$duggafile.".html")) {
 				$duggapage=file_get_contents("templates/".$duggafile.".html");
@@ -369,6 +385,7 @@ $array = array(
 	'duggaanswer' => $duggaanswer,
 	'useranswer' => $useranswer,
 	'duggastats' => $duggastats,
+	'duggafeedback' => $duggafeedback,
 	'moment' => $listentry,
 	'files' => $files
 );

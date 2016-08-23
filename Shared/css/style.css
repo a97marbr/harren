@@ -1282,3 +1282,15 @@ input.new-item-button:hover {
     background-color:#7B5A96;
     border-radius:4px;
 }
+#feedbackTable table {
+  width: 100%;
+}
+#feedbackTable td {
+    font-family: Calibri,sans-serif; 
+    font-size: 12px;
+    padding-left: 5px;
+}
+
+#feedbackTable tbody tr:nth-child(odd) {
+   background-color: #FFF;
+}

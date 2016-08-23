@@ -151,7 +151,17 @@ function clickResult(cid, vers, moment, firstname, lastname, uid, submitted, mar
 
 function changeGrade(newMark, gradesys, cid, vers, moment, uid, mark, ukind)
 {
-		AJAXService("CHGR", { cid : cid, vers : vers, moment : moment, luid : uid, mark : newMark, ukind : ukind }, "RESULT");
+		var newFeedback="";
+		var now = new Date();
+		var nowStr = now.getFullYear() + "-" + now.getMonth() + "-" + now.getDay() + " " + now.getHours() + ":" + now.getMinutes();
+
+		if (allData["duggafeedback"] == null || allData["duggafeedback"] === ""){
+				newFeedback = nowStr + "%%" + document.getElementById('newFeedback').value;
+		} else {
+				newFeedback = allData["duggafeedback"] + "||" + nowStr + "%%" + document.getElementById('newFeedback').value;			
+		}
+
+		AJAXService("CHGR", { cid : cid, vers : vers, moment : moment, luid : uid, mark : newMark, ukind : ukind, newFeedback : newFeedback }, "RESULT");
 }
 
 function moveDist(e)
@@ -475,7 +485,7 @@ function returnedResults(data)
 		if (allData['dugganame'] !== "") {
 				$.getScript(allData['dugganame'], function() {
 					$("#MarkCont").html(allData['duggapage']);
-					showFacit(allData['duggaparam'],allData['useranswer'],allData['duggaanswer'], allData['duggastats'], allData['files'],allData['moment']);
+					showFacit(allData['duggaparam'],allData['useranswer'],allData['duggaanswer'], allData['duggastats'], allData['files'],allData['moment'],allData['duggafeedback']);
 				});
 				$("#resultpopover").css("display", "block");
 		} else {
