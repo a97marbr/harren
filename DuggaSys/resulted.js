@@ -151,16 +151,7 @@ function clickResult(cid, vers, moment, firstname, lastname, uid, submitted, mar
 
 function changeGrade(newMark, gradesys, cid, vers, moment, uid, mark, ukind)
 {
-		var newFeedback="";
-		var now = new Date();
-		var nowStr = now.getFullYear() + "-" + now.getMonth() + "-" + now.getDay() + " " + now.getHours() + ":" + now.getMinutes();
-
-		if (allData["duggafeedback"] == null || allData["duggafeedback"] === ""){
-				newFeedback = nowStr + "%%" + document.getElementById('newFeedback').value;
-		} else {
-				newFeedback = allData["duggafeedback"] + "||" + nowStr + "%%" + document.getElementById('newFeedback').value;			
-		}
-
+		var newFeedback = document.getElementById('newFeedback').value;
 		AJAXService("CHGR", { cid : cid, vers : vers, moment : moment, luid : uid, mark : newMark, ukind : ukind, newFeedback : newFeedback }, "RESULT");
 }
 

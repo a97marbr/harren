@@ -72,8 +72,9 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 				$error=$query->errorInfo();
 				$debug="Error updating entries".$error[2];
 			}
-			if ($newDuggaFeedback != ""){
-					$query = $pdo->prepare("update userAnswer set feedback = :newDuggaFeedback WHERE cid=:cid AND moment=:moment AND vers=:vers AND uid=:uid");
+			if ($newDuggaFeedback != "UNK"){
+					$query = $pdo->prepare('UPDATE userAnswer SET feedback = CASE WHEN feedback IS NULL THEN :newDuggaFeedback ELSE concat(feedback, concat("||",:newDuggaFeedback)) END WHERE cid=:cid AND moment=:moment AND vers=:vers AND uid=:uid;');
+					$newDuggaFeedback = date("Y-m-d h:i") . "%%" . $newDuggaFeedback;
 					$query->bindParam(':newDuggaFeedback', $newDuggaFeedback);
 					$query->bindParam(':cid', $cid);
 					$query->bindParam(':moment', $listentry);
