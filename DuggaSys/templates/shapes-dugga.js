@@ -127,7 +127,7 @@ function reset()
 
 }
 
-function showFacit(param, uanswer, danswer, userStats, files, moment)
+function showFacit(param, uanswer, danswer, userStats, files, moment, feedback)
 {
 	if (userStats != null){
 		document.getElementById('duggaTime').innerHTML=userStats[0];
