@@ -48,11 +48,20 @@ function dehighlightRows(filename,startRow,endRow){
 
 //Functions for markdown image zoom rollover
 function originalImg(x,size) {
-	x.style.width = size + "px";
+	if (size == 0){
+			x.style.width = x.naturalWidth;
+	} else {
+			x.style.width = size + "px";
+	}
+	
 }
 
 function thumbnailImg(x,size) {
-	x.style.width = size + "px";
+	if (size == 0){
+			x.style.width = x.naturalWidth;
+	} else {
+			x.style.width = size + "px";
+	}
 }
 
 /********************************************************************************
