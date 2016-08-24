@@ -128,7 +128,7 @@ function returnedDugga(data)
 
 	}
 	// Teacher feedback
-	if (data["feedback"] == null || data["feedback"] === "") {
+	if (data["feedback"] == null || data["feedback"] === "" || data["feedback"] === "UNK") {
 			// No feedback
 	} else {
 			var fb = "<table><thead><tr><th>Date</th><th>Feedback</th></tr></thead><tbody>";

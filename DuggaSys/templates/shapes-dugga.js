@@ -75,7 +75,7 @@ function returnedDugga(data)
 		document.getElementById('helptxt').innerHTML=dta[0].Text;
 	}
 	// Teacher feedback
-	if (data["feedback"] == null || data["feedback"] === "") {
+	if (data["feedback"] == null || data["feedback"] === "" || data["feedback"] === "UNK") {
 			// No feedback
 	} else {
 			var fb = "<table><thead><tr><th>Date</th><th>Feedback</th></tr></thead><tbody>";

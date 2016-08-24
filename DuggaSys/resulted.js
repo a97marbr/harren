@@ -151,7 +151,10 @@ function clickResult(cid, vers, moment, firstname, lastname, uid, submitted, mar
 
 function changeGrade(newMark, gradesys, cid, vers, moment, uid, mark, ukind)
 {
-		var newFeedback = document.getElementById('newFeedback').value;
+		var newFeedback = "UNK";
+		if (document.getElementById('newFeedback') !== null){
+				newFeedback = document.getElementById('newFeedback').value;
+		}
 		AJAXService("CHGR", { cid : cid, vers : vers, moment : moment, luid : uid, mark : newMark, ukind : ukind, newFeedback : newFeedback }, "RESULT");
 }
 

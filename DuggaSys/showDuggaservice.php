@@ -321,7 +321,7 @@ foreach($query->fetchAll() as $row) {
 		
 		$fedbname=$currcvd."/".$row['filepath'].$row['filename'].$row['seq']."_FB.txt";				
 		if(!file_exists($fedbname)) {
-				$feedback="No feedback yet...";
+				$feedback="UNK";
 		} else {
 				$feedback=file_get_contents($fedbname);
 		}			
