@@ -13,7 +13,6 @@ Example seed
 */
 
 //------------==========########### GLOBALS ###########==========------------
-var inParams = "UNK";
 var elapsedTime = 0;
 
 //------------==========########### STANDARD MANDATORY FUNCTIONS ###########==========------------
@@ -198,20 +197,6 @@ function showFacit(param, uanswer, danswer, userStats, files, moment)
 		// This is in show facit marking view NOT official running version!
 		// ----------------========#############========----------------
 
-/*		
-		if (duggaFiles.length > 0){
-			for (var l=0; l<duggaFiles.length; l++){
-				if (duggaFiles[l].kind == "3"){
-					if (document.getElementById(duggaFiles[l].fieldnme+"Text") != null){
-					 	document.getElementById(duggaFiles[l].fieldnme+"Text").innerHTML=duggaFiles[l].content;
-					}
-				}
-			}	
-		} else {
-			// No files uploaded.
-		}
-*/
-
 		for (var version=0; version < duggaFiles.length;version++){				
 				if (duggaFiles[version].kind == "3"){
 					if (document.getElementById(duggaFiles[version].fieldnme+"Text") != null){
@@ -219,7 +204,10 @@ function showFacit(param, uanswer, danswer, userStats, files, moment)
 					}
 				}
 		}			
-	
+
+		// Bring up the feedback tools
+		document.getElementById('markMenuPlaceholder').style.display = "block";
+		document.getElementById('markSaveButton').style.display = "block";
 	
 	}
 }

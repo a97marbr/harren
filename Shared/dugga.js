@@ -6,6 +6,7 @@ var status = 0;
 var score;
 var timeUsed;
 var stepsUsed;
+var inParams = "UNK";;
 var MAX_SUBMIT_LENGTH = 5000;
 function toggleloginnewpass(){
 
@@ -28,6 +29,7 @@ function closeWindows(){
 	$("#resultpopover").css("display","none");
 	$("#login #username").val("");
 	$("#login #password").val("");
+	$("#previewpopover").css("display","none");
 	
 	window.removeEventListener("keypress", loginEventHandler, false);
 }
@@ -645,24 +647,18 @@ Array.prototype.move = function (old_index, new_index) {
 };
 
 // Latest version of any file in a field - unsure about naming of the function
-function findfilevers(filez,cfield,ctype, k)
+function findfilevers(filez,cfield,ctype)
 {
 		// Iterate over elements in files array
 		var foundfile=null;
 		var oldfile="";
 		var tab="<table>";
-		tab+="<thead><tr><th>Filename</th><th>Upload date</th></tr></thead>"
+		tab+="<thead><tr><th>Filename</th><th>Upload date</th><th colspan=2>Teacher feedback</th></tr></thead>"
 		tab +="<tbody>";
 		for (var i=filez.length-1;i>=0;i--){
 				if(cfield==filez[i].fieldnme){
 						var filelink=filez[i].filepath+filez[i].filename+filez[i].seq+"."+filez[i].extension;											
 						tab+="<tr'>"
-						tab+="<td>";
-
-						// Button for making / viewing feedback - note - only button for given feedback to students.
-						tab+="<button onclick='displayPreview(\""+filez[i].filepath+"\",\""+filez[i].filename+"\",\""+filez[i].seq+"\",\""+ctype+"\",\""+filez[i].extension+"\","+i+");'>P</button>";
-
-						tab+="</td>";
 						tab+="<td style='padding:4px;'>";
 						if (ctype == "link"){
 								tab+="<a href='"+filez[i].content+"' >"+filez[i].content+"</a>";	
@@ -670,7 +666,11 @@ function findfilevers(filez,cfield,ctype, k)
 								tab+="<a href='"+filelink+"' >"+filez[i].filename+"."+filez[i].extension+"</a>";	
 						}
 						tab+="</td><td style='padding:4px;'>";
-						tab+=filez[i].updtime;
+						tab+=filez[i].updtime;+"</td>";
+						tab+="<td>";
+						// Button for making / viewing feedback - note - only button for given feedback to students.
+						tab+="<button onclick='displayPreview(\""+filez[i].filepath+"\",\""+filez[i].filename+"\",\""+filez[i].seq+"\",\""+ctype+"\",\""+filez[i].extension+"\","+i+");'>Feedback</button>";
+						tab+="</td>";
 						tab+="<td>";
 						if(filez[i].feedback!=="UNK"){
 								tab+=filez[i].feedback.substring(0,64)+"&#8230;";						
@@ -727,23 +727,27 @@ function disableSave(){
 function displayPreview(filepath, filename, fileseq, filetype, fileext, fileindex)
 {
 		clickedindex=fileindex;
-		
 		var str ="";
+
 		if (filetype === "text") {
-				str+="<textarea style='width: 100%;height: 100%;box-sizing: border-box;'>"+data["files"][data["duggaentry"]][fileindex].content+"</textarea>";
+				str+="<textarea style='width: 100%;height: 100%;box-sizing: border-box;'>"+dataV["files"][dataV["duggaentry"]][fileindex].content+"</textarea>";
 		} else if (filetype === "link"){
-				str += '<iframe src="'+data["files"][data["duggaentry"]][fileindex].content+'" width="100%" height="100%" />';			
+				str += '<iframe allowtransparency="true" style="background: #FFFFFF;" src="'+dataV["files"][inParams["moment"]][fileindex].content+'" width="100%" height="100%" />';			
 		} else {
 		 		if (fileext === "pdf"){
 						str += '<embed src="'+filepath+filename+fileseq+'.'+fileext+'" width="100%" height="100%" type="application/pdf" />'; 			
 		 		} else if (fileext === "zip" || fileext === "rar"){
 		 				str += '<a href="'+filepath+filename+fileseq+'.'+fileext+'"/>'+filename+'.'+fileext+'</a>'; 			
 		 		} else if (fileext === "txt"){
-		 				str+="<pre style='width: 100%;height: 100%;box-sizing: border-box;'>"+data["files"][data["duggaentry"]][fileindex].content+"</pre>";
+		 				str+="<pre style='width: 100%;height: 100%;box-sizing: border-box;'>"+dataV["files"][dataV["duggaentry"]][fileindex].content+"</pre>";
 		 		}
 		}
 		document.getElementById("popPrev").innerHTML=str;
-		document.getElementById("responseArea").value = data["files"][data["duggaentry"]][clickedindex].feedback;
+		if (dataV["files"][inParams["moment"]][clickedindex].feedback !== "UNK"){
+				document.getElementById("responseArea").value = dataV["files"][inParams["moment"]][clickedindex].feedback;
+		} else {
+				document.getElementById("responseArea").value = "No feedback given.";
+		}
 		
 		$("#previewpopover").css("display", "block");
 }

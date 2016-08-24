@@ -170,10 +170,7 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 			}
 			
 			$movname=$currcvd."/submissions/".$cid."/".$vers."/".$duggaid."/".$userdir."/".$responsefile."_FB.txt";
-			file_put_contents($movname,$responsetext);
-				
-			$debug="RESZPONZY\n".$movname;
-			
+			file_put_contents($movname,$responsetext);			
 	}	
 }
 
