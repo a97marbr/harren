@@ -44,7 +44,7 @@ $insertparam = false;
 $score = 0;
 $timeUsed;
 $stepsUsed;
-$feedback="UNK";
+$duggafeedback="UNK";
 
 $debug="NONE!";	
 
@@ -76,7 +76,11 @@ if($userid!="UNK"){
 		$savedanswer=$row['useranswer'];
 		$score = $row['score'];
 		$isIndb=true;
-		$feedback = $row['feedback'];
+		if ($row['feedback'] != null){
+				$duggafeedback = $row['feedback'];
+		} else {
+				$duggafeedback = "UNK";
+		}
 	}
 	
 	// Get type of dugga
@@ -310,21 +314,39 @@ $query->bindParam(':did', $duggaid);
 $result = $query->execute();
 foreach($query->fetchAll() as $row) {
 		
+		$content = "UNK";
+		$feedback = "UNK";
+
+		$currcvd=getcwd();
+		
+		$fedbname=$currcvd."/".$row['filepath'].$row['filename'].$row['seq']."_FB.txt";				
+		if(!file_exists($fedbname)) {
+				$feedback="No feedback yet...";
+		} else {
+				$feedback=file_get_contents($fedbname);
+		}			
+		
+		
 		if($row['kind']=="3"){
-			// Read file contents
+				// Read file contents
+				$movname=$currcvd."/".$row['filepath']."/".$row['filename'].$row['seq'].".".$row['extension'];
 
-			$currcvd=getcwd();
+				if(!file_exists($movname)) {
+						$content="UNK!";
+				} else {
+						$content=file_get_contents($movname);
+				}
+		}	else if($row['kind']=="2"){
+				// File content is an URL
+				$movname=$currcvd."/".$row['filepath']."/".$row['filename'].$row['seq'];
 
-			$movname=$currcvd."/".$row['filepath']."/".$row['filename'].$row['seq'].".".$row['extension'];	
-
-			if (file_exists ($movname)){
-					$content=file_get_contents($movname);
-			}else{
-					$content="File does not exist";			  
-			}
-
+				if(!file_exists($movname)) {
+						$content="UNK URL!";
+				} else {
+						$content=file_get_contents($movname);
+				}
 		}else{
-				$content="Not a text submission";						
+				$content="Not a text-submit or URL";
 		}
 	
 		$entry = array(
@@ -341,7 +363,8 @@ foreach($query->fetchAll() as $row) {
 			'kind' => $row['kind'],	
 			'seq' => $row['seq'],	
 			'segment' => $row['segment'],	
-			'content' => $content
+			'content' => $content,
+			'feedback' => $feedback
 		);
 
 		// If the filednme key isn't set, create it now
@@ -358,7 +381,7 @@ $array = array(
 		"answer" => $savedanswer,
 		"score" => $score,
 		"highscoremode" => $highscoremode,
-		"feedback" => $feedback,
+		"feedback" => $duggafeedback,
 		"files" => $files,
 	);
 

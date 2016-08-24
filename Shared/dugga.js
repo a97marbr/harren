@@ -720,3 +720,30 @@ function toggleInstructions(element)
 function disableSave(){
 	document.getElementById("saveDuggaButton").disabled = true;
 }
+
+//----------------------------------------------------------------------------------
+// show/hide submission and feedback
+//----------------------------------------------------------------------------------
+function displayPreview(filepath, filename, fileseq, filetype, fileext, fileindex)
+{
+		clickedindex=fileindex;
+		
+		var str ="";
+		if (filetype === "text") {
+				str+="<textarea style='width: 100%;height: 100%;box-sizing: border-box;'>"+data["files"][data["duggaentry"]][fileindex].content+"</textarea>";
+		} else if (filetype === "link"){
+				str += '<iframe src="'+data["files"][data["duggaentry"]][fileindex].content+'" width="100%" height="100%" />';			
+		} else {
+		 		if (fileext === "pdf"){
+						str += '<embed src="'+filepath+filename+fileseq+'.'+fileext+'" width="100%" height="100%" type="application/pdf" />'; 			
+		 		} else if (fileext === "zip" || fileext === "rar"){
+		 				str += '<a href="'+filepath+filename+fileseq+'.'+fileext+'"/>'+filename+'.'+fileext+'</a>'; 			
+		 		} else if (fileext === "txt"){
+		 				str+="<pre style='width: 100%;height: 100%;box-sizing: border-box;'>"+data["files"][data["duggaentry"]][fileindex].content+"</pre>";
+		 		}
+		}
+		document.getElementById("popPrev").innerHTML=str;
+		document.getElementById("responseArea").value = data["files"][data["duggaentry"]][clickedindex].feedback;
+		
+		$("#previewpopover").css("display", "block");
+}
