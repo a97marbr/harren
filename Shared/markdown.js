@@ -49,7 +49,7 @@ function dehighlightRows(filename,startRow,endRow){
 //Functions for markdown image zoom rollover
 function originalImg(x,size) {
 	if (size == 0){
-			x.style.width = x.naturalWidth;
+			x.style.width = x.naturalWidth + "px";
 	} else {
 			x.style.width = size + "px";
 	}
@@ -58,7 +58,7 @@ function originalImg(x,size) {
 
 function thumbnailImg(x,size) {
 	if (size == 0){
-			x.style.width = x.naturalWidth;
+			x.style.width = x.naturalWidth + "px";
 	} else {
 			x.style.width = size + "px";
 	}
