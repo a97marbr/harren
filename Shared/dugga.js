@@ -655,30 +655,32 @@ function findfilevers(filez,cfield,ctype)
 		var tab="<table>";
 		tab+="<thead><tr><th>Filename</th><th>Upload date</th><th colspan=2>Teacher feedback</th></tr></thead>"
 		tab +="<tbody>";
-		for (var i=filez.length-1;i>=0;i--){
-				if(cfield==filez[i].fieldnme){
-						var filelink=filez[i].filepath+filez[i].filename+filez[i].seq+"."+filez[i].extension;											
-						tab+="<tr'>"
-						tab+="<td style='padding:4px;'>";
-						if (ctype == "link"){
-								tab+="<a href='"+filez[i].content+"' >"+filez[i].content+"</a>";	
-						} else {
-								tab+="<a href='"+filelink+"' >"+filez[i].filename+"."+filez[i].extension+"</a>";	
-						}
-						tab+="</td><td style='padding:4px;'>";
-						tab+=filez[i].updtime;+"</td>";
-						tab+="<td>";
-						// Button for making / viewing feedback - note - only button for given feedback to students.
-						tab+="<button onclick='displayPreview(\""+filez[i].filepath+"\",\""+filez[i].filename+"\",\""+filez[i].seq+"\",\""+ctype+"\",\""+filez[i].extension+"\","+i+");'>Feedback</button>";
-						tab+="</td>";
-						tab+="<td>";
-						if(filez[i].feedback!=="UNK"){
-								tab+=filez[i].feedback.substring(0,64)+"&#8230;";						
-						}else{
-								tab+="&nbsp;";												
-						}
-						tab+="</td></tr>";		
-				}
+		if (typeof filez !== "undefined"){
+			for (var i=filez.length-1;i>=0;i--){
+					if(cfield==filez[i].fieldnme){
+							var filelink=filez[i].filepath+filez[i].filename+filez[i].seq+"."+filez[i].extension;											
+							tab+="<tr'>"
+							tab+="<td style='padding:4px;'>";
+							if (ctype == "link"){
+									tab+="<a href='"+filez[i].content+"' >"+filez[i].content+"</a>";	
+							} else {
+									tab+="<a href='"+filelink+"' >"+filez[i].filename+"."+filez[i].extension+"</a>";	
+							}
+							tab+="</td><td style='padding:4px;'>";
+							tab+=filez[i].updtime;+"</td>";
+							tab+="<td>";
+							// Button for making / viewing feedback - note - only button for given feedback to students.
+							tab+="<button onclick='displayPreview(\""+filez[i].filepath+"\",\""+filez[i].filename+"\",\""+filez[i].seq+"\",\""+ctype+"\",\""+filez[i].extension+"\","+i+");'>Feedback</button>";
+							tab+="</td>";
+							tab+="<td>";
+							if(filez[i].feedback!=="UNK"){
+									tab+=filez[i].feedback.substring(0,64)+"&#8230;";						
+							}else{
+									tab+="&nbsp;";												
+							}
+							tab+="</td></tr>";		
+					}
+			}			
 		}
 		tab+="</tbody>"
 		tab+="</table>"			

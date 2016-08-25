@@ -152,25 +152,37 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 
 			$currcvd=getcwd();
 
-			// Create a file area with format Lastname-Firstname-Login
-			$userdir = $lastname."_".$firstname."_".$loginname;
-			
-			// First replace a predefined list of national characters
-			// Then replace any additional character that is not a-z, a number, period or underscore
-			$national = array("&ouml;", "&Ouml;", "&auml;", "&Auml;", "&aring;", "&Aring;","&uuml;","&Uuml;");
-			$nationalReplace = array("o", "O", "a", "A", "a", "A","u","U");
-			$userdir = str_replace($national, $nationalReplace, $userdir);
-			$userdir=preg_replace("/[^a-zA-Z0-9._]/", "", $userdir);				
-	
-			if(!file_exists ($currcvd."/submissions/".$cid."/".$vers."/".$duggaid."/".$userdir)){
-					if(!mkdir($currcvd."/submissions/".$cid."/".$vers."/".$duggaid."/".$userdir)){
-							echo "Error creating folder: ".$currcvd."/submissions/cid/vers/duggaid/".$userdir;
-							$error=true;
-					}
+			$query = $pdo->prepare("SELECT lastname,firstname,username FROM user WHERE uid=:uid");
+			$query->bindParam(':uid', $luid);
+
+			if(!$query->execute()) {
+					$error=$query->errorInfo();
+					$debug="Error updating entries".$error[2];
 			}
+
+			if ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
+					// Create a file area with format Lastname-Firstname-Login
+					$userdir = $row["lastname"]."_".$row["firstname"]."_".$row["username"];
+					
+					// First replace a predefined list of national characters
+					// Then replace any additional character that is not a-z, a number, period or underscore
+					$national = array("&ouml;", "&Ouml;", "&auml;", "&Auml;", "&aring;", "&Aring;","&uuml;","&Uuml;");
+					$nationalReplace = array("o", "O", "a", "A", "a", "A","u","U");
+					$userdir = str_replace($national, $nationalReplace, $userdir);
+					$userdir=preg_replace("/[^a-zA-Z0-9._]/", "", $userdir);				
 			
-			$movname=$currcvd."/submissions/".$cid."/".$vers."/".$duggaid."/".$userdir."/".$responsefile."_FB.txt";
-			file_put_contents($movname,$responsetext);			
+					if(!file_exists ($currcvd."/submissions/".$cid."/".$vers."/".$duggaid."/".$userdir)){
+							if(!mkdir($currcvd."/submissions/".$cid."/".$vers."/".$duggaid."/".$userdir)){
+									echo "Error creating folder: ".$currcvd."/submissions/cid/vers/duggaid/".$userdir;
+									$error=true;
+							}
+					}
+					
+					$movname=$currcvd."/submissions/".$cid."/".$vers."/".$duggaid."/".$userdir."/".$responsefile."_FB.txt";
+					file_put_contents($movname,$responsetext);			
+					$debug = $movname;
+		}
 	}	
 }
 
@@ -313,7 +325,7 @@ foreach($query->fetchAll() as $row) {
 		
 		$fedbname=$currcvd."/".$row['filepath'].$row['filename'].$row['seq']."_FB.txt";				
 		if(!file_exists($fedbname)) {
-				$feedback="No feedback yet...";
+				$feedback="UNK";
 		} else {
 				$feedback=file_get_contents($fedbname);
 		}			

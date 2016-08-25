@@ -250,8 +250,8 @@ function saveResponse()
 	
 		var filename=allData["files"][allData["duggaentry"]][clickedindex].filename+allData["files"][allData["duggaentry"]][clickedindex].seq;
 	
-		AJAXService("RESP", { cid : querystring['cid'],vers : querystring['coursevers'],resptext:respo, respfile:filename, duggaid: allData["duggaid"] }, "RESULT");	
-		AJAXService("DUGGA", { cid : querystring['cid'], vers : querystring['coursevers'], moment : "clickedmoment", luid : "clickeduser" }, "RESULT");
+		AJAXService("RESP", { cid : querystring['cid'],vers : querystring['coursevers'],resptext:respo, respfile:filename, duggaid: allData["duggaid"],luid : allData["duggauser"] }, "RESULT");	
+		AJAXService("DUGGA", { cid : querystring['cid'], vers : querystring['coursevers'], moment : allData["duggaentry"], luid : allData["duggauser"] }, "RESULT");
 		
 		$("#previewpopover").css("display", "none");
 }

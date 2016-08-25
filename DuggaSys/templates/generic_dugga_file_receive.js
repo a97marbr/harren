@@ -76,14 +76,15 @@ function returnedDugga(data)
 			}
 
 		}
-
-		for (var version=0; version < duggaFiles.length;version++){				
-			if (duggaFiles[version].kind == "3"){
-				if (document.getElementById(duggaFiles[version].fieldnme+"Text") != null){
-				 		document.getElementById(duggaFiles[version].fieldnme+"Text").innerHTML=duggaFiles[version].content;					
+		if (typeof duggaFiles !== "undefined"){
+			for (var version=0; version < duggaFiles.length;version++){				
+				if (duggaFiles[version].kind == "3"){
+					if (document.getElementById(duggaFiles[version].fieldnme+"Text") != null){
+					 		document.getElementById(duggaFiles[version].fieldnme+"Text").innerHTML=duggaFiles[version].content;					
+					}
 				}
-			}
-		}				
+			}							
+		}
 
 		if (data["answer"] == null || data["answer"] !== "UNK") {
 
