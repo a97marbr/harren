@@ -109,6 +109,7 @@ CREATE TABLE quiz (
 	deadline 		DATETIME,
 	modified 		TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	creator 		INTEGER,
+	vers				VARCHAR(8),
 
 	CONSTRAINT 		pk_quiz PRIMARY KEY (id),
 	CONSTRAINT 		fk_quiz_joins_course FOREIGN KEY (cid) REFERENCES course(cid) ON DELETE CASCADE ON UPDATE CASCADE
@@ -513,6 +514,15 @@ DELIMITER ;
  DROP TABLE tmpSubmission;
  END //
  DELIMITER ;
+
+/* Keep track of active courses for students */
+ CREATE TABLE useractiveversions (
+   cid int(10) NOT NULL,
+   vers varchar(8) NOT NULL,
+   uid int(10) NOT NULL,
+   PRIMARY KEY (cid,vers,uid)
+ );
+
 
 /* Templates for codeexamples */
 
