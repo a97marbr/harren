@@ -138,8 +138,6 @@ if($ha){
 							}
 					}
 					foreach($momentlist as $key => $value){
-							$debug.=$key." ".$value."\n";		
-
 							$ruery = $pdo->prepare("UPDATE listentries SET moment=:nyttmoment WHERE moment=:oldmoment AND vers=:updvers;");
 							$ruery->bindParam(':nyttmoment', $value);
 							$ruery->bindParam(':oldmoment', $key);
@@ -150,65 +148,6 @@ if($ha){
 							}
 					}
 			}
-
-			
-/*
-
-
-$val = 5;
-$sql = "REPLACE table (column) VALUES (:val)";
-$stmt = $dbh->prepare($sql);
-$stmt->bindParam(':val', $val, PDO::PARAM_INT);
-$stmt->execute();
-$lastId = $dbh->lastInsertId();
-
-
-
-			$query = $pdo->prepare("INSERT INTO tmplistentries SELECT * from listentries WHERE vers = :oldvers;");
-			$query->bindParam(':oldvers', $copycourse);
-			if(!$query->execute()) {
-				$error=$query->errorInfo();
-				$debug="Error copying table".$error[2];
-			}
-
-			$query = $pdo->prepare("UPDATE tmplistentries SET vers = :newvers WHERE vers = :oldvers;");
-			$query->bindParam(':oldvers', $versid);
-			$query->bindParam(':newvers', $copycourse);
-			if(!$query->execute()) {
-				$error=$query->errorInfo();
-				$debug="Error updating temporary table".$error[2];
-			}
-*/
-
-/*		 
-			$query = $pdo->prepare("INSERT INTO listentries (cid,entryname,link,kind,pos,creator,ts,code_id,visible,vers,moment,gradesystem,highscoremode) SELECT cid,entryname,link,kind,pos,creator,ts,code_id,visible,vers,moment,gradesystem,highscoremode FROM tmpListEntry WHERE vers = :newvers;");
-			$query->bindParam(':newvers', $copycourse);
-			if(!$query->execute()) {
-				$error=$query->errorInfo();
-				$debug="Error copying new version from temporary".$error[2];
-			}
-*/
-
-/*		
-			$query = $pdo->prepare("DROP TABLE tmpListEntry;");
-			if(!$query->execute()) {
-				$error=$query->errorInfo();
-				$debug="Error dropping temporary table".$error[2];
-			}
-*/		 
-		 
- 
-			///prepare a stored procedure call, bind params for variables
-/*
-			$query = $pdo->prepare("CALL copyVersionItems(:overs,:nvers)");
-			$query->bindParam(":overs",$copycourse,PDO::PARAM_STR);
-			$query->bindParam(":nvers",$versid,PDO::PARAM_STR);
-
-			if(!$query->execute()) {
-				$error=$query->errorInfo();
-				$debug="Error cloning course. ".$error[2];
-			}
-*/
 		}else if(strcmp($opt,"UPDATE")===0){
 		$query = $pdo->prepare("UPDATE course SET coursename=:coursename, visibility=:visibility, coursecode=:coursecode WHERE cid=:cid;");
 
