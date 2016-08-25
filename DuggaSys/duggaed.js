@@ -8,7 +8,7 @@ var querystring=parseGet();
 var filez;
 var duggaPages;
 
-AJAXService("GET",{cid:querystring['cid']},"DUGGA");
+AJAXService("GET",{cid:querystring['cid'],coursevers:querystring['coursevers']},"DUGGA");
 
 $(function() {
 	$("#release").datepicker({
@@ -31,7 +31,7 @@ $(function() {
 function deleteVariant()
 {
 	var vid=$("#vid").val();
-	if(confirm("Do you really want to delete this Variant?")) AJAXService("DELVARI",{cid:querystring['cid'],vid:vid},"DUGGA");
+	if(confirm("Do you really want to delete this Variant?")) AJAXService("DELVARI",{cid:querystring['cid'],vid:vid,coursevers:querystring['coursevers']},"DUGGA");
 	$("#editVariant").css("display","none");
 }
 
@@ -39,16 +39,16 @@ function toggleVariant()
 {
 	var vid=$("#vid").val();
 	if ($("#toggleVariantButton").val()==="Disable") {
-		if(confirm("Do you really want to disable this Variant?")) AJAXService("TOGGLEVARI",{cid:querystring['cid'],vid:vid,disabled:"1"},"DUGGA");
+		if(confirm("Do you really want to disable this Variant?")) AJAXService("TOGGLEVARI",{cid:querystring['cid'],vid:vid,disabled:"1",coursevers:querystring['coursevers']},"DUGGA");
 	} else {
-		if(confirm("Do you really want to enable this Variant?")) AJAXService("TOGGLEVARI",{cid:querystring['cid'],vid:vid,disabled:"0"},"DUGGA");
+		if(confirm("Do you really want to enable this Variant?")) AJAXService("TOGGLEVARI",{cid:querystring['cid'],vid:vid,disabled:"0",coursevers:querystring['coursevers']},"DUGGA");
 	}
 	$("#editVariant").css("display","none");
 }
 
 function addVariant(cid,qid)
 {
-	AJAXService("ADDVARI",{cid:cid,qid:qid},"DUGGA");
+	AJAXService("ADDVARI",{cid:cid,qid:qid,coursevers:querystring['coursevers']},"DUGGA");
 }
 
 function updateVariant()
@@ -59,7 +59,7 @@ function updateVariant()
 	var answer=$("#variantanswer").val();
 	var parameter=$("#parameter").val();
 	
-	AJAXService("SAVVARI",{cid:querystring['cid'],vid:vid,variantanswer:answer,parameter:parameter},"DUGGA");
+	AJAXService("SAVVARI",{cid:querystring['cid'],vid:vid,variantanswer:answer,parameter:parameter,coursevers:querystring['coursevers']},"DUGGA");
 }
 
 function closeEditVariant()
@@ -69,7 +69,7 @@ function closeEditVariant()
 
 function createDugga()
 {
-	AJAXService("ADDUGGA",{cid:querystring['cid']},"DUGGA");
+	AJAXService("ADDUGGA",{cid:querystring['cid'],coursevers:querystring['coursevers']},"DUGGA");
 }
 
 function updateDugga()
@@ -84,7 +84,7 @@ function updateDugga()
 	var release=$("#release").val();
 	var deadline=$("#deadline").val();
 	
-	AJAXService("SAVDUGGA",{cid:querystring['cid'],qid:did,nme:nme,autograde:autograde,gradesys:gradesys,template:template,release:release,deadline:deadline},"DUGGA");
+	AJAXService("SAVDUGGA",{cid:querystring['cid'],qid:did,nme:nme,autograde:autograde,gradesys:gradesys,template:template,release:release,deadline:deadline,coursevers:querystring['coursevers']},"DUGGA");
 }
 
 function closeEditDugga()
@@ -334,7 +334,7 @@ function changename(didd,num)
 	var nme=$("#name").val();
 	var did=$("#did").val();
 	
-	AJAXService("UPDATEDNAME",{cid:querystring['cid'],qid:did,nme:nme},"DUGGA");
+	AJAXService("UPDATEDNAME",{cid:querystring['cid'],qid:did,nme:nme,coursevers:querystring['coursevers']},"DUGGA");
 }
 function changeauto(didd,num)
 {
@@ -346,7 +346,7 @@ function changeauto(didd,num)
 	var did=$("#did").val();
 	var autograde=$("#autograde").val();
 	
-	AJAXService("UPDATEAUTO",{cid:querystring['cid'],qid:did,autograde:autograde},"DUGGA");
+	AJAXService("UPDATEAUTO",{cid:querystring['cid'],qid:did,autograde:autograde,coursevers:querystring['coursevers']},"DUGGA");
 }
 function changegrade(didd,num)
 {
@@ -357,7 +357,7 @@ function changegrade(didd,num)
 	var did=$("#did").val();
 	var gradesys=$("#gradesys").val();
 	
-	AJAXService("UPDATEGRADE",{cid:querystring['cid'],qid:did,gradesys:gradesys},"DUGGA");
+	AJAXService("UPDATEGRADE",{cid:querystring['cid'],qid:did,gradesys:gradesys,coursevers:querystring['coursevers']},"DUGGA");
 
 }
 function changefile(didd,num)
@@ -378,7 +378,7 @@ function changefile(didd,num)
 	var did=$("#did").val();
 	var template=$("#template").val();
 	
-	AJAXService("UPDATETEMPLATE",{cid:querystring['cid'],qid:did,template:template},"DUGGA");
+	AJAXService("UPDATETEMPLATE",{cid:querystring['cid'],qid:did,template:template,coursevers:querystring['coursevers']},"DUGGA");
 }
 
 function changeparam(vidd,num)
@@ -390,7 +390,7 @@ function changeparam(vidd,num)
 	var vid=$("#vid").val();
 	var parameter=$("#parameter").val();
 	
-	AJAXService("SAVVARIPARA",{cid:querystring['cid'],vid:vid,parameter:parameter},"DUGGA");
+	AJAXService("SAVVARIPARA",{cid:querystring['cid'],vid:vid,parameter:parameter,coursevers:querystring['coursevers']},"DUGGA");
 }
 function changeanswer(vidd,num)
 {
@@ -401,7 +401,7 @@ function changeanswer(vidd,num)
 	var vid=$("#vid").val();
 	var answer=$("#variantanswer").val();
 
-	AJAXService("SAVVARIANSWER",{cid:querystring['cid'],vid:vid,variantanswer:answer},"DUGGA");
+	AJAXService("SAVVARIANSWER",{cid:querystring['cid'],vid:vid,variantanswer:answer,coursevers:querystring['coursevers']},"DUGGA");
 }
 
 function closePreview()

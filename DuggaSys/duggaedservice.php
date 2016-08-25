@@ -32,6 +32,7 @@ $gradesys = getOP('gradesys');
 $template = getOP('template');
 $release = getOP('release');
 $deadline = getOP('deadline');
+$coursevers = getOP('coursevers');
 
 $debug="NONE!";
 
@@ -46,10 +47,11 @@ logServiceEvent($log_uuid, EventTypes::ServiceServerStart, "duggaedservice.php",
 if(checklogin() && (hasAccess($userid, $cid, 'w') || isSuperUser($userid))){
 
 	if(strcmp($opt,"ADDUGGA")===0){
-		$querystring="INSERT INTO quiz(cid,autograde,gradesystem,qname,quizFile,creator) VALUES (:cid,1,1,'New Dugga','test.html',:uid)";	
+		$querystring="INSERT INTO quiz(cid,autograde,gradesystem,qname,quizFile,creator,vers) VALUES (:cid,1,1,'New Dugga','test.html',:uid,:coursevers)";	
 		$stmt = $pdo->prepare($querystring);
 		$stmt->bindParam(':cid', $cid);
 		$stmt->bindParam(':uid', $userid);
+		$stmt->bindParam(':coursevers', $coursevers);
 		
 		try{
 			$stmt->execute();
@@ -188,8 +190,9 @@ $entries=array();
 $files=array();
 if(checklogin() && (hasAccess($userid, $cid, 'w') || isSuperUser($userid))){
 
-	$query = $pdo->prepare("SELECT id,cid,autograde,gradesystem,qname,quizFile,qrelease,deadline,modified FROM quiz WHERE cid=:cid ORDER BY id;");
+	$query = $pdo->prepare("SELECT id,cid,autograde,gradesystem,qname,quizFile,qrelease,deadline,modified,vers FROM quiz WHERE cid=:cid AND vers=:coursevers ORDER BY id;");
 	$query->bindParam(':cid', $cid);
+	$query->bindParam(':coursevers', $coursevers);
 	if(!$query->execute()){
 		$error=$query->errorInfo();
 		$debug="Error updating entries".$error[2];

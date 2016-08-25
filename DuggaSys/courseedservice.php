@@ -118,7 +118,48 @@ if($ha){
 				$error=$query->errorInfo();
 				$debug="Error updating entries".$error[2];
 			}
+			
+			// Duplicate duggas and dugga variants
+			$duggalist=array();
+			$query = $pdo->prepare("SELECT * from quiz WHERE cid=:cid AND vers = :oldvers;");
+			$query->bindParam(':cid', $cid);
+			$query->bindParam(':oldvers', $copycourse);
+			if(!$query->execute()) {
+					$error=$query->errorInfo();
+					$debug="Error reading quiz".$error[2];
+			}else{
+					foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row){
+							$ruery = $pdo->prepare("INSERT INTO quiz (cid,autograde,gradesystem,qname,quizFile,qrelease,deadline,modified,creator,vers) SELECT cid,autograde,gradesystem,qname,quizFile,qrelease,deadline,modified,creator,:newvers as vers from quiz WHERE id = :oldid;");
+							$ruery->bindParam(':oldid', $row['id']);
+							$ruery->bindParam(':newvers', $versid);
+							if(!$ruery->execute()) {
+								$error=$ruery->errorInfo();
+								$debug.="Error copying quiz entry".$error[2];
+							}else{
+									$duggalist[$row['id']]=$pdo->lastInsertId();
+							}
+					}
+					foreach($duggalist as $key => $value){
+						$buery = $pdo->prepare("SELECT * from variant WHERE quizID=:quizid;");
+						$buery->bindParam(':quizid', $key);
+						if(!$buery->execute()) {
+								$error=$buery->errorInfo();
+								$debug="Error reading variants: ".$error[2];
+						}else{
+								foreach($buery->fetchAll(PDO::FETCH_ASSOC) as $rowz){
+										$ruery = $pdo->prepare("INSERT INTO variant (quizID,param,variantanswer,modified,creator,disabled) SELECT :newquizid as quizID,param,variantanswer,modified,creator,disabled FROM variant WHERE vid = :oldvid;");
+										$ruery->bindParam(':oldvid', $rowz["vid"]);
+										$ruery->bindParam(':newquizid', $value);
+										if(!$ruery->execute()) {
+											$error=$ruery->errorInfo();
+											$debug.="Error updating entry".$error[2];
+										}						
+								}
+						}
+					}
+			}
 
+			// Duplicate listentries
 			$query = $pdo->prepare("SELECT * from listentries WHERE vers = :oldvers;");
 			$query->bindParam(':oldvers', $copycourse);
 			if(!$query->execute()) {
@@ -137,6 +178,7 @@ if($ha){
 									$momentlist[$row['lid']]=$pdo->lastInsertId();
 							}
 					}
+					// Update to correct moment
 					foreach($momentlist as $key => $value){
 							$ruery = $pdo->prepare("UPDATE listentries SET moment=:nyttmoment WHERE moment=:oldmoment AND vers=:updvers;");
 							$ruery->bindParam(':nyttmoment', $value);
@@ -147,7 +189,19 @@ if($ha){
 								$debug.="Error updating entry".$error[2];
 							}
 					}
+					// Update to correct dugga
+					foreach($duggalist as $key => $value){
+							$puery = $pdo->prepare("UPDATE listentries SET link=:newquiz WHERE link=:oldquiz AND vers=:updvers;");
+							$puery->bindParam(':newquiz', $value);
+							$puery->bindParam(':oldquiz', $key);
+							$puery->bindParam(':updvers', $versid);
+							if(!$puery->execute()) {
+								$error=$puery->errorInfo();
+								$debug.="Error updating entry".$error[2];
+							}
+					}
 			}
+			
 		}else if(strcmp($opt,"UPDATE")===0){
 		$query = $pdo->prepare("UPDATE course SET coursename=:coursename, visibility=:visibility, coursecode=:coursecode WHERE cid=:cid;");
 

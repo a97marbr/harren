@@ -94,7 +94,7 @@ if(checklogin()){
 			if($link==-1){
 
 					// Find section name - Last preceding section name if none - assigns UNK - so we know that nothing was found
-					// kind 0 == Header || 1 == Section || 2 == Code  || 3 == Test (Dugga)|| 4 == Moment || 5 == Link
+					// kind 0 == Header || 1 == Section || 2 == Code  ||ï¿½3 == Test (Dugga)|| 4 == Momentï¿½|| 5 == Link
 					$sname = "UNK";
 					$queryz = $pdo->prepare("SELECT entryname FROM listentries WHERE vers=:cversion AND cid=:cid AND (kind=1 or kind=0 or kind=4) AND (pos < (SELECT pos FROM listentries WHERE lid=:lid)) ORDER BY pos DESC LIMIT 1;");
 					$queryz->bindParam(':cid', $courseid);
@@ -245,7 +245,7 @@ $entries=array();
 $reada = (checklogin() && (hasAccess($userid, $courseid, 'r')||isSuperUser($userid)));
 
 if($reada || $userid == "guest"){
-	$query = $pdo->prepare("SELECT lid,moment,entryname,pos,kind,link,visible,code_id,listentries.gradesystem,highscoremode,deadline,qrelease FROM listentries LEFT OUTER JOIN quiz ON listentries.link=quiz.id WHERE listentries.cid=:cid and vers=:coursevers ORDER BY pos");
+	$query = $pdo->prepare("SELECT lid,moment,entryname,pos,kind,link,visible,code_id,listentries.gradesystem,highscoremode,deadline,qrelease FROM listentries LEFT OUTER JOIN quiz ON listentries.link=quiz.id WHERE listentries.cid=:cid and listentries.vers=:coursevers ORDER BY pos");
 	$query->bindParam(':cid', $courseid);
 	$query->bindParam(':coursevers', $coursevers);
 	$result=$query->execute();
@@ -464,4 +464,3 @@ echo json_encode($array);
 logServiceEvent($log_uuid, EventTypes::ServiceServerEnd, "sectionedservice.php",$userid,$info);
 
 ?>
-
