@@ -207,10 +207,16 @@ function leaveCell(thisObj)
 // Adds Canned Response to Response Dialog
 //----------------------------------------
 
-function displayPreview(filepath, filename, fileseq, filetype, fileext, fileindex)
+function displayPreview(filepath, filename, fileseq, filetype, fileext, fileindex, displaystate)
 {
 		clickedindex=fileindex;
 		
+		if(displaystate){
+				document.getElementById("markMenuPlaceholderz").style.display="block";		
+		}else{
+				document.getElementById("markMenuPlaceholderz").style.display="none";		
+		} 
+				
 		var str ="";
 		if (filetype === "text") {
 				str+="<textarea style='width: 100%;height: 100%;box-sizing: border-box;'>"+allData["files"][allData["duggaentry"]][fileindex].content+"</textarea>";
@@ -226,7 +232,8 @@ function displayPreview(filepath, filename, fileseq, filetype, fileext, fileinde
 		 		}
 		}
 		document.getElementById("popPrev").innerHTML=str;
-		document.getElementById("responseArea").value = allData["files"][allData["duggaentry"]][clickedindex].feedback;
+		document.getElementById("responseArea").innerHTML = allData["files"][allData["duggaentry"]][clickedindex].feedback;
+
 		
 		$("#previewpopover").css("display", "block");
 }
@@ -473,6 +480,8 @@ function returnedResults(data)
 		var zttr = "";
 		needMarking=0;
 
+		if (data['debug'] !== "NONE!") alert(data['debug']);
+
 		var showAll = false;
 		allData = data;
 	
@@ -513,5 +522,5 @@ function returnedResults(data)
 				document.getElementById("needMarking").innerHTML = "Students: " + allData['entries'].length + "<BR />Unmarked : " + needMarking;
 		}
 
-		if (data['debug'] !== "NONE!") alert(data['debug']);
+
 }
