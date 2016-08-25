@@ -195,9 +195,12 @@ $lentries=array();
 
 if(strcmp($opt,"DUGGA")!==0){
 	if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESSION['uid']))) {
-		// Users connected to the current course (irrespective of version)
-		$query = $pdo->prepare("select user_course.cid as cid,user.uid as uid,username,firstname,lastname,ssn,access from user,user_course where user.uid=user_course.uid and user_course.cid=:cid;");
+		// Users connected to the current course version
+		
+		$query = $pdo->prepare("select useractiveversions.cid as cid,user.uid as uid,username,firstname,lastname,ssn from user,useractiveversions where user.uid=useractiveversions.uid and useractiveversions.cid=:cid and useractiveversions.vers=:coursevers;");
+		//		$query = $pdo->prepare("select user_course.cid as cid,user.uid as uid,username,firstname,lastname,ssn,access from user,user_course where user.uid=user_course.uid and user_course.cid=:cid;");
 		$query->bindParam(':cid', $cid);
+		$query->bindParam(':coursevers', $vers);
 
 		if(!$query->execute()) {
 			$error=$query->errorInfo();
@@ -213,9 +216,19 @@ if(strcmp($opt,"DUGGA")!==0){
 				'username' => $row['username'],
 				'firstname' => $row['firstname'],
 				'lastname' => $row['lastname'],
+				'ssn' => $row['ssn']
+			);
+/*
+			$entry = array(
+				'cid' => (int)$row['cid'],
+				'uid' => (int)$row['uid'],
+				'username' => $row['username'],
+				'firstname' => $row['firstname'],
+				'lastname' => $row['lastname'],
 				'ssn' => $row['ssn'],
 				'role' => $row['access']
 			);
+			*/
 			array_push($entries, $entry);
 		}
 
@@ -253,7 +266,7 @@ if(strcmp($opt,"DUGGA")!==0){
 			);
 		}
 
-		// All dugga/moment entries from all versions of course
+		// All dugga/moment entries from current course version
 		$query = $pdo->prepare("SELECT lid,moment,entryname,pos,kind,link,visible,code_id,vers,gradesystem FROM listentries WHERE listentries.cid=:cid and vers=:vers and (listentries.kind=3 or listentries.kind=4) ORDER BY pos");
 		$query->bindParam(':cid', $cid);
 		$query->bindParam(':vers', $vers);

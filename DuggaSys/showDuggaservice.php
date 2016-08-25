@@ -171,6 +171,16 @@ if($userid!="UNK"){
 				$error=$query->errorInfo();
 				$debug="Error inserting variant (row ".__LINE__.") ".$query->rowCount()." row(s) were inserted. Error code: ".$error[2];
 			}
+			// Make sure that current version is set to active for this student
+			$vuery = $pdo->prepare("INSERT IGNORE INTO useractiveversions(cid,vers,uid) VALUES(:cid,:coursevers,:uid);");
+			$vuery->bindParam(':cid', $courseid);
+			$vuery->bindParam(':coursevers', $coursevers);
+			$vuery->bindParam(':uid', $userid);
+			if(!$vuery->execute()) {
+				$error=$vuery->errorInfo();
+				$debug="Error inserting active version (row ".__LINE__.") ".$vuery->rowCount()." row(s) were inserted. Error code: ".$error[2];
+			}
+			
 			$savedvariant=$newvariant;
 			//------------------------------
 			//mark segment as started on

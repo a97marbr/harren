@@ -24,6 +24,7 @@ $lastname = getOP('lastname');
 $username = getOP('username');
 $val = getOP('val');
 $newusers = getOP('newusers');
+$coursevers = getOP('coursevers');
 
 $debug="NONE!";	
 
@@ -136,11 +137,18 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 				$stmt->bindParam(':cid', $cid);
 
 				// Insert the user into the database.
-				try {
-					$stmt->execute();
-				} catch (PDOException $e) {
-					if ($e->getCode()=="23000") {
-						// User Already Exists i.e. primary key
+				if(!$stmt->execute()) {
+					$error=$stmt->errorInfo();
+					$debug.="Error updating entry".$error[2];
+				} else {
+					// We added a student for the first time to this course. Make current version active.
+					$stmt2 = $pdo->prepare("INSERT IGNORE INTO useractiveversions (cid,vers,uid) VALUES(:cid, :vers, :uid)");
+					$stmt2->bindParam(':uid', $uid);
+					$stmt2->bindParam(':cid', $cid);					
+					$stmt2->bindParam(':vers', $coursevers);
+					if(!$stmt2->execute()) {
+						$error=$stmt2->errorInfo();
+						$debug.="Error adding active version: ".$error[2];
 					}
 				}
 			}	

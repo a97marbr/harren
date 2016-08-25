@@ -2,7 +2,7 @@ var sessionkind=0;
 var querystring=parseGet();
 var versions;
 
-AJAXService("GET",{cid:querystring['cid']},"ACCESS");
+AJAXService("GET",{cid:querystring['cid'],coursevers:querystring['coursevers']},"ACCESS");
 
 //----------------------------------------
 // Commands:
@@ -11,7 +11,7 @@ AJAXService("GET",{cid:querystring['cid']},"ACCESS");
 function addUsers()
 {
 	newusers=$("#import").val();
-	AJAXService("ADDUSR",{cid:querystring['cid'],newusers:newusers},"ACCESS");
+	AJAXService("ADDUSR",{cid:querystring['cid'],newusers:newusers,coursevers:querystring['coursevers']},"ACCESS");
 	$("#createUsers").css("display","none");
 }
 
@@ -27,7 +27,7 @@ function hideCreateUsersPopup()
 
 function changeAccess(cid,uid,val)
 {
-	AJAXService("ACCESS",{cid:cid,uid:uid,val:val},"ACCESS");
+	AJAXService("ACCESS",{cid:cid,uid:uid,val:val,coursevers:querystring['coursevers']},"ACCESS");
 }
 
 function selectUser(uid,username,ssn,firstname,lastname,access)
@@ -54,7 +54,7 @@ function updateUser()
 	var lastname=$("#lastname").val();
 	var uid=$("#uid").val();
 	
-	AJAXService("UPDATE",{ssn:ussn,uid:uid,firstname:firstname,lastname:lastname,username:usrnme,cid:querystring['cid']},"ACCESS");
+	AJAXService("UPDATE",{ssn:ussn,uid:uid,firstname:firstname,lastname:lastname,username:usrnme,cid:querystring['cid'],coursevers:querystring['coursevers']},"ACCESS");
 	
 	$("#editUsers").css("display","none");
 }
@@ -70,7 +70,7 @@ function resetPw(uid,username)
 
 	window.location="mailto:"+username+"@student.his.se?Subject=LENASys%20Password%20Reset&body=Your%20new%20password%20for%20LENASys%20is:%20"+rnd+"%0A%0A/LENASys Administrators";
 	
-	AJAXService("CHPWD",{cid:querystring['cid'],uid:uid,pw:rnd},"ACCESS");
+	AJAXService("CHPWD",{cid:querystring['cid'],uid:uid,pw:rnd,coursevers:querystring['coursevers']},"ACCESS");
 }
 
 //----------------------------------------
