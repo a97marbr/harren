@@ -159,6 +159,50 @@ if($ha){
 					}
 			}
 
+			// Duplicate codeexamples and it's components box, improws, impwordlist
+			$codeexamplelist=array();
+			$query = $pdo->prepare("SELECT * from codeexample WHERE cid=:cid AND cversion = :oldvers;");
+			$query->bindParam(':cid', $cid);
+			$query->bindParam(':oldvers', $copycourse);
+			if(!$query->execute()) {
+					$error=$query->errorInfo();
+					$debug="Error reading codeexample: ".$error[2];
+			}else{
+					foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row){
+							$ruery = $pdo->prepare("INSERT INTO codeexample (cid,examplename,sectionname,beforeid,afterid,runlink,cversion,public,updated,uid,templateid) SELECT cid,examplename,sectionname,beforeid,afterid,runlink,:newvers as cversion,public,updated,uid,templateid from codeexample WHERE exampleid = :oldid;");
+							$ruery->bindParam(':oldid', $row['exampleid']);
+							$ruery->bindParam(':newvers', $versid);
+							if(!$ruery->execute()) {
+								$error=$ruery->errorInfo();
+								$debug.="Error copying codeexample entry".$error[2];
+							}else{
+									$codeexamplelist[$row['exampleid']]=$pdo->lastInsertId();
+							}
+					}
+					// Make duplicate of all boxes
+					foreach($codeexamplelist as $key => $value){
+						$buery = $pdo->prepare("SELECT * from box WHERE exampleid=:exampleid;");
+						$buery->bindParam(':exampleid', $key);
+						if(!$buery->execute()) {
+								$error=$buery->errorInfo();
+								$debug="Error reading boxes: ".$error[2];
+						}else{
+								foreach($buery->fetchAll(PDO::FETCH_ASSOC) as $rowz){
+										$ruery = $pdo->prepare("INSERT INTO box (boxid,exampleid,boxtitle,boxcontent,filename,settings,wordlistid,segment,fontsize) SELECT boxid,:newexampleid as exampleid,boxtitle,boxcontent,filename,settings,wordlistid,segment,fontsize FROM box WHERE boxid=:oldboxid and exampleid=:oldexampleid;");
+										$ruery->bindParam(':oldboxid', $rowz["boxid"]);
+										$ruery->bindParam(':oldexampleid', $key);
+										$ruery->bindParam(':newexampleid', $value);
+										if(!$ruery->execute()) {
+											$error=$ruery->errorInfo();
+											$debug.="Error duplicating boxes".$error[2];
+										}						
+								}
+						}
+					}
+					// Make duplicate of impwordlist
+					// Make duplicate of improws
+			}
+
 			// Duplicate listentries
 			$query = $pdo->prepare("SELECT * from listentries WHERE vers = :oldvers;");
 			$query->bindParam(':oldvers', $copycourse);
@@ -194,6 +238,18 @@ if($ha){
 							$puery = $pdo->prepare("UPDATE listentries SET link=:newquiz WHERE link=:oldquiz AND vers=:updvers;");
 							$puery->bindParam(':newquiz', $value);
 							$puery->bindParam(':oldquiz', $key);
+							$puery->bindParam(':updvers', $versid);
+							if(!$puery->execute()) {
+								$error=$puery->errorInfo();
+								$debug.="Error updating entry".$error[2];
+							}
+					}
+
+					// Update to correct codeexample
+					foreach($codeexamplelist as $key => $value){
+							$puery = $pdo->prepare("UPDATE listentries SET link=:newexample WHERE link=:oldexample AND vers=:updvers;");
+							$puery->bindParam(':newexample', $value);
+							$puery->bindParam(':oldexample', $key);
 							$puery->bindParam(':updvers', $versid);
 							if(!$puery->execute()) {
 								$error=$puery->errorInfo();
