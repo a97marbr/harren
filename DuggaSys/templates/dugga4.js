@@ -16,6 +16,7 @@ Example seed
 */
 
 //------------==========########### GLOBALS ###########==========------------
+var score = -1;
 var running;
 var retdata = null;
 var canvas = null;

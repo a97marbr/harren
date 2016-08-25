@@ -19,6 +19,7 @@ Example seed
 
 var dw,dpos,dwid,dhei,bw,lpos,popclass;
 var hc=null;
+var score = -1;
 
 //----------------------------------------------------------------------------------
 // Setup

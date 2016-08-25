@@ -19,7 +19,7 @@ Example seed
 
 var retdata=null;
 var hc=null;
-
+var score = -1;
 //----------------------------------------------------------------------------------
 // Setup
 //----------------------------------------------------------------------------------
@@ -136,7 +136,7 @@ function saveClick()
 	bitstr+=" "+$(window).height();
 	
 	// Duggastr includes only the local information, duggasys adds the dugga number and the rest of the information.
-	saveDuggaResult(bitstr);
+	//saveDuggaResult(bitstr);
 }
 
 function reset()
