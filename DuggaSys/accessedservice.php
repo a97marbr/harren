@@ -69,6 +69,7 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 			$debug="Error updating user".$error[2];
 		}
 	}else if(strcmp($opt,"ADDUSR")==0){
+		/*
 		// Import users, create if user does not previously exist.
 		$users=explode("\n", $newusers);
 		
@@ -96,8 +97,19 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 			// Assemble this into more useful bits.
 			list($lastname, $firstname)=(explode(", ",$name));
 			list($username, $garbage)=(explode("@",$username1));
+			*/
 			
-			$debug.=$ssn." ".$username."#".$firstname."#".$lastname."\n";
+			$newUserData = json_decode(htmlspecialchars_decode($newusers));
+			//$debug = print_r($newUserData,true);
+	
+		foreach ($newUserData as $user) {
+			$ssn = $user[0];
+			$tmp = explode(',', $user[1]);
+			$firstname = trim($tmp[1]);
+			$lastname = trim($tmp[0]);
+			$tmp2 = explode('@', $user[5]);
+			$username = $tmp2[0];
+			//$debug.=$ssn." ".$username."#".$firstname."#".$lastname."\n";
 			$uid="UNK";
 			$userquery = $pdo->prepare("SELECT uid,username FROM user WHERE username=:username or ssn=:ssn");
 			$userquery->bindParam(':username', $username);
@@ -153,6 +165,7 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 				}
 			}	
 		}
+		
 	}
 }
 

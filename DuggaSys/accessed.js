@@ -10,9 +10,15 @@ AJAXService("GET",{cid:querystring['cid'],coursevers:querystring['coursevers']},
 
 function addUsers()
 {
-	newusers=$("#import").val();
-	AJAXService("ADDUSR",{cid:querystring['cid'],newusers:newusers,coursevers:querystring['coursevers']},"ACCESS");
-	$("#createUsers").css("display","none");
+		var newUsersArr = new Array();
+		newusers=$("#import").val();
+		var myArr=newusers.split("\n");
+		for (var i=0; i<myArr.length; i++){
+				newUsersArr.push(myArr[i].split("\t"));
+		}
+		var newUserJSON = JSON.stringify(newUsersArr);	
+		AJAXService("ADDUSR",{cid:querystring['cid'],newusers:newUserJSON,coursevers:querystring['coursevers']},"ACCESS");
+		$("#createUsers").css("display","none");
 }
 
 function showCreateUsersPopup()
