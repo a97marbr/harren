@@ -103,42 +103,57 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 			//$debug = print_r($newUserData,true);
 	
 		foreach ($newUserData as $user) {
-			$ssn = $user[0];
-			$tmp = explode(',', $user[1]);
-			$firstname = trim($tmp[1]);
-			$lastname = trim($tmp[0]);
-			$tmp2 = explode('@', $user[5]);
-			$username = $tmp2[0];
-			//$debug.=$ssn." ".$username."#".$firstname."#".$lastname."\n";
 			$uid="UNK";
-			$userquery = $pdo->prepare("SELECT uid,username FROM user WHERE username=:username or ssn=:ssn");
-			$userquery->bindParam(':username', $username);
-			$userquery->bindParam(':ssn', $ssn);
-			
-			// If there isn't we'll register a new user and give them a randomly
-			// assigned password which can be printed later.
-			if ($userquery->execute() && $userquery->rowCount() <= 0 && !empty($username)) {
-				$rnd=makeRandomString(9);
-				$querystring='INSERT INTO user (username, email, firstname, lastname, ssn, password,addedtime) VALUES(:username,:email,:firstname,:lastname,:ssn,password(:password),now());';	
-				$stmt = $pdo->prepare($querystring);
-				$stmt->bindParam(':username', $username);
-				$stmt->bindParam(':email', $saveemail);
-				$stmt->bindParam(':firstname', $firstname);
-				$stmt->bindParam(':lastname', $lastname);
-				$stmt->bindParam(':ssn', $ssn);
-				$stmt->bindParam(':password', $rnd);
-				
-				if(!$stmt->execute()) {
-					$error=$stmt->errorInfo();
-					$debug.="Error updating entries".$error[2];
-					$debug.="   ".$username."Does not Exist \n";
-					$debug.=" ".$uid;
-				}
-				$uid=$pdo->lastInsertId();
-				// Save uid and password in array, send to client for delegation!
-			}else if($userquery->rowCount() > 0){
-				$usr = $userquery->fetch(PDO::FETCH_ASSOC);
-				$uid = $usr['uid'];
+			if (count($user) == 1) {
+					// See if we have added with username or SSN
+					$userquery = $pdo->prepare("SELECT uid FROM user WHERE username=:usernameorssn or ssn=:usernameorssn");
+					$userquery->bindParam(':usernameorssn', $user[0]);
+					
+					if(!$userquery->execute()) {
+							$error=$userquery->errorInfo();
+							$debug.="Error adding user by ssn or username: ".$error[2];
+					}	else {
+							foreach($userquery->fetchAll(PDO::FETCH_ASSOC) as $row){
+									$uid = $row["uid"];
+							}
+					}				
+			} else if (count($user) > 1 && count($user) <= 6){
+					$ssn = $user[0];
+					$tmp = explode(',', $user[1]);
+					$firstname = trim($tmp[1]);
+					$lastname = trim($tmp[0]);
+					$tmp2 = explode('@', $user[5]);
+					$username = $tmp2[0];
+					//$debug.=$ssn." ".$username."#".$firstname."#".$lastname."\n";					
+					$userquery = $pdo->prepare("SELECT uid,username FROM user WHERE username=:username or ssn=:ssn");
+					$userquery->bindParam(':username', $username);
+					$userquery->bindParam(':ssn', $ssn);
+					
+					// If there isn't we'll register a new user and give them a randomly
+					// assigned password which can be printed later.
+					if ($userquery->execute() && $userquery->rowCount() <= 0 && !empty($username)) {
+							$rnd=makeRandomString(9);
+							$querystring='INSERT INTO user (username, email, firstname, lastname, ssn, password,addedtime) VALUES(:username,:email,:firstname,:lastname,:ssn,password(:password),now());';	
+							$stmt = $pdo->prepare($querystring);
+							$stmt->bindParam(':username', $username);
+							$stmt->bindParam(':email', $saveemail);
+							$stmt->bindParam(':firstname', $firstname);
+							$stmt->bindParam(':lastname', $lastname);
+							$stmt->bindParam(':ssn', $ssn);
+							$stmt->bindParam(':password', $rnd);
+							
+							if(!$stmt->execute()) {
+								$error=$stmt->errorInfo();
+								$debug.="Error updating entries".$error[2];
+								$debug.="   ".$username."Does not Exist \n";
+								$debug.=" ".$uid;
+							}
+							$uid=$pdo->lastInsertId();
+							// Save uid and password in array, send to client for delegation!
+					}else if($userquery->rowCount() > 0){
+							$usr = $userquery->fetch(PDO::FETCH_ASSOC);
+							$uid = $usr['uid'];
+					}				
 			}
 				
 			// We have a user, connect to current course
