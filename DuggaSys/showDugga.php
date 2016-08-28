@@ -39,6 +39,10 @@
 	$duggafile="UNK";
 	$duggarel="UNK";
 	$duggadead="UNK";
+	
+	$visibility=false;
+	$readaccess=false;
+	$checklogin=false;
 
 
 	if(isset($_SESSION['uid'])){
@@ -50,20 +54,24 @@
 	$hr=false;
 	$query = $pdo->prepare("SELECT visibility FROM course WHERE cid=:cid");
 	$query->bindParam(':cid', $cid);
-
 	$result = $query->execute();
 	if($row = $query->fetch(PDO::FETCH_ASSOC)){
+			$visibility=$row['visibility'];
+	}
+	$readaccess=hasAccess($userid, $cid, 'r');
+
+/*
 		//Give permit if the user is logged in and has access to the course or if it is public
 		$hr = ((checklogin() && hasAccess($userid, $cid, 'r')) || $row['visibility'] != 0  && $userid != "UNK");
+		
 		if(!$hr){
 			if (checklogin()){
-				$hr = isSuperUser($userid);
+				$hr = isSuperUser($userid);$hr;
 			}
 		}
-	}
+*/
 
 	//If we have permission, and if file exists, include javascript file.			
-	if($hr){
 		if(isSuperUser($userid)){
 			$query = $pdo->prepare("SELECT quiz.id as id,entryname,quizFile,qrelease,deadline FROM listentries,quiz WHERE listentries.cid=:cid AND kind=3 AND listentries.vers=:vers AND quiz.cid=listentries.cid AND quiz.id=:quizid AND listentries.link=quiz.id;");
 		}else{
@@ -90,10 +98,6 @@
 			echo "<body>";							
 		}
 
-	}else{
-		echo "</head>";
-		echo "<body>";
-	}
 ?>
 
 
@@ -109,10 +113,12 @@
 
 			// Log USERID for Dugga Access
 			makeLogEntry($userid,1,$pdo,$cid." ".$vers." ".$quizid." ".$duggafile);
-
+			
 			// Put information in event log irrespective of whether we are allowed to or not.
 			// If we have access rights, read the file securely to document
-			if($duggafile!="UNK"&&$userid!="UNK"){
+			// Visibility: 0 Hidden 1 Public 2 Login 3 Deleted 
+			
+			if($duggafile!="UNK"&&$userid!="UNK"&&($readaccess||isSuperUser($userid))){
 				if(file_exists ( "templates/".$duggafile.".html")){
 					readfile("templates/".$duggafile.".html");
 
@@ -128,11 +134,23 @@
 				}else{
 					echo "<div class='err'><span style='font-weight:bold;'>Bummer!</span> The link you asked for does not currently exist!</div>";
 				}
-			}else if ($userid=="UNK"){
-				echo "<div class='err'><span style='font-weight:bold;'>Not logged in!</span>You need to be logged in if you want to do duggor. There is a log in button in the top right corner.</div>";
+			}else if ($userid=="UNK"&&$visibility==1){
+				if(file_exists ( "templates/".$duggafile.".html")){
+					readfile("templates/".$duggafile.".html");
+				}else{
+					echo "<div class='err'><span style='font-weight:bold;'>Bummer!</span> The link you asked for does not currently exist!</div>";
+				}
+
+				echo "<div class='loginTransparent'>";
+				echo "<img src='../Shared/icons/duggaLock.svg'>";
+				echo "<p>Not logged in!<br>You can view the assignment but you need to be logged in to save your test result.</p>";
+				echo "</div>";
+
 			}else{
-				echo "<div class='err'><span style='font-weight:bold;'>Bummer!</span> Something went wrong in loading the dugga. Contact LENASys-admin.</div>";
+				echo "<div class='err'><span style='font-weight:bold;'>Bummer!</span> Something went wrong in loading the test. Contact LENASys-admin.</div>";
 			}
+		
+			echo "visibility:".$visibility." userid: ".$userid." readaccess: ".$readaccess;
 		?>
 
 	</div>
