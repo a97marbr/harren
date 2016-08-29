@@ -424,6 +424,7 @@ header td {
     margin-left: -50px;
     border-style: solid;
     border-width: 1px;
+		display:none;
 }
 
 .navButt {
@@ -1293,4 +1294,34 @@ input.new-item-button:hover {
 
 #feedbackTable tbody tr:nth-child(odd) {
    background-color: #FFF;
+}
+
+
+.loginTransparent {
+	display:block;
+	height: 60px;
+	width: 100%;
+	background-color: #614875;
+	position: static;
+	bottom: 0;
+	left: 0;
+	text-align: left;
+	margin-top: 40px;
+	clear: both;
+}
+
+.loginTransparent img{
+			height: 50px;
+			width: auto;
+			display: inline-block;
+			vertical-align: middle; 
+			margin-left: 20px; 
+			padding: 5px 0px;
+}
+
+.loginTransparent p{
+		display: inline-block;
+		vertical-align: middle;
+		padding-left: 15px;
+		color:#fff;
 }
