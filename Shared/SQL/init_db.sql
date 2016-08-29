@@ -62,17 +62,19 @@ CREATE TABLE course_req(
  * a tuple in this table joins a user with a course.
  */
 CREATE TABLE user_course(
-		uid				INT UNSIGNED NOT NULL,
-		cid				INT UNSIGNED NOT NULL,
-		result 			decimal(2,1) not null,
+		uid					INT UNSIGNED NOT NULL,
+		cid					INT UNSIGNED NOT NULL,
+		result 			DECIMAL(2,1) DEFAULT 0.0,
 		modified 		TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 		creator 		INTEGER,
 		access			VARCHAR(10) NOT NULL,
-		period			int(1) not null,
-		term			char(5) not null,
-		CONSTRAINT 		pk_user_course PRIMARY KEY(uid, cid),
-		CONSTRAINT 		user_course_joins_user FOREIGN KEY (uid)REFERENCES user (uid) ON DELETE CASCADE ON UPDATE CASCADE,
-		CONSTRAINT 		user_course_joins_course FOREIGN KEY (cid) REFERENCES course (cid) ON DELETE CASCADE ON UPDATE CASCADE
+		period			INTEGER DEFAULT 1,
+		term				CHAR(5) DEFAULT "VT16",
+		vers				VARCHAR(8),
+		vershistory	TEXT,
+		PRIMARY KEY(uid, cid),
+		FOREIGN KEY (uid)REFERENCES user (uid),
+		FOREIGN KEY (cid) REFERENCES course (cid)
 );
 
 CREATE TABLE listentries (
@@ -514,15 +516,6 @@ DELIMITER ;
  DROP TABLE tmpSubmission;
  END //
  DELIMITER ;
-
-/* Keep track of active courses for students */
- CREATE TABLE useractiveversions (
-   cid int(10) NOT NULL,
-   vers varchar(8) NOT NULL,
-   uid int(10) NOT NULL,
-   PRIMARY KEY (cid,vers,uid)
- );
-
 
 /* Templates for codeexamples */
 

@@ -197,7 +197,7 @@ if(strcmp($opt,"DUGGA")!==0){
 	if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESSION['uid']))) {
 		// Users connected to the current course version
 		
-		$query = $pdo->prepare("select useractiveversions.cid as cid,user.uid as uid,username,firstname,lastname,ssn from user,useractiveversions where user.uid=useractiveversions.uid and useractiveversions.cid=:cid and useractiveversions.vers=:coursevers;");
+		$query = $pdo->prepare("SELECT user_course.cid AS cid,user.uid AS uid,username,firstname,lastname,ssn FROM user,user_course WHERE user.uid=user_course.uid AND user_course.cid=:cid AND user_course.vers=:coursevers;");
 		//		$query = $pdo->prepare("select user_course.cid as cid,user.uid as uid,username,firstname,lastname,ssn,access from user,user_course where user.uid=user_course.uid and user_course.cid=:cid;");
 		$query->bindParam(':cid', $cid);
 		$query->bindParam(':coursevers', $vers);

@@ -142,10 +142,22 @@ if($userid!="UNK"){
 		// There is a variant already -- do nothing!	
 	}
 	
+	// Make sure that current version is set to active for this student
+	$vuery = $pdo->prepare("UPDATE user_course set vers=:vers, vershistory=CONCAT(vershistory, CONCAT(:vers,',')) WHERE uid=:uid AND cid=:cid");
+	$vuery->bindParam(':cid', $courseid);
+	$vuery->bindParam(':vers', $coursevers);
+	$vuery->bindParam(':uid', $userid);
+	if(!$vuery->execute()) {
+		$error=$vuery->errorInfo();
+		$debug="Error inserting active version (row ".__LINE__.") ".$vuery->rowCount()." row(s) were inserted. Error code: ".$error[2];
+	}
+
+	
 	// Savedvariant now contains variant (from previous visit) "" (null) or UNK (no variant inserted)
 	if ($newvariant=="UNK"){
 
 	} else if ($newvariant!="UNK") {
+		
 		if($isIndb){
 			$query = $pdo->prepare("UPDATE userAnswer SET variant=:variant WHERE uid=:uid AND cid=:cid AND moment=:moment AND vers=:coursevers;");
 			$query->bindParam(':cid', $courseid);
@@ -171,16 +183,7 @@ if($userid!="UNK"){
 				$error=$query->errorInfo();
 				$debug="Error inserting variant (row ".__LINE__.") ".$query->rowCount()." row(s) were inserted. Error code: ".$error[2];
 			}
-			// Make sure that current version is set to active for this student
-			$vuery = $pdo->prepare("INSERT IGNORE INTO useractiveversions(cid,vers,uid) VALUES(:cid,:coursevers,:uid);");
-			$vuery->bindParam(':cid', $courseid);
-			$vuery->bindParam(':coursevers', $coursevers);
-			$vuery->bindParam(':uid', $userid);
-			if(!$vuery->execute()) {
-				$error=$vuery->errorInfo();
-				$debug="Error inserting active version (row ".__LINE__.") ".$vuery->rowCount()." row(s) were inserted. Error code: ".$error[2];
-			}
-			
+						
 			$savedvariant=$newvariant;
 			//------------------------------
 			//mark segment as started on
@@ -265,11 +268,12 @@ if(checklogin()){
 					$query->bindParam(':stepsUsed', $stepsUsed);
 					$query->bindParam(':score', $score);
 				}
-				
-				if(!$query->execute() || $query->rowCount()==0) {
+				if(!$query->execute()) {
 					$error=$query->errorInfo();
 					$debug="Error updating answer. (row ".__LINE__.") ".$query->rowCount()." row(s) were updated. Error code: ".$error[2];
-				} else {
+				} else if ($query->rowCount() == 0) {
+					$debug="You probably do not have any variants done";
+				}	else {
 					$savedanswer = $answer;
 				}
 			}

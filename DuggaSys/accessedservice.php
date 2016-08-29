@@ -68,39 +68,8 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 			$error=$query->errorInfo();
 			$debug="Error updating user".$error[2];
 		}
-	}else if(strcmp($opt,"ADDUSR")==0){
-		/*
-		// Import users, create if user does not previously exist.
-		$users=explode("\n", $newusers);
-		
-		foreach ($users as $user) {
-			$ssn = "";
-			$name = "";
-			$username1 = "";
-	
-			// Split on whitespace.
-			$components = preg_split('/[\s]+/', $user);
-	
-			// If there's 3 or more components (it will be 4 in most cases)
-			// then continue with extracting data.
-			if(count($components) >= 3) {
-				$ssn = array_shift($components);
-				$username1 = array_pop($components);
-				$name = trim(implode(' ', $components));
-			} else {
-				// If there's not enough data to work with on this row, continue to the
-				// next one.
-				continue;
-			}
-			$saveemail = $username1;
-			
-			// Assemble this into more useful bits.
-			list($lastname, $firstname)=(explode(", ",$name));
-			list($username, $garbage)=(explode("@",$username1));
-			*/
-			
+	}else if(strcmp($opt,"ADDUSR")==0){		
 			$newUserData = json_decode(htmlspecialchars_decode($newusers));
-			//$debug = print_r($newUserData,true);
 	
 		foreach ($newUserData as $user) {
 			$uid="UNK";
@@ -158,26 +127,16 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 				
 			// We have a user, connect to current course
 			if($uid!="UNK"){
-				// Foo!
-				$stmt = $pdo->prepare("INSERT INTO user_course (uid, cid, access) VALUES(:uid, :cid,'R')");
+				$stmt = $pdo->prepare("INSERT INTO user_course (uid, cid, access,vers,vershistory) VALUES(:uid, :cid,'R',:vers,'') ON DUPLICATE KEY UPDATE vers=:vers, vershistory=CONCAT(vershistory, CONCAT(:vers,','))");
 				$stmt->bindParam(':uid', $uid);
 				$stmt->bindParam(':cid', $cid);
+				$stmt->bindParam(':vers', $coursevers);
 
 				// Insert the user into the database.
 				if(!$stmt->execute()) {
 					$error=$stmt->errorInfo();
-					$debug.="Error updating entry".$error[2];
-				} else {
-					// We added a student for the first time to this course. Make current version active.
-					$stmt2 = $pdo->prepare("INSERT IGNORE INTO useractiveversions (cid,vers,uid) VALUES(:cid, :vers, :uid)");
-					$stmt2->bindParam(':uid', $uid);
-					$stmt2->bindParam(':cid', $cid);					
-					$stmt2->bindParam(':vers', $coursevers);
-					if(!$stmt2->execute()) {
-						$error=$stmt2->errorInfo();
-						$debug.="Error adding active version: ".$error[2];
-					}
-				}
+					$debug.="Error connecting user to course: ".$error[2];
+				} 
 			}	
 		}
 		
