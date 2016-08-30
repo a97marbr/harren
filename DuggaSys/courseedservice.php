@@ -179,28 +179,68 @@ if($ha){
 									$codeexamplelist[$row['exampleid']]=$pdo->lastInsertId();
 							}
 					}
-					// Make duplicate of all boxes
+					/*
+					 * Each code example has a number of associated boxes and potentially important rows (improw) and important words (impwordlist)
+					 */
 					foreach($codeexamplelist as $key => $value){
-						$buery = $pdo->prepare("SELECT * from box WHERE exampleid=:exampleid;");
-						$buery->bindParam(':exampleid', $key);
-						if(!$buery->execute()) {
-								$error=$buery->errorInfo();
-								$debug="Error reading boxes: ".$error[2];
-						}else{
-								foreach($buery->fetchAll(PDO::FETCH_ASSOC) as $rowz){
-										$ruery = $pdo->prepare("INSERT INTO box (boxid,exampleid,boxtitle,boxcontent,filename,settings,wordlistid,segment,fontsize) SELECT boxid,:newexampleid as exampleid,boxtitle,boxcontent,filename,settings,wordlistid,segment,fontsize FROM box WHERE boxid=:oldboxid and exampleid=:oldexampleid;");
-										$ruery->bindParam(':oldboxid', $rowz["boxid"]);
-										$ruery->bindParam(':oldexampleid', $key);
-										$ruery->bindParam(':newexampleid', $value);
-										if(!$ruery->execute()) {
-											$error=$ruery->errorInfo();
-											$debug.="Error duplicating boxes".$error[2];
-										}						
-								}
-						}
+							$buery = $pdo->prepare("SELECT * from box WHERE exampleid=:exampleid;");
+							$buery->bindParam(':exampleid', $key);
+							if(!$buery->execute()) {
+									$error=$buery->errorInfo();
+									$debug="Error reading boxes: ".$error[2];
+							}else{
+									foreach($buery->fetchAll(PDO::FETCH_ASSOC) as $rowz){
+											// Make duplicate of all boxes
+											$ruery = $pdo->prepare("INSERT INTO box (boxid,exampleid,boxtitle,boxcontent,filename,settings,wordlistid,segment,fontsize) SELECT boxid,:newexampleid as exampleid,boxtitle,boxcontent,filename,settings,wordlistid,segment,fontsize FROM box WHERE boxid=:oldboxid and exampleid=:oldexampleid;");
+											$ruery->bindParam(':oldboxid', $rowz["boxid"]);
+											$ruery->bindParam(':oldexampleid', $key);
+											$ruery->bindParam(':newexampleid', $value);
+											if(!$ruery->execute()) {
+												$error=$ruery->errorInfo();
+												$debug.="Error duplicating boxes".$error[2];
+											}
+											// Make duplicate of improws
+											$pruery = $pdo->prepare("SELECT * FROM improw WHERE exampleid=:oldexampleid;");
+											$pruery->bindParam(':oldexampleid', $key);
+											if(!$pruery->execute()) {
+												$error=$pruery->errorInfo();
+												$debug.="Error finding improws".$error[2];
+											}
+											foreach ($pruery->fetchAll(PDO::FETCH_ASSOC) as $improwz) {
+													if ($pruery->rowCount() > 0){
+															$qruery = $pdo->prepare("INSERT INTO improw (boxid,exampleid,istart,iend,irowdesc,updated,uid) SELECT boxid,:newexampleid as exampleid,istart,iend,irowdesc,updated,uid FROM improw WHERE exampleid=:oldexampleid and impid=:oldimpid and boxid=:oldboxid;");
+															$qruery->bindParam(':oldboxid', $improwz["boxid"]);
+															$qruery->bindParam(':oldimpid', $improwz["impid"]);
+															$qruery->bindParam(':oldexampleid', $key);
+															$qruery->bindParam(':newexampleid', $value);
+															if(!$qruery->execute()) {
+																$error=$qruery->errorInfo();
+																$debug.="Error duplicating improws".$error[2];
+															}													
+													}
+											}
+											// Make duplicate of impwordlist
+											$zruery = $pdo->prepare("SELECT * FROM impwordlist WHERE exampleid=:oldexampleid;");
+											$zruery->bindParam(':oldexampleid', $key);
+											if(!$zruery->execute()) {
+												$error=$zruery->errorInfo();
+												$debug.="Error finding impwords".$error[2];
+											}
+											foreach ($zruery->fetchAll(PDO::FETCH_ASSOC) as $impwordz) {
+													if ($zruery->rowCount() > 0){
+															$zzqruery = $pdo->prepare("INSERT INTO impwordlist (exampleid,word,label,updated,uid) SELECT :newexampleid as exampleid,word,label,updated,uid FROM impwordlist WHERE exampleid=:oldexampleid and wordid=:oldwordid;");
+															$zzqruery->bindParam(':oldwordid', $impwordz["wordid"]);
+															$zzqruery->bindParam(':oldexampleid', $key);
+															$zzqruery->bindParam(':newexampleid', $value);
+															if(!$zzqruery->execute()) {
+																$error=$zzqruery->errorInfo();
+																$debug.="Error duplicating impwords: ".$error[2];
+															}													
+													}
+											}																					
+									}
+							}
 					}
-					// Make duplicate of impwordlist
-					// Make duplicate of improws
 			}
 
 			// Duplicate listentries
