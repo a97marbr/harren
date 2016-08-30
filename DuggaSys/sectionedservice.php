@@ -39,6 +39,8 @@ $coursecode=getOP('coursecode');
 $coursenamealt=getOP('coursenamealt');
 $unmarked = 0;
 
+$visibility="UNK";
+
 if($gradesys=="UNK") $gradesys=0;
 
 $debug="NONE!";	
@@ -204,16 +206,27 @@ if(!$query->execute()) {
 	$debug="Error reading visibility ".$error[2];
 }
 
+// (read access) Visibility: 0 Hidden 1 Public 2 Login 3 Deleted 
 if ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-	$hr = ((checklogin() && hasAccess($userid, $courseid, 'r')) || $row['visibility'] != 0);
-	
-	if (!$hr) {
-		if (checklogin()) {
-			$hr = isSuperUser($userid);
-		}
-	}
+	$visibility=$row['visibility'];
 }
 
+// If logged in and superuser or if user has read access
+if(checklogin()){
+		if(isSuperUser($userid)|| hasAccess($userid, $courseid, 'r') ||$visibility==1){
+				$hr=true;
+		}else{
+				$hr=false;
+		}
+}else{
+		if($visibility==1){
+				$hr=true;
+		}else{
+				$hr=false;
+		}		
+}
+
+// (write access) Visibility: 0 Hidden 1 Public 2 Login 3 Deleted 
 $ha = (checklogin() && (hasAccess($userid, $courseid, 'w') || isSuperUser($userid)));
 
 $resulties=array();
