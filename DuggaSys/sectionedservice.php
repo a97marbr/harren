@@ -320,8 +320,9 @@ if(!$query->execute()) {
 $codeexamples = array();
 
 if($ha){
-	$query = $pdo->prepare("SELECT id,qname FROM quiz WHERE cid=:cid ORDER BY qname");
+	$query = $pdo->prepare("SELECT id,qname FROM quiz WHERE cid=:cid AND vers=:vers ORDER BY qname");
 	$query->bindParam(':cid', $courseid);
+	$query->bindParam(':vers', $coursevers);
 	
 	if(!$query->execute()) {
 		$error=$query->errorInfo();
