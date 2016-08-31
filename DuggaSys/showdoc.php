@@ -99,8 +99,8 @@
 				$instring = preg_replace("/\={2}\{(.*?\S)}\={2}/","<span id='placeholder-$1'></span>",$instring);
 
 				// Image Movie Link format: <img src="pngname.png" class="gifimage" onclick="showGif('gifname.gif');"/>
-				// +++image.png,image.gif+++
-				$instring = preg_replace("/\+{3}(.*?\S),(.*?\S)\+{3}/","<img class='gifimage' src='$1' onclick=\"showGif('$2');\" target='_blank' />",$instring);
+				// +++image.png,image.gif,id+++
+				$instring = preg_replace("/\+{3}(.*?\S),(.*?\S),(.*?\S)\+{3}/","<img class='gifimage' id=\"gifimage-$3\" src='$1' onclick=\"toggleGif('$2', '$1', $3);\" target='_blank' />",$instring);
 
 				// Right Arrow for discussing menu options
 				$instring = preg_replace("/\s[\-][\>]\s/","&rarr;",$instring);
