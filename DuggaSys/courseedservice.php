@@ -298,6 +298,28 @@ if($ha){
 								$debug.="Error updating entry".$error[2];
 							}
 					}
+					// Update to correct before and after in codeexample
+					foreach($codeexamplelist as $key => $value){
+							$puery = $pdo->prepare("UPDATE codeexample SET beforeid=:newexample WHERE beforeid=:oldexample AND cversion=:updvers;");
+							$puery->bindParam(':newexample', $value);
+							$puery->bindParam(':oldexample', $key);
+							$puery->bindParam(':updvers', $versid);
+							if(!$puery->execute()) {
+								$error=$puery->errorInfo();
+								$debug.="Error updating before link".$error[2];
+							}
+					}
+					foreach($codeexamplelist as $key => $value){
+							$puery = $pdo->prepare("UPDATE codeexample SET afterid=:newexample WHERE afterid=:oldexample AND cversion=:updvers;");
+							$puery->bindParam(':newexample', $value);
+							$puery->bindParam(':oldexample', $key);
+							$puery->bindParam(':updvers', $versid);
+							if(!$puery->execute()) {
+								$error=$puery->errorInfo();
+								$debug.="Error updating after link".$error[2];
+							}
+					}
+
 			}
 			
 		}else if(strcmp($opt,"UPDATE")===0){
