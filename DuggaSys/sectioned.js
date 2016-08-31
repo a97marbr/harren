@@ -410,8 +410,8 @@ var resave = false;
 function returnedSection(data)
 {
 	retdata=data;
-	// console.log(retdata);
-
+  if(data['debug']!="NONE!") alert(data['debug']);
+  
 	if(querystring['coursevers']!="null"){
 		// Fill section list with information
 		str="";
@@ -494,7 +494,7 @@ function returnedSection(data)
 				}
 				str+=" >";
 				
-					// kind 0 == Header || 1 == Section || 2 == Code  || 3 == Test (Dugga)|| 4 == Moment || 5 == Link
+					// kind 0 == Header || 1 == Section || 2 == Code  ||ï¿½3 == Test (Dugga)|| 4 == Momentï¿½|| 5 == Link
 					if(parseInt(item['kind']) === 3|| parseInt(item['kind']) === 4){
 
 							// Styling for quiz row e.g. add a tab spacer
@@ -571,7 +571,7 @@ function returnedSection(data)
 				}
 
 				// Make tabs to align each section element
-				// kind 0 == Header || 1 == Section || 2 == Code  || 3 == Test (Dugga)|| 4 == Moment || 5 == Link
+				// kind 0 == Header || 1 == Section || 2 == Code  ||ï¿½3 == Test (Dugga)|| 4 == Momentï¿½|| 5 == Link
 				if(parseInt(item['kind']) === 0 || parseInt(item['kind']) === 1 || parseInt(item['kind']) === 2 || parseInt(item['kind']) === 5 ){
 						if (parseInt(item['gradesys']) > 0 && parseInt(item['gradesys']) < 4){
 								for (var numSpacers = 0; numSpacers < parseInt(item['gradesys']);numSpacers++){
@@ -586,7 +586,7 @@ function returnedSection(data)
 						}
 				}
 
-				// kind 0 == Header || 1 == Section || 2 == Code  || 3 == Test (Dugga)|| 4 == Moment || 5 == Link
+				// kind 0 == Header || 1 == Section || 2 == Code  ||ï¿½3 == Test (Dugga)|| 4 == Momentï¿½|| 5 == Link
 				if(parseInt(item['kind']) === 0 ){									// Header
 					// Styling for header row
 					str+="</td><td class='header item' placeholder='"+momentexists+"'id='I"+item['lid']+"' ";
@@ -710,7 +710,7 @@ function returnedSection(data)
 		}else{
 			// No items were returned! 
 			str+="<div class='bigg'>";
-			str+="<span>You either have no access or there isn't anything under this course</span>";
+      str+="<span>You either have no access or there isn't anything under this course</span>";
 			str+="</div>";
 		}
 					
