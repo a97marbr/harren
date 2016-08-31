@@ -100,7 +100,7 @@
 
 				// Image Movie Link format: <img src="pngname.png" class="gifimage" onclick="showGif('gifname.gif');"/>
 				// +++image.png,image.gif,id+++
-				$instring = preg_replace("/\+{3}(.*?\S),(.*?\S),(.*?\S)\+{3}/","<img class='gifimage' id=\"gifimage-$3\" src='$1' onclick=\"toggleGif('$2', '$1', $3);\" target='_blank' />",$instring);
+				$instring = preg_replace("/\+{3}(.*?\S),(.*?\S)\+{3}/","<div class='gifwrapper'><img class='gifimage' src='$1' onclick=\"toggleGif('$2', '$1', this);\" target='_blank' /><img class='playbutton' src='../Shared/icons/PlayT.svg'></div>",$instring);
 
 				// Right Arrow for discussing menu options
 				$instring = preg_replace("/\s[\-][\>]\s/","&rarr;",$instring);

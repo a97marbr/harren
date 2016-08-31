@@ -13,21 +13,23 @@ Markdown support javascript
 
 //Functions for gif image
 //Fetches the picture and sets its properties
-function showGif(url, size, id){
-		document.getElementById("gifpicture-"+id).src = url;
-		document.getElementById("gifpicture-"+id).style.width = size;
+function showGif(url, size, handle){
+		handle.src = url;
+		handle.style.width = size;
 		$(".playbutton").toggle();
 }
 
 //Toggles between thumbnail and gif animation
-function toggleGif(url1, url2,id){
-	var tmp = "gifpicture-"+id;
-	alert(tmp);
-	if(document.getElementById(tmp).src == url1){
-		showGif(url2, 150 + "px",id); //Show thumbnail
+function toggleGif(url1, url2,handle){
+	var currentSrc = handle.src;
+	var n = currentSrc.lastIndexOf("/");
+	currentSrc = currentSrc.substr(n+1);
+	//alert();
+	if(currentSrc == url1){
+		showGif(url2, 150 + "px",handle); //Show thumbnail
 	}
 	else{
-		showGif(url1, 100 + "%",id); //Show big animation gif
+		showGif(url1, 100 + "%",handle); //Show big animation gif
 	}
 }
 
@@ -204,7 +206,7 @@ function markdownBlock(inString)
 
 	// Link to gif animation with thumbnail
 	// +++thumbnail.png,animation.gif+++	
-	inString = inString.replace(/\+{3}(.*?\S),(.*?\S),(.*?\S)\+{3}/g,"<div class='gifwrapper'><img class='gifimage' id='gifpicture-$3' src='$1' onclick=\"toggleGif('$2', '$1', '$3');\" /><div class='playbutton'><img src='../Shared/icons/PlayT.svg' onclick=\"toggleGif('$2', '$1');\"></div></div>");
+	inString = inString.replace(/\+{3}(.*?\S),(.*?\S)\+{3}/g,"<div class='gifwrapper'><img class='gifimage' src='$1' onclick=\"toggleGif('$2', '$1', this);\" /><img class='playbutton' src='../Shared/icons/PlayT.svg'></div>");
 
 	// Right Arrow for discussing menu options
 	inString = inString.replace(/\s[\-][\>]\s/gm, "&rarr;");
