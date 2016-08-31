@@ -56,8 +56,21 @@ logServiceEvent($log_uuid, EventTypes::ServiceServerStart, "showDuggaservice.php
 // Retrieve Information			
 //------------------------------------------------------------------------------------------------
 
+// Read visibility of course
+$query = $pdo->prepare("SELECT visibility FROM course WHERE cid=:cid");
+$query->bindParam(':cid', $courseid);
+$result = $query->execute();
+if($row = $query->fetch(PDO::FETCH_ASSOC)){
+		$visibility=$row['visibility'];
+}else{
+		$debug="Error reading visibility";
+}
+
 // If user has read access to course - assign variant
-$hr = ((checklogin() && hasAccess($userid, $courseid, 'r')) || $row['visibility'] != 0);
+$hr = false;
+if(checklogin()){
+	if(hasAccess($userid, $courseid, 'r')||isSuperUser($userid)) $hr=true;
+}
 
 if($hr){
 		// See if we already have a result i.e. a chosen variant.
@@ -222,12 +235,6 @@ if($hr){
 //------------------------------------------------------------------------------------------------
 
 if(checklogin()){
-	$query = $pdo->prepare("SELECT visibility FROM course WHERE cid=:cid");
-	$query->bindParam(':cid', $courseid);
-	$result = $query->execute();
-
-	if($row = $query->fetch(PDO::FETCH_ASSOC)){
-
 		if($hr&&$userid!="UNK" || isSuperUser($userid)){ // The code for modification using sessions			
 			if(strcmp($opt,"SAVDU")==0){				
 				// Log the dugga write
@@ -280,7 +287,6 @@ if(checklogin()){
 				}
 			}
 		}
-	}
 }
 
 //------------------------------------------------------------------------------------------------
