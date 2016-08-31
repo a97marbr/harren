@@ -211,6 +211,12 @@ if ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 	$visibility=$row['visibility'];
 }
 
+$debug="State: ";
+
+$debug.="SU: ".isSuperUser($userid);
+$debug.="AC: ".hasAccess($userid, $courseid, 'r');
+$debug.="VI: ".$visibility;
+
 // If logged in and superuser or if user has read access
 if(checklogin()){
 		if(isSuperUser($userid)|| hasAccess($userid, $courseid, 'r') ||$visibility==1){
@@ -255,9 +261,8 @@ foreach($query->fetchAll() as $row) {
 }
 
 $entries=array();
-$reada = (checklogin() && (hasAccess($userid, $courseid, 'r')||isSuperUser($userid)));
 
-if($reada || $userid == "guest"){
+if($hr){
 	$query = $pdo->prepare("SELECT lid,moment,entryname,pos,kind,link,visible,code_id,listentries.gradesystem,highscoremode,deadline,qrelease FROM listentries LEFT OUTER JOIN quiz ON listentries.link=quiz.id WHERE listentries.cid=:cid and listentries.vers=:coursevers ORDER BY pos");
 	$query->bindParam(':cid', $courseid);
 	$query->bindParam(':coursevers', $coursevers);
