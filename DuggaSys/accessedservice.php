@@ -70,7 +70,7 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 		}
 	}else if(strcmp($opt,"ADDUSR")==0){		
 			$newUserData = json_decode(htmlspecialchars_decode($newusers));
-	$debug=print_r($newUserData,true);
+	
 		foreach ($newUserData as $user) {
 			$uid="UNK";
 			if (count($user) == 1) {

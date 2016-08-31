@@ -532,7 +532,16 @@ function returnedSection(data)
 											if ( submitted !== null && marked !== null && (submitted.getTime() > marked.getTime())){
 												status="pending";
 											} 
+
+                      if (lastSubmit === null){
+												lastSubmit = submitted;
+											}else if (submitted !== null) {
+												if (lastSubmit.getTime() < submitted.getTime()){
+													lastSubmit=submitted;
+												}
+											}
 									}else{
+                    /*
 											if (submitted !== null && marked === null) {
 												status="pending";
 											} 
@@ -541,13 +550,7 @@ function returnedSection(data)
 												status="pending";
 											} 
 			
-											if (lastSubmit === null){
-												lastSubmit = submitted;
-											}else if (submitted !== null) {
-												if (lastSubmit.getTime() < submitted.getTime()){
-													lastSubmit=submitted;
-												}
-											}
+                      */
 									}
 								}
 							}
