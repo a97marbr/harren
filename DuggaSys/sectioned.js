@@ -414,6 +414,20 @@ function returnedSection(data)
   
 	if(querystring['coursevers']!="null"){
 		// Fill section list with information
+    var versionname="";
+    if (retdata['versions'].length > 0) {
+      for ( j = 0; j < retdata['versions'].length; j++) {
+        var itemz = retdata['versions'][j];
+        if (retdata['courseid'] == itemz['cid']) {
+          var vversz = itemz['vers'];
+          var vnamez = itemz['versname'];
+          if(retdata['coursevers']==vversz){
+            versionname=vnamez;
+          }
+        }
+      }
+    }
+    
 		str="";
 
 		str+="<table width='100%' border='1'><tr>";			
@@ -429,7 +443,6 @@ function returnedSection(data)
 						str += "<option value='?courseid=" + retdata['courseid'] + "&coursename=" + retdata['coursename'] + "&coursevers=" + vvers + "'";
 						if(retdata['coursevers']==vvers){
 							str += "selected";
-							var versionname=vname;
 						}
 						str += ">" + vname + " - " + vvers + "</option>";
 					}
@@ -616,7 +629,7 @@ function returnedSection(data)
 				}else if(parseInt(item['kind']) === 3 ){						// Test / Dugga
 
 					if(item['highscoremode'] != 0 && parseInt(item['kind']) == 3) {
-						str+="<td style='width:20px;'><img style='' title='Highscore' src='../Shared/icons/top10.png' onclick='showHighscore(\""+item['link']+"\",\""+item['lid']+"\")'/></td>";
+						str+="<td style='width:20px;'><img style=';' title='Highscore' src='../Shared/icons/top10.png' onclick='showHighscore(\""+item['link']+"\",\""+item['lid']+"\")'/></td>";
 					}						
 					str += "<td ";
 					if(kk%2==0){
