@@ -359,6 +359,15 @@ p {
 		overflow:hidden;
 }
 
+#Sectionlist .LightBoxFilled {
+		width:36px;
+		vertical-align:bottom;
+		overflow:hidden;
+    background-color: #927b9e;
+    border-top-left-radius: 13px;
+    border-bottom-left-radius: 13px;
+}
+
 
 #Sectionlist .StopLight {
 		vertical-align:bottom;

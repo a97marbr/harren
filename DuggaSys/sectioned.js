@@ -567,8 +567,12 @@ function returnedSection(data)
 									}
 								}
 							}
-	
-							str+="<td class='LightBox' >";
+	            if (parseInt(item['kind']) === 3){
+                  str+="<td class='LightBox'>";
+              } else if ((parseInt(item['kind']) === 4)){
+                  str+="<td class='LightBoxFilled'>";
+              }
+							
 							if((grady==-1 || grady == 0 || grady==null) && status==="") {
 									// Nothing submitted nor marked (White)
 									str+="<div class='StopLight WhiteLight'></div>";
