@@ -49,7 +49,7 @@
 						echo "<td class='navButt' id='templatebutton' title='Choose Template' onclick='openTemplateWindow();'><img src='../Shared/icons/choose_template.svg'  /></td>";
 						echo "<td class='navButt' onclick='displayEditExample();' title='Example Settings' ><img src='../Shared/icons/general_settings_button.svg' /></td>";
 					  echo "<td class='navButt' id='fileedButton' onclick='' style='display:hidden;' title='File Download/Upload' ><img src='../Shared/icons/files_icon.svg' /></td>";
-<!--	  		echo "<td class='navButt' id='savebutton' title='Save' onclick='Save();'><img src='../Shared/icons/save_button.svg' /></td>"; -->
+//	  		echo "<td class='navButt' id='savebutton' title='Save' onclick='Save();'><img src='../Shared/icons/save_button.svg' /></td>"; 
   
 					}
 
