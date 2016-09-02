@@ -93,7 +93,14 @@ function returnedAccess(data)
 		str+="<tr><th class='first' style='text-align:left; padding-left:8px; width:140px;'>Username</th><th style='text-align:left; padding-left:8px; width:150px;'>SSN</th><th style='text-align:left; padding-left:8px;'>First Name</th><th style='text-align:left; padding-left:8px;'>Last Name</th><th style='text-align:left; padding-left:8px; width:100px;'>Modified</th><th style='text-align:left; padding-left:8px; width:90px;'>Access</th><th style='text-align:left; padding-left:8px; width:90px;'>Settings</th><th class='last' style='text-align:left; padding-left:8px; width:120px;'>Password</th></tr>";
 		for(i=0;i<data['entries'].length;i++){
 			var item=data['entries'][i];
-			str+="<tr>";
+
+			// If this 
+			if(parseFloat(item['newly'])<10){
+					str+="<tr style='background:#efd;'>";						
+			}else{
+					str+="<tr>";			
+			}
+
 			str+="<td>"+item['username']+"</td>";
 			str+="<td>"+item['ssn']+"</td>";
 			str+="<td>"+item['firstname']+"</td>";
