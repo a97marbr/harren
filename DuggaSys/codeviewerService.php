@@ -96,25 +96,34 @@
 				$query->bindParam(':exampleid', $exampleId);
 				$query->bindParam(':cid', $courseId);
 				$query->bindParam(':cvers', $courseVersion);
-				$query->execute();
+
+				// Update code example to reflect change of template
+				if(!$query->execute()) {
+					$error=$query->errorInfo();
+					$debug.="Error updating code example: ".$error[2];
+				} 
 				
 				// There are at least two boxes, create two boxes to start with
 				if($templateNumber==1||$templateNumber==2) $boxCount=2;
 				if($templateNumber==3||$templateNumber==4 ||$templateNumber==8) $boxCount=3;
 				if($templateNumber==5||$templateNumber==6 ||$templateNumber==7) $boxCount=4;
 				if($templateNumber==9) $boxCount=5;
-				
-				
+								
 				// Create appropriate number of boxes
 				for($i=1;$i<$boxCount+1;$i++){
-					$query = $pdo->prepare("INSERT INTO box(boxid,exampleid,boxtitle,boxcontent,settings,filename) VALUES (:i,:exampleid, :boxtitle, :boxcontent, :settings, :filename);");		
-					$query->bindParam(':i', $i);
-					$query->bindParam(':exampleid', $exampleId);
-					$query->bindValue(':boxtitle', 'Title');
-					$query->bindValue(':boxcontent', 'Code');
-					$query->bindValue(':settings', '[viktig=1]'); //TODO: Check what viktig is and what it's for
-					$query->bindValue(':filename', 'js1.js'); // TODO: Should only bind with the file used (if used) and not to one by default
-					$query->execute();
+						$query = $pdo->prepare("INSERT INTO box(boxid,exampleid,boxtitle,boxcontent,settings,filename) VALUES (:i,:exampleid, :boxtitle, :boxcontent, :settings, :filename);");		
+						$query->bindParam(':i', $i);
+						$query->bindParam(':exampleid', $exampleId);
+						$query->bindValue(':boxtitle', 'Title');
+						$query->bindValue(':boxcontent', 'Code');
+						$query->bindValue(':settings', '[viktig=1]'); //TODO: Check what viktig is and what it's for
+						$query->bindValue(':filename', 'js1.js'); // TODO: Should only bind with the file used (if used) and not to one by default
+
+						// Update code example to reflect change of template
+						if(!$query->execute()) {
+							$error=$query->errorInfo();
+							$debug.="Error creating new box: ".$error[2];
+						} 
 				}	
 			}else if(strcmp('EDITEXAMPLE',$opt)===0){
 				if(isset($_POST['playlink'])) {$playlink = $_POST['playlink'];}
@@ -253,7 +262,10 @@
 			$templateId=$row['templateid'];
 			$styleSheet=$row['stylesheet'];
 			$numBox=$row['numbox'];					
+
+//			$debug=" T: ".$row['templateid']." N: ".$row['numbox'];
 		}
+		
 		
 		// Read ids and names from before/after list
 		$beforeAfter = array();
