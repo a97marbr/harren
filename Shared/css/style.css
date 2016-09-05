@@ -400,6 +400,19 @@ p {
 		background: radial-gradient(green 55%, grey, white 60%);
 }
 
+#Sectionlist .hiddensection {
+		opacity: 0.3;
+		color: #000;
+}
+
+#Sectionlist .loginsection{
+		color: #dcb;
+}
+
+#Sectionlist .loginsectionl{
+		color: #612;
+}
+
 /* --------------================################================-------------- *
  *                                    Header                                    *
  * --------------================################================-------------- */
