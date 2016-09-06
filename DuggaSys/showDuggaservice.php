@@ -51,11 +51,28 @@ $debug="NONE!";
 $log_uuid = getOP('log_uuid');
 $info=$opt." ".$courseid." ".$coursevers." ".$duggaid." ".$moment." ".$segment." ".$answer;
 logServiceEvent($log_uuid, EventTypes::ServiceServerStart, "showDuggaservice.php",$userid,$info);
+
 //------------------------------------------------------------------------------------------------
 // Retrieve Information			
 //------------------------------------------------------------------------------------------------
 
-if($userid!="UNK"){
+// Read visibility of course
+$query = $pdo->prepare("SELECT visibility FROM course WHERE cid=:cid");
+$query->bindParam(':cid', $courseid);
+$result = $query->execute();
+if($row = $query->fetch(PDO::FETCH_ASSOC)){
+		$visibility=$row['visibility'];
+}else{
+		$debug="Error reading visibility";
+}
+
+// If user has read access to course - assign variant
+$hr = false;
+if(checklogin()){
+	if(hasAccess($userid, $courseid, 'r')||isSuperUser($userid)) $hr=true;
+}
+
+if($hr){
 		// See if we already have a result i.e. a chosen variant.
 	$query = $pdo->prepare("SELECT score,aid,cid,quiz,useranswer,variant,moment,vers,uid,marked,feedback FROM userAnswer WHERE uid=:uid AND cid=:cid AND moment=:moment AND vers=:coursevers;");
 	$query->bindParam(':cid', $courseid);
@@ -151,7 +168,6 @@ if($userid!="UNK"){
 		$error=$vuery->errorInfo();
 		$debug="Error inserting active version (row ".__LINE__.") ".$vuery->rowCount()." row(s) were inserted. Error code: ".$error[2];
 	}
-
 	
 	// Savedvariant now contains variant (from previous visit) "" (null) or UNK (no variant inserted)
 	if ($newvariant=="UNK"){
@@ -219,13 +235,6 @@ if($userid!="UNK"){
 //------------------------------------------------------------------------------------------------
 
 if(checklogin()){
-	$query = $pdo->prepare("SELECT visibility FROM course WHERE cid=:cid");
-	$query->bindParam(':cid', $courseid);
-	$result = $query->execute();
-
-	if($row = $query->fetch(PDO::FETCH_ASSOC)){
-
-		$hr = ((checklogin() && hasAccess($userid, $courseid, 'r')) || $row['visibility'] != 0);
 		if($hr&&$userid!="UNK" || isSuperUser($userid)){ // The code for modification using sessions			
 			if(strcmp($opt,"SAVDU")==0){				
 				// Log the dugga write
@@ -278,7 +287,6 @@ if(checklogin()){
 				}
 			}
 		}
-	}
 }
 
 //------------------------------------------------------------------------------------------------
