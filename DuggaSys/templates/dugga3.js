@@ -171,13 +171,17 @@ function showFacit(param, uanswer, danswer, userStats, files, moment, feedback)
 
 	// Teacher feedback
 	var fb = "<table><thead><tr><th>Date</th><th>Feedback</th></tr></thead><tbody>";
-	var feedbackArr = feedback.split("||");
-	for (var k=feedbackArr.length-1;k>=0;k--){
-		var fb_tmp = feedbackArr[k].split("%%");
-		fb+="<tr><td>"+fb_tmp[0]+"</td><td>"+fb_tmp[1]+"</td></tr>";
-	} 
+	if (feedback !== undefined){
+		var feedbackArr = feedback.split("||");
+		for (var k=feedbackArr.length-1;k>=0;k--){
+			var fb_tmp = feedbackArr[k].split("%%");
+			fb+="<tr><td>"+fb_tmp[0]+"</td><td>"+fb_tmp[1]+"</td></tr>";
+		} 		
+	}
 	fb += "</tbody></table><br><textarea id='newFeedback'></textarea>";
-	document.getElementById('teacherFeedbackTable').innerHTML = fb;
+	if (feedback !== undefined){
+			document.getElementById('teacherFeedbackTable').innerHTML = fb;
+	}
 
 }
 

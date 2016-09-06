@@ -239,19 +239,23 @@ function showFacit(param, uanswer, danswer, userStats, files, moment, feedback)
 
 
 
-			$( "#MarkCont" ).append( '<img id="facit-target-window-img" style="width:200px; height:200px;overflow:hidden; position:absolute; bottom:50px;right:11px;border:1px solid black;" src="'+document.getElementById("target-window-img").src+'" />' );
+			$( "#MarkCont" ).append( '<img id="facit-target-window-img" class="facitPreview" src="'+document.getElementById("target-window-img").src+'" onmouseenter="togglePopover();" onclick="togglePreview();"/>' );
 
 
 	}
 	// Teacher feedback
 	var fb = "<table><thead><tr><th>Date</th><th>Feedback</th></tr></thead><tbody>";
-	var feedbackArr = feedback.split("||");
-	for (var k=feedbackArr.length-1;k>=0;k--){
-		var fb_tmp = feedbackArr[k].split("%%");
-		fb+="<tr><td>"+fb_tmp[0]+"</td><td>"+fb_tmp[1]+"</td></tr>";
-	} 
+	if (feedback !== undefined){
+			var feedbackArr = feedback.split("||");
+			for (var k=feedbackArr.length-1;k>=0;k--){
+					var fb_tmp = feedbackArr[k].split("%%");
+					fb+="<tr><td>"+fb_tmp[0]+"</td><td>"+fb_tmp[1]+"</td></tr>";
+			} 		
+	}
 	fb += "</tbody></table><br><textarea id='newFeedback'></textarea>";
-	document.getElementById('teacherFeedbackTable').innerHTML = fb;
+	if (document.getElementById('teacherFeedbackTable')){
+			document.getElementById('teacherFeedbackTable').innerHTML = fb;
+	}
 
 }
 
@@ -333,4 +337,11 @@ function processpreview()
 		content=encodeURIComponent(content);
 		
 		document.getElementById("code-preview-window").src="preview.php?prev="+content;
+}
+
+function togglePreview (){
+	$("#facit-target-window-img").removeClass("facitPopover").addClass("facitPreview");}
+
+function togglePopover (){
+	$("#facit-target-window-img").removeClass("facitPreview").addClass("facitPopover");
 }
