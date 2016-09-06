@@ -149,9 +149,7 @@
 
 			}else{
 				echo "<div class='err'><span style='font-weight:bold;'>Bummer!</span> Something went wrong in loading the test. Contact LENASys-admin.</div>";
-			}
-		
-			echo "visibility:".$visibility." userid: ".$userid." readaccess: ".$readaccess;
+			}		
 		?>
 
 	</div>

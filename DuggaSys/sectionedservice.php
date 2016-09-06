@@ -39,8 +39,6 @@ $coursecode=getOP('coursecode');
 $coursenamealt=getOP('coursenamealt');
 $unmarked = 0;
 
-$visibility="UNK";
-
 if($gradesys=="UNK") $gradesys=0;
 
 $debug="NONE!";	
@@ -53,8 +51,15 @@ logServiceEvent($log_uuid, EventTypes::ServiceServerStart, "sectionedservice.php
 // Services
 //------------------------------------------------------------------------------------------------
 
+$isSuperUserVar=false;
+
+$hasread=hasAccess($userid, $courseid, 'r');
+$haswrite=hasAccess($userid, $courseid, 'w');
+
 if(checklogin()){
-	$ha = hasAccess($userid, $courseid, 'w') || isSuperUser($userid);
+	$isSuperUserVar=isSuperUser($userid);
+
+	$ha = $haswrite || $isSuperUserVar;
 
 	if($ha){
 		// The code for modification using sessions
@@ -206,34 +211,12 @@ if(!$query->execute()) {
 	$debug="Error reading visibility ".$error[2];
 }
 
-// (read access) Visibility: 0 Hidden 1 Public 2 Login 3 Deleted 
+$cvisibility=false;
 if ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-	$visibility=$row['visibility'];
+		if($isSuperUserVar||$row['visibility']==1||($row['visibility']==2&&hasread)) $cvisibility=true;
 }
 
-$debug="State: ";
-
-$debug.="SU: ".isSuperUser($userid);
-$debug.="AC: ".hasAccess($userid, $courseid, 'r');
-$debug.="VI: ".$visibility;
-
-// If logged in and superuser or if user has read access
-if(checklogin()){
-		if(isSuperUser($userid)|| hasAccess($userid, $courseid, 'r') ||$visibility==1){
-				$hr=true;
-		}else{
-				$hr=false;
-		}
-}else{
-		if($visibility==1){
-				$hr=true;
-		}else{
-				$hr=false;
-		}		
-}
-
-// (write access) Visibility: 0 Hidden 1 Public 2 Login 3 Deleted 
-$ha = (checklogin() && (hasAccess($userid, $courseid, 'w') || isSuperUser($userid)));
+$ha = (checklogin() && ($haswrite || $isSuperUserVar));
 
 $resulties=array();
 $query = $pdo->prepare("SELECT moment,grade,DATE_FORMAT(submitted, '%Y-%m-%dT%H:%i:%s') AS submitted,DATE_FORMAT(marked, '%Y-%m-%dT%H:%i:%s') AS marked,useranswer FROM userAnswer WHERE uid=:uid AND cid=:cid AND vers=:vers;");
@@ -262,7 +245,7 @@ foreach($query->fetchAll() as $row) {
 
 $entries=array();
 
-if($hr){
+if($cbibility){
 	$query = $pdo->prepare("SELECT lid,moment,entryname,pos,kind,link,visible,code_id,listentries.gradesystem,highscoremode,deadline,qrelease FROM listentries LEFT OUTER JOIN quiz ON listentries.link=quiz.id WHERE listentries.cid=:cid and listentries.vers=:coursevers ORDER BY pos");
 	$query->bindParam(':cid', $courseid);
 	$query->bindParam(':coursevers', $coursevers);
@@ -275,23 +258,25 @@ if($hr){
 	
 	foreach($query->fetchAll() as $row) {	
 		// Push info
-		array_push(
-			$entries,
-			array(
-				'entryname' => $row['entryname'],
-				'lid' => $row['lid'],
-				'pos' => $row['pos'],
-				'kind' => $row['kind'],
-				'moment' => $row['moment'],
-				'link'=> $row['link'],
-				'visible'=> $row['visible'],
-				'highscoremode'=> $row['highscoremode'],
-				'gradesys' => $row['gradesystem'],
-				'code_id' => $row['code_id'],
-				'deadline'=> $row['deadline'],
-				'qrelease' => $row['qrelease']
-			)
-		);
+		if($isSuperUserVar||$row['visible']==1||($row['visible']==2&&$hasread==true)){
+				array_push(
+					$entries,
+					array(
+						'entryname' => $row['entryname'],
+						'lid' => $row['lid'],
+						'pos' => $row['pos'],
+						'kind' => $row['kind'],
+						'moment' => $row['moment'],
+						'link'=> $row['link'],
+						'visible'=> $row['visible'],
+						'highscoremode'=> $row['highscoremode'],
+						'gradesys' => $row['gradesystem'],
+						'code_id' => $row['code_id'],
+						'deadline'=> $row['deadline'],
+						'qrelease' => $row['qrelease']
+					)
+				);
+		}
 	}
 }
 
@@ -465,7 +450,7 @@ $array = array(
 	'entries' => $entries,
 	"debug" => $debug,
 	'writeaccess' => $ha,
-	'readaccess' => $hr,
+	'readaccess' => $cvisibility,
 	'coursename' => $coursename,
 	'coursevers' => $coursevers,
 	'coursecode' => $coursecode,
