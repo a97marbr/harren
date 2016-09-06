@@ -107,7 +107,7 @@ function returnedDugga(data)
 	}
 	// Teacher feedback
 	if (data["feedback"] == null || data["feedback"] === "" || data["feedback"] === "UNK") {
-			// No feedback
+			document.getElementById('feedbackBox').style.display = "none";
 	} else {
 			var fb = "<table><thead><tr><th>Date</th><th>Feedback</th></tr></thead><tbody>";
 			var feedbackArr = data["feedback"].split("||");
@@ -180,6 +180,7 @@ function showFacit(param, uanswer, danswer, userStats, files, moment, feedback)
 		document.getElementById('duggaTotalClicks').innerHTML=userStats[3];
 		$("#duggaStats").css("display","none");
 	}
+	document.getElementById('feedbackBox').style.display = "none";
 	/* reset */
 	sf = 2.0;
 	speed = 0.1;
@@ -197,7 +198,7 @@ function showFacit(param, uanswer, danswer, userStats, files, moment, feedback)
 	document.getElementById("target-text").innerHTML = retdata["target-text"];
 
 	if (uanswer !== null || uanswer !== "UNK") {
-		
+			/*
 			var userCode = uanswer.substr(uanswer.indexOf("###HTMLSTART###"),uanswer.indexOf("###HTMLEND###"));
 			userCode = userCode.replace("###HTMLSTART###", "");
 			userCode = userCode.replace("###HTMLEND###", "");
@@ -208,6 +209,12 @@ function showFacit(param, uanswer, danswer, userStats, files, moment, feedback)
 			userUrl = res[0]; 
 			userUrl = userUrl.replace("###URLSTART###", "");
 			userUrl = userUrl.replace("###URLEND###", "");
+			userUrl =  reverseHtmlEntities(userUrl);
+			*/
+			var userCode = uanswer.slice(uanswer.indexOf("###HTMLSTART###")+15,uanswer.indexOf("###HTMLEND###"));
+			userCode =  reverseHtmlEntities(userCode);
+			
+			var userUrl = uanswer.slice(uanswer.indexOf("###URLSTART###")+14,uanswer.indexOf("###URLEND###"));
 			userUrl =  reverseHtmlEntities(userUrl);
 
 			var markWindowHeight = $("#MarkCont").height();

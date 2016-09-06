@@ -1345,6 +1345,10 @@ input.new-item-button:hover {
     border:1px solid black;  
 }
 
+#MarkCont a:hover {
+    text-decoration: none;
+}
+
 .loginTransparent {
 	display:block;
 	height: 60px;
