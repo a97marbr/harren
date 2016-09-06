@@ -34,7 +34,7 @@ $answer=getOP('answer');
 $highscoremode=getOP('highscoremode');
 $setanswer=gettheOP('setanswer');
 
-$param = "";
+$param = "UNK";
 $savedanswer = "";
 $highscoremode = "";
 $quizfile = "UNK";
@@ -45,6 +45,8 @@ $score = 0;
 $timeUsed;
 $stepsUsed;
 $duggafeedback="UNK";
+$variants=array();
+$safe_variants=array();
 
 $debug="NONE!";	
 
@@ -61,19 +63,64 @@ $query = $pdo->prepare("SELECT visibility FROM course WHERE cid=:cid");
 $query->bindParam(':cid', $courseid);
 $result = $query->execute();
 if($row = $query->fetch(PDO::FETCH_ASSOC)){
-		$visibility=$row['visibility'];
+		$cvisibility=$row['visibility'];
 }else{
-		$debug="Error reading visibility";
+		$debug="Error reading course visibility";
+}
+// Read visibility of dugga (listentry)
+$query = $pdo->prepare("SELECT visible FROM listentries WHERE cid=:cid and lid=:moment");
+$query->bindParam(':cid', $courseid);
+$query->bindParam(':moment', $moment);
+$result = $query->execute();
+if($row = $query->fetch(PDO::FETCH_ASSOC)){
+		$dvisibility=$row['visible'];
+}else{
+		$debug="Error reading dugga visibility";
 }
 
-// If user has read access to course - assign variant
+// Get type of dugga
+$query = $pdo->prepare("SELECT quizFile FROM quiz WHERE id=:duggaid;");
+$query->bindParam(':duggaid', $duggaid);
+$result=$query->execute();
+if (!$result) err("SQL Query Error: ".$pdo->errorInfo(),"quizfile Querying Error!");
+foreach($query->fetchAll() as $row) {
+	$quizfile = $row['quizFile'];
+}
+
+// Retrieve all dugga variants
+$firstvariant=-1;
+$query = $pdo->prepare("SELECT vid,param,disabled FROM variant WHERE quizID=:duggaid;");
+$query->bindParam(':duggaid', $duggaid);
+$result=$query->execute();
+if (!$result) err("SQL Query Error: ".$pdo->errorInfo(),"variant Querying Error!");
+$i=0;
+foreach($query->fetchAll() as $row) {
+	if($row['disabled']==0) $firstvariant=$i;
+	$variants[$i]=array(
+		'vid' => $row['vid'],
+		'param' => $row['param'],
+		'disabled' => $row['disabled']
+	);
+	$i++;
+	$insertparam = true;
+}
+
 $hr = false;
 if(checklogin()){
-	if(hasAccess($userid, $courseid, 'r')||isSuperUser($userid)) $hr=true;
+	if((hasAccess($userid, $courseid, 'r')&&($dvisibility == 1 || $dvisibility == 2))||isSuperUser($userid)) $hr=true;
 }
 
-if($hr){
-		// See if we already have a result i.e. a chosen variant.
+// Case 1: If course is public and dugga is public and we are not part of the course we should see a preview
+// Case 2: If dugga req login and we are logged and have read access
+$demo=false;
+if ($cvisibility == 1 && $dvisibility == 1 && !$hr) $demo=true;
+
+if($demo){
+	// We are not logged in - provide the first variant as demo.
+	$param=html_entity_decode($variants[0]['param']);	
+} else if ($hr){
+	// We are part of the course - assign variant
+	// See if we already have a result i.e. a chosen variant.
 	$query = $pdo->prepare("SELECT score,aid,cid,quiz,useranswer,variant,moment,vers,uid,marked,feedback FROM userAnswer WHERE uid=:uid AND cid=:cid AND moment=:moment AND vers=:coursevers;");
 	$query->bindParam(':cid', $courseid);
 	$query->bindParam(':coursevers', $coursevers);
@@ -83,8 +130,6 @@ if($hr){
 
 	$savedvariant="UNK";
 	$newvariant="UNK";
-	$variants=array();
-	$safe_variants=array();
 	$savedanswer="UNK";
 	$isIndb=false;
 
@@ -100,33 +145,6 @@ if($hr){
 		}
 	}
 	
-	// Get type of dugga
-	$query = $pdo->prepare("SELECT quizFile FROM quiz WHERE id=:duggaid;");
-	$query->bindParam(':duggaid', $duggaid);
-	$result=$query->execute();
-	if (!$result) err("SQL Query Error: ".$pdo->errorInfo(),"quizfile Querying Error!");
-	foreach($query->fetchAll() as $row) {
-		$quizfile = $row['quizFile'];
-	}
-	
-	// Retrieve variant list
-	$firstvariant=-1;
-	$query = $pdo->prepare("SELECT vid,param,disabled FROM variant WHERE quizID=:duggaid;");
-	$query->bindParam(':duggaid', $duggaid);
-	$result=$query->execute();
-	if (!$result) err("SQL Query Error: ".$pdo->errorInfo(),"variant Querying Error!");
-	$i=0;
-	foreach($query->fetchAll() as $row) {
-		if($row['disabled']==0) $firstvariant=$i;
-		$variants[$i]=array(
-			'vid' => $row['vid'],
-			'param' => $row['param'],
-			'disabled' => $row['disabled']
-		);
-		$i++;
-		$insertparam = true;
-	}
-
 	// If selected variant is not found - pick another from working list.
 	// Should we connect this to answer or not e.g. if we have an answer should we still give a working variant??
 	$foundvar=-1;
@@ -223,12 +241,12 @@ if($hr){
 	}
 	foreach ($variants as $variant) {
 		if($variant["vid"] == $savedvariant || $quizfile == "kryss"){
-				$param.=html_entity_decode($variant['param']);
+				$param=html_entity_decode($variant['param']);
 		}
 	}
 
 }else{
-		$param="FORBIDDEN!!";
+
 }
 //------------------------------------------------------------------------------------------------
 // Services
