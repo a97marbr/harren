@@ -245,7 +245,7 @@ foreach($query->fetchAll() as $row) {
 
 $entries=array();
 
-if($cbibility){
+if($cvisibility){
 	$query = $pdo->prepare("SELECT lid,moment,entryname,pos,kind,link,visible,code_id,listentries.gradesystem,highscoremode,deadline,qrelease FROM listentries LEFT OUTER JOIN quiz ON listentries.link=quiz.id WHERE listentries.cid=:cid and listentries.vers=:coursevers ORDER BY pos");
 	$query->bindParam(':cid', $courseid);
 	$query->bindParam(':coursevers', $coursevers);
