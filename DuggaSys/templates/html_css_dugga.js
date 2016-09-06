@@ -86,13 +86,10 @@ function returnedDugga(data)
 
 
 		if (data["answer"] == null || data["answer"] !== "UNK") {
-			var userCode = data["answer"].substr(data["answer"].indexOf("###HTMLSTART###")+15,data["answer"].indexOf("###HTMLEND###")-28);
+			var userCode = data["answer"].slice(data["answer"].indexOf("###HTMLSTART###")+15,data["answer"].indexOf("###HTMLEND###"));
 			userCode =  reverseHtmlEntities(userCode);
-			var userUrl = data["answer"].substr(data["answer"].indexOf("###URLSTART###"),data["answer"].indexOf("###URLEND###"));
-			var res = userUrl.split(",");
-			userUrl = res[0]; 
-			userUrl = userUrl.replace("###URLSTART###", "");
-			userUrl = userUrl.replace("###URLEND###", "");
+			
+			var userUrl = data["answer"].slice(data["answer"].indexOf("###URLSTART###")+14,data["answer"].indexOf("###URLEND###"));
 			userUrl =  reverseHtmlEntities(userUrl);
 
 			document.getElementById("content-window").value = userCode;
