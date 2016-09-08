@@ -46,7 +46,6 @@ $timeUsed;
 $stepsUsed;
 $duggafeedback="UNK";
 $variants=array();
-$safe_variants=array();
 
 $debug="NONE!";	
 
@@ -155,12 +154,12 @@ if($demo){
 			$savedvariant="UNK";
 	}
 
-	// If there are any variants, randomize
+	// If there are many variants, randomize
 	if($savedvariant==""||$savedvariant=="UNK"){
 		// Randomize at most 8 times
 		$cnt=0;
 		do{
-				$randomno=rand(0,sizeof($safe_variants)-1);
+				$randomno=rand(0,sizeof($variants)-1);
 				
 				// If there is a variant choose one at random
 				if(sizeof($variants)>0){
