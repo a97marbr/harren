@@ -29,12 +29,6 @@
 	// Connect to database and start session
 	pdoConnect();
 	session_start();
-
-	$log_uuid = getOP('log_uuid');
-	$log_timestamp = getOP('log_timestamp');
-
-//	logServiceEvent($log_uuid, EventTypes::ServiceClientStart, "codeviewerService.php", $log_timestamp);
-//	logServiceEvent($log_uuid, EventTypes::ServiceServerStart, "codeviewerService.php");
 	
 	// Global variables
 	$exampleId=getOP('exampleid');
@@ -55,6 +49,14 @@
 	}else{
 		$userid="1";
 	}
+
+	$log_uuid = getOP('log_uuid');
+	$log_timestamp = getOP('log_timestamp');
+
+	$log_uuid = getOP('log_uuid');
+	$info=$opt." ".$courseId." ".$courseVersion." ".$exampleName." ".$sectionName." ".$exampleId;
+	logServiceEvent($log_uuid, EventTypes::ServiceServerStart, "codeviewerservice.php",$userid,$info);
+
 	// Checks and sets user rights
 	if(checklogin() && (hasAccess($userid, $courseId, 'w'))){
 		$writeAccess="w";
@@ -477,5 +479,6 @@
 
 	}
 
-//	logServiceEvent($log_uuid, EventTypes::ServiceServerEnd, "editorService.php");
+	logServiceEvent($log_uuid, EventTypes::ServiceServerEnd, "codeviewerservice.php",$userid,$info);
+
 ?>

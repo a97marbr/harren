@@ -209,7 +209,7 @@ function showFacit(param, uanswer, danswer, userStats, files, moment)
 
 		// Bring up the feedback tools
 		document.getElementById('markMenuPlaceholder').style.display = "block";
-		document.getElementById('markSaveButton').style.display = "block";
+//		document.getElementById('markSaveButton').style.display = "block";
 	
 	}
 }

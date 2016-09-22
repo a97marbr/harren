@@ -86,13 +86,10 @@ function returnedDugga(data)
 
 
 		if (data["answer"] == null || data["answer"] !== "UNK") {
-			var userCode = data["answer"].substr(data["answer"].indexOf("###HTMLSTART###")+15,data["answer"].indexOf("###HTMLEND###")-28);
+			var userCode = data["answer"].slice(data["answer"].indexOf("###HTMLSTART###")+15,data["answer"].indexOf("###HTMLEND###"));
 			userCode =  reverseHtmlEntities(userCode);
-			var userUrl = data["answer"].substr(data["answer"].indexOf("###URLSTART###"),data["answer"].indexOf("###URLEND###"));
-			var res = userUrl.split(",");
-			userUrl = res[0]; 
-			userUrl = userUrl.replace("###URLSTART###", "");
-			userUrl = userUrl.replace("###URLEND###", "");
+			
+			var userUrl = data["answer"].slice(data["answer"].indexOf("###URLSTART###")+14,data["answer"].indexOf("###URLEND###"));
 			userUrl =  reverseHtmlEntities(userUrl);
 
 			document.getElementById("content-window").value = userCode;
@@ -110,7 +107,7 @@ function returnedDugga(data)
 	}
 	// Teacher feedback
 	if (data["feedback"] == null || data["feedback"] === "" || data["feedback"] === "UNK") {
-			// No feedback
+			document.getElementById('feedbackBox').style.display = "none";
 	} else {
 			var fb = "<table><thead><tr><th>Date</th><th>Feedback</th></tr></thead><tbody>";
 			var feedbackArr = data["feedback"].split("||");
@@ -183,6 +180,7 @@ function showFacit(param, uanswer, danswer, userStats, files, moment, feedback)
 		document.getElementById('duggaTotalClicks').innerHTML=userStats[3];
 		$("#duggaStats").css("display","none");
 	}
+	document.getElementById('feedbackBox').style.display = "none";
 	/* reset */
 	sf = 2.0;
 	speed = 0.1;
@@ -200,7 +198,7 @@ function showFacit(param, uanswer, danswer, userStats, files, moment, feedback)
 	document.getElementById("target-text").innerHTML = retdata["target-text"];
 
 	if (uanswer !== null || uanswer !== "UNK") {
-		
+			/*
 			var userCode = uanswer.substr(uanswer.indexOf("###HTMLSTART###"),uanswer.indexOf("###HTMLEND###"));
 			userCode = userCode.replace("###HTMLSTART###", "");
 			userCode = userCode.replace("###HTMLEND###", "");
@@ -211,6 +209,12 @@ function showFacit(param, uanswer, danswer, userStats, files, moment, feedback)
 			userUrl = res[0]; 
 			userUrl = userUrl.replace("###URLSTART###", "");
 			userUrl = userUrl.replace("###URLEND###", "");
+			userUrl =  reverseHtmlEntities(userUrl);
+			*/
+			var userCode = uanswer.slice(uanswer.indexOf("###HTMLSTART###")+15,uanswer.indexOf("###HTMLEND###"));
+			userCode =  reverseHtmlEntities(userCode);
+			
+			var userUrl = uanswer.slice(uanswer.indexOf("###URLSTART###")+14,uanswer.indexOf("###URLEND###"));
 			userUrl =  reverseHtmlEntities(userUrl);
 
 			var markWindowHeight = $("#MarkCont").height();
@@ -242,19 +246,23 @@ function showFacit(param, uanswer, danswer, userStats, files, moment, feedback)
 
 
 
-			$( "#MarkCont" ).append( '<img id="facit-target-window-img" style="width:200px; height:200px;overflow:hidden; position:absolute; bottom:50px;right:11px;border:1px solid black;" src="'+document.getElementById("target-window-img").src+'" />' );
+			$( "#MarkCont" ).append( '<img id="facit-target-window-img" class="facitPreview" src="'+document.getElementById("target-window-img").src+'" onmouseenter="togglePopover();" onclick="togglePreview();"/>' );
 
 
 	}
 	// Teacher feedback
 	var fb = "<table><thead><tr><th>Date</th><th>Feedback</th></tr></thead><tbody>";
-	var feedbackArr = feedback.split("||");
-	for (var k=feedbackArr.length-1;k>=0;k--){
-		var fb_tmp = feedbackArr[k].split("%%");
-		fb+="<tr><td>"+fb_tmp[0]+"</td><td>"+fb_tmp[1]+"</td></tr>";
-	} 
+	if (feedback !== undefined){
+			var feedbackArr = feedback.split("||");
+			for (var k=feedbackArr.length-1;k>=0;k--){
+					var fb_tmp = feedbackArr[k].split("%%");
+					fb+="<tr><td>"+fb_tmp[0]+"</td><td>"+fb_tmp[1]+"</td></tr>";
+			} 		
+	}
 	fb += "</tbody></table><br><textarea id='newFeedback'></textarea>";
-	document.getElementById('teacherFeedbackTable').innerHTML = fb;
+	if (document.getElementById('teacherFeedbackTable')){
+			document.getElementById('teacherFeedbackTable').innerHTML = fb;
+	}
 
 }
 
@@ -336,4 +344,11 @@ function processpreview()
 		content=encodeURIComponent(content);
 		
 		document.getElementById("code-preview-window").src="preview.php?prev="+content;
+}
+
+function togglePreview (){
+	$("#facit-target-window-img").removeClass("facitPopover").addClass("facitPreview");}
+
+function togglePopover (){
+	$("#facit-target-window-img").removeClass("facitPreview").addClass("facitPopover");
 }

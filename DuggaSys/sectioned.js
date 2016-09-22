@@ -102,6 +102,8 @@ function selectItem(lid,entryname,kind,evisible,elink,moment,gradesys,highscorem
 	else str+="<option value='0'>Hidden</option>";
 	if(evisible==1) str+="<option selected='selected' value='1'>Public</option>"
 	else str+="<option value='1'>Public</option>";
+	if(evisible==2) str+="<option selected='selected' value='2'>Login</option>"
+	else str+="<option value='2'>Login</option>";
 	$("#visib").html(str);
 	
 	// Add hichscore mode options
@@ -495,8 +497,7 @@ function returnedSection(data)
 				var deadline = item['deadline'];
 				str += "<div>";
 
-				// If visible or we are a teacher/superuser
-				if (parseInt(item['visible']) === 1 || data['writeaccess']) {		
+				// All are visible according to database
 
 				// Content table 		
 				str+="<table style='width:100%;table-layout:fixed;'><tr style='height:32px;' ";
@@ -507,6 +508,15 @@ function returnedSection(data)
 				}
 				str+=" >";
 				
+					var blorf="";
+					if (parseInt(item['visible']) === 0){
+							blorf=" hiddensection";
+					}else if(parseInt(item['visible']) === 1){
+							blorf="";
+					}else{
+							blorf=" loginsection";
+					}
+					
 					// kind 0 == Header || 1 == Section || 2 == Code  ||�3 == Test (Dugga)|| 4 == Moment�|| 5 == Link
 					if(parseInt(item['kind']) === 3|| parseInt(item['kind']) === 4){
 
@@ -568,9 +578,9 @@ function returnedSection(data)
 								}
 							}
 	            if (parseInt(item['kind']) === 3){
-                  str+="<td class='LightBox'>";
+                  str+="<td class='LightBox"+blorf+"'>";
               } else if ((parseInt(item['kind']) === 4)){
-                  str+="<td class='LightBoxFilled'>";
+                  str+="<td class='LightBoxFilled"+blorf+"'>";
               }
 							
 							if((grady==-1 || grady == 0 || grady==null) && status==="") {
@@ -606,50 +616,50 @@ function returnedSection(data)
 						}
 				}
 
-				// kind 0 == Header || 1 == Section || 2 == Code  ||�3 == Test (Dugga)|| 4 == Moment�|| 5 == Link
+
+				// kind 0 == Header || 1 == Section || 2 == Code  || 3 == Test (Dugga)|| 4 == Moment || 5 == Link
 				if(parseInt(item['kind']) === 0 ){									// Header
 					// Styling for header row
-					str+="</td><td class='header item' placeholder='"+momentexists+"'id='I"+item['lid']+"' ";
+					str+="</td><td class='header item"+blorf+"' placeholder='"+momentexists+"'id='I"+item['lid']+"' ";					
 					kk=0;
 				}else if(parseInt(item['kind']) === 1 ){						// Section
-					str+="<td class='section item' placeholder='"+momentexists+"'id='I"+item['lid']+"' ";
+					// Styling for Section row
+					str+="<td class='section item"+blorf+"' placeholder='"+momentexists+"'id='I"+item['lid']+"' ";
 					kk=0;
 				}else if(parseInt(item['kind']) === 2 ){						// Code Example
 					str+="<td";
+
 					if(kk==0){
 						if(kk%2==0){
-							str+=" class='example item' style='white-space:nowrap;overflow:hidden;box-shadow: 0px 3px 2px #aaa inset;' placeholder='"+momentexists+"' id='I"+item['lid']+"' ";
+							str+=" class='example item"+blorf+"' style='white-space:nowrap;overflow:hidden;box-shadow: 0px 3px 2px #aaa inset;' placeholder='"+momentexists+"' id='I"+item['lid']+"' ";
 						}else{
-							str+=" class='example item' style='white-space:nowrap;overflow:hidden;box-shadow: 0px 3px 2px #aaa inset;' placeholder='"+momentexists+"' id='I"+item['lid']+"' ";
+							str+=" class='example item"+blorf+"' style='white-space:nowrap;overflow:hidden;box-shadow: 0px 3px 2px #aaa inset;' placeholder='"+momentexists+"' id='I"+item['lid']+"' ";
 						}
 					}else{
 						if(kk%2==0){
-							str+=" class='example item' style='white-space:nowrap;overflow:hidden;' placeholder='"+momentexists+"' id='I"+item['lid']+"' ";
+							str+=" class='example item"+blorf+"' style='white-space:nowrap;overflow:hidden;' placeholder='"+momentexists+"' id='I"+item['lid']+"' ";
 						}else{
-							str+=" class='example item' style='white-space:nowrap;overflow:hidden;' placeholder='"+momentexists+"' id='I"+item['lid']+"' ";
+							str+=" class='example item"+blorf+"' style='white-space:nowrap;overflow:hidden;' placeholder='"+momentexists+"' id='I"+item['lid']+"' ";
 						}
 					}
 					kk++;
-				}else if(parseInt(item['kind']) === 3 ){						// Test / Dugga
-
+				}else if(parseInt(item['kind']) === 3 ){						// Dugga
 					if(item['highscoremode'] != 0 && parseInt(item['kind']) == 3) {
 						str+="<td style='width:20px;'><img style=';' title='Highscore' src='../Shared/icons/top10.png' onclick='showHighscore(\""+item['link']+"\",\""+item['lid']+"\")'/></td>";
 					}						
 					str += "<td ";
 					if(kk%2==0){
-						str+=" class='example item' placeholder='"+momentexists+"' id='I"+item['lid']+"' ";
+						str+=" class='example item"+blorf+"' placeholder='"+momentexists+"' id='I"+item['lid']+"' ";
 					}else{
-						str+=" class='example item' placeholder='"+momentexists+"' id='I"+item['lid']+"' ";
+						str+=" class='example item"+blorf+"' placeholder='"+momentexists+"' id='I"+item['lid']+"' ";
 					}
-					
 					kk++;
 				}else if(parseInt(item['kind']) === 4 ){					// Moment
-				
 					//new moment bool equals true
 					momentexists = item['lid'];
 								
 					// Styling for moment row
-					str+="<td class='moment item' placeholder='"+momentexists+"' id='I"+item['lid']+"' ";
+					str+="<td class='moment item"+blorf+"' placeholder='"+momentexists+"' id='I"+item['lid']+"' ";
 					kk=0;
 				}else if(parseInt(item['kind']) === 5 ){					// Link
 					str+="<td";
@@ -661,14 +671,6 @@ function returnedSection(data)
 					kk++;
 				}
 
-				// If first item below section
-				if(kk==1){
-					if (parseInt(item['visible']) === 0) str+=" style='opacity: 0.5; box-shadow: 0px 3px 2px #aaa inset; border-radius:8px; margin-left:4px;' "
-					else str+="style='box-shadow: 0px 3px 2px #aaa inset;' ";				
-				}else{
-					if (parseInt(item['visible']) === 0) str+=" style='opacity: 0.5;border-radius:8px; margin-left:4px;' ";
-				}
-
 				// Close Information		
 				str+=">";
 
@@ -676,17 +678,16 @@ function returnedSection(data)
 				if (parseInt(item['kind']) < 2) {						// Header or Section
 					str+="<span style='padding-left:5px;'>"+item['entryname']+"</span>";
 				}else if (parseInt(item['kind']) == 4) {		// Moment
-					str+="<span style='padding-left:5px;'>"+item['entryname']+"</span>";
+					str+="<span class='"+blorf+"' style='padding-left:5px;'>"+item['entryname']+"</span>";
 				}else if (parseInt(item['kind']) == 2) {		// Code Example
-					//str+="<span><a style='margin-left:15px;' href='../CodeViewer/EditorV50.php?exampleid="+item['link']+"&courseid="+querystring['courseid']+"&cvers="+querystring['coursevers']+"'>"+item['entryname']+"</a></span>";
-					str+="<span><a style='margin-left:15px;' href='codeviewer.php?exampleid="+item['link']+"&courseid="+querystring['courseid']+"&cvers="+querystring['coursevers']+"'>"+item['entryname']+"</a></span>";
+					str+="<span><a class='"+blorf+"l' style='margin-left:15px;' href='codeviewer.php?exampleid="+item['link']+"&courseid="+querystring['courseid']+"&cvers="+querystring['coursevers']+"'>"+item['entryname']+"</a></span>";
 				}else if (parseInt(item['kind']) == 3 ) {		// Test / Dugga
-					str+="<a style='cursor:pointer;margin-left:15px;' onClick='changeURL(\"showDugga.php?cid="+querystring['courseid']+"&coursevers="+querystring['coursevers']+"&did="+item['link']+"&moment="+item['lid']+"&segment="+momentexists+"&highscoremode="+item['highscoremode']+"\");' >"+item['entryname']+"</a>";
+					str+="<a class='"+blorf+"l' style='cursor:pointer;margin-left:15px;' onClick='changeURL(\"showDugga.php?cid="+querystring['courseid']+"&coursevers="+querystring['coursevers']+"&did="+item['link']+"&moment="+item['lid']+"&segment="+momentexists+"&highscoremode="+item['highscoremode']+"\");' >"+item['entryname']+"</a>";
 				}else if(parseInt(item['kind']) == 5){			// Link
 					if(item['link'].substring(0,4) === "http"){
-						str+= "<a style='cursor:pointer;margin-left:15px;'  href=" + item['link'] + " target='_blank' >"+item['entryname']+"</a>";
+						str+= "<a class='"+blorf+"l' style='cursor:pointer;margin-left:15px;'  href=" + item['link'] + " target='_blank' >"+item['entryname']+"</a>";
 					}else{
-						str+="<a style='cursor:pointer;margin-left:15px;' onClick='changeURL(\"showdoc.php?cid="+querystring['courseid']+"&coursevers="+querystring['coursevers']+"&fname="+item['link']+"\");' >"+item['entryname']+"</a>";
+						str+="<a class='"+blorf+"l' style='cursor:pointer;margin-left:15px;' onClick='changeURL(\"showdoc.php?cid="+querystring['courseid']+"&coursevers="+querystring['coursevers']+"&fname="+item['link']+"\");' >"+item['entryname']+"</a>";
 					}
 				}
 													
@@ -713,18 +714,19 @@ function returnedSection(data)
 						}
 
 						if(parseInt(item['kind']) === 0){
-								str+="' class='header'><img id='dorf' style='margin:4px' src='../Shared/icons/Cogwheel.svg' onclick='selectItem(\""+item['lid']+"\",\""+item['entryname']+"\",\""+item['kind']+"\",\""+item['visible']+"\",\""+item['link']+"\",\""+momentexists+"\",\""+item['gradesys']+"\",\""+item['highscoremode']+"\");' /></td>";											
+								str+="' class='header"+blorf+"'><img id='dorf' style='margin:4px' src='../Shared/icons/Cogwheel.svg' onclick='selectItem(\""+item['lid']+"\",\""+item['entryname']+"\",\""+item['kind']+"\",\""+item['visible']+"\",\""+item['link']+"\",\""+momentexists+"\",\""+item['gradesys']+"\",\""+item['highscoremode']+"\");' /></td>";											
 						}else if(parseInt(item['kind']) === 1){
-								str+="' class='section'><img id='dorf' style='margin:4px' src='../Shared/icons/Cogwheel.svg' onclick='selectItem(\""+item['lid']+"\",\""+item['entryname']+"\",\""+item['kind']+"\",\""+item['visible']+"\",\""+item['link']+"\",\""+momentexists+"\",\""+item['gradesys']+"\",\""+item['highscoremode']+"\");' /></td>";											
+								str+="' class='section"+blorf+"'><img id='dorf' style='margin:4px' src='../Shared/icons/Cogwheel.svg' onclick='selectItem(\""+item['lid']+"\",\""+item['entryname']+"\",\""+item['kind']+"\",\""+item['visible']+"\",\""+item['link']+"\",\""+momentexists+"\",\""+item['gradesys']+"\",\""+item['highscoremode']+"\");' /></td>";											
 						}else if(parseInt(item['kind']) === 4){
-								str+="' class='moment'><img id='dorf' style='margin:4px' src='../Shared/icons/Cogwheel.svg' onclick='selectItem(\""+item['lid']+"\",\""+item['entryname']+"\",\""+item['kind']+"\",\""+item['visible']+"\",\""+item['link']+"\",\""+momentexists+"\",\""+item['gradesys']+"\",\""+item['highscoremode']+"\");' /></td>";											
+								str+="' class='moment"+blorf+"'><img id='dorf' style='margin:4px' src='../Shared/icons/Cogwheel.svg' onclick='selectItem(\""+item['lid']+"\",\""+item['entryname']+"\",\""+item['kind']+"\",\""+item['visible']+"\",\""+item['link']+"\",\""+momentexists+"\",\""+item['gradesys']+"\",\""+item['highscoremode']+"\");' /></td>";											
 						}else{
 								str+="' ><img id='dorf' style='margin:4px' src='../Shared/icons/Cogwheel.svg' onclick='selectItem(\""+item['lid']+"\",\""+item['entryname']+"\",\""+item['kind']+"\",\""+item['visible']+"\",\""+item['link']+"\",\""+momentexists+"\",\""+item['gradesys']+"\",\""+item['highscoremode']+"\");' /></td>";																	
 						}
 				} 
 
 				str += "</tr>";
-				}
+				
+				
 				str +="</table></div>";
 			}								
 		}else{

@@ -135,7 +135,7 @@
 				}else{
 					echo "<div class='err'><span style='font-weight:bold;'>Bummer!</span> The link you asked for does not currently exist!</div>";
 				}
-			}else if ($userid=="UNK"&&$visibility==1){
+			}else if ($visibility==1){
 				if(file_exists ( "templates/".$duggafile.".html")){
 					readfile("templates/".$duggafile.".html");
 				}else{
@@ -149,9 +149,7 @@
 
 			}else{
 				echo "<div class='err'><span style='font-weight:bold;'>Bummer!</span> Something went wrong in loading the test. Contact LENASys-admin.</div>";
-			}
-		
-			echo "visibility:".$visibility." userid: ".$userid." readaccess: ".$readaccess;
+			}		
 		?>
 
 	</div>

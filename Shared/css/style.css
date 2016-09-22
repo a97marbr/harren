@@ -400,6 +400,19 @@ p {
 		background: radial-gradient(green 55%, grey, white 60%);
 }
 
+#Sectionlist .hiddensection {
+		opacity: 0.3;
+		color: #000;
+}
+
+#Sectionlist .loginsection{
+		color: #dcb;
+}
+
+#Sectionlist .loginsectionl{
+		color: #612;
+}
+
 /* --------------================################================-------------- *
  *                                    Header                                    *
  * --------------================################================-------------- */
@@ -1305,6 +1318,36 @@ input.new-item-button:hover {
    background-color: #FFF;
 }
 
+#feedbackBox {
+    display:none;
+    position:absolute;
+    top:0;
+    right:0;
+}
+
+.facitPreview {
+    width:200px; 
+    height:200px;
+    overflow:hidden; 
+    position:absolute; 
+    bottom:50px;
+    right:11px;
+    border:1px solid black;
+}
+
+.facitPopover {
+    overflow:hidden; 
+    position:absolute; 
+    top: 50px;
+    bottom:50px;
+    right:50px;
+    left:50px;
+    border:1px solid black;  
+}
+
+#MarkCont a:hover {
+    text-decoration: none;
+}
 
 .loginTransparent {
 	display:block;

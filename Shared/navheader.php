@@ -1,6 +1,3 @@
-<!-- Navigation Header! -->
-<!-- New Version includes code for Code Viewer -->
-
 	<header>
 		<?php
 			echo "<table width='100%'><tr>";
