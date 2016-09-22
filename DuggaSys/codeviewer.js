@@ -1461,7 +1461,7 @@ function rendercode(codestring,boxid,wordlistid,boxfilename)
 		}else if(tokens[i].kind=="blockcomment"){
 			cont+="<span class='comment'>"+tokenvalue+"</span>";
 		}else if(tokens[i].kind=="string"){
-			cont+="<span class='string >"+tokenvalue+"</span>";
+			cont+="<span class='string'>"+tokenvalue+"</span>";
 		}else if(tokens[i].kind=="number"){
 			cont+="<span class='number'>"+tokenvalue+"</span>";
 		}else if(tokens[i].kind=="name"){
