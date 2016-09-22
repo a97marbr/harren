@@ -40,6 +40,8 @@ function setup()
 	canvas = document.getElementById('a');
 	if (canvas) {
 		context = canvas.getContext("2d");
+		context.clearRect(0, 0, canvas.width, canvas.height);
+
 		tickInterval = setInterval("tick();", 50);
 
 		AJAXService("GETPARAM", { }, "PDUGGA");
@@ -77,7 +79,11 @@ function returnedDugga(data)
 				renderOperationList();
 			}
 
-			foo();
+			if (running) {
+				renderId = requestAnimationFrame(foo);
+			} else {
+				cancelAnimationFrame(renderId);
+			}
 		}
 	}
 	// Teacher feedback
@@ -159,10 +165,19 @@ function showFacit(param, uanswer, danswer, userStats, files, moment, feedback)
 	v = 0;
 	pushcount = 0;
 	elapsedTime = 0;
+	if (tickInterval != undefined){
+			clearInterval(tickInterval);
+	}
+	
+	if (renderId != undefined){
+			cancelAnimationFrame(renderId);
+			renderId=undefined;
+	}
 
 	running = true;
 	canvas = document.getElementById('a');
 	context = canvas.getContext("2d");
+	context.clearRect(0, 0, canvas.width, canvas.height);
 	tickInterval = setInterval("tick();", 50);
 	var studentPreviousAnswer = "";
 
@@ -184,7 +199,12 @@ function showFacit(param, uanswer, danswer, userStats, files, moment, feedback)
 		renderOperationList();
 	}
 
-	foo();
+	if (running) {
+			renderId = requestAnimationFrame(foo);
+	} else {
+			cancelAnimationFrame(renderId);
+	}
+	
 	// Teacher feedback
 	var fb = "<table><thead><tr><th>Date</th><th>Feedback</th></tr></thead><tbody>";
 	var feedbackArr = feedback.split("||");
@@ -567,7 +587,9 @@ function foo()
 	drawsun(10 * sf);
 
 	if (running) {
-		setTimeout("foo();", 50);
+			renderId = requestAnimationFrame(foo);
+	} else {
+			cancelAnimationFrame(renderId);
 	}
 
 }

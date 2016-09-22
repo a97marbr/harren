@@ -2,6 +2,8 @@
 // changeCSS: Changes the CSS and remembers the index of the CSS.
 //            This allows us to set and remove whole CSS files
 //----------------------------------------------------------------------------------
+var renderId; // Used to store active rendering function
+
 var status = 0;
 var score;
 var timeUsed;

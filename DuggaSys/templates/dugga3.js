@@ -69,12 +69,19 @@ function setup() {
 	canvas = document.getElementById('a');
 	if (canvas) {
 		context = canvas.getContext("2d");
-
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		
 		setupClickHandling();
 
 		AJAXService("GETPARAM", { }, "PDUGGA");
+		
+		// If there is a rendering loop active we should cancel this
+		if (renderId =! undefined) {
+				cancelAnimationFrame(renderId);
+				renderId = undefined;
+		}
 
-		setTimeout("render();", 50);
+		renderId = requestAnimationFrame(render);
 	}
 }
 
@@ -153,6 +160,11 @@ function showFacit(param, uanswer, danswer, userStats, files, moment, feedback)
 	running = true;
 	canvas = document.getElementById('a');
 	context = canvas.getContext("2d");
+	context.clearRect(0, 0, canvas.width, canvas.height);	
+	if (renderId != undefined){
+			cancelAnimationFrame(renderId);
+			renderId=undefined;
+	}
 	var studentPreviousAnswer = "UNK";
 	var p = jQuery.parseJSON(param);
 	if (uanswer !== null && uanswer !== "UNK") {
@@ -166,7 +178,7 @@ function showFacit(param, uanswer, danswer, userStats, files, moment, feedback)
 			document.getElementById('operations').remove(0);
 		}
 	}
-	setTimeout("render();", 50);
+	requestAnimationFrame(render);
 	init(p["linje"], studentPreviousAnswer);
 
 	// Teacher feedback
@@ -758,8 +770,11 @@ function render()
 	context.lineTo(gridx * sf, (gridy + gridsize) * sf);
 	context.stroke();
 	
-	if (running) {setTimeout("render();", 100);}
-
+	if (running) {
+		renderId = requestAnimationFrame(render);
+	} else {
+		cancelAnimationFrame(renderId);
+	}
 }
 
 //----------------------------------------------------------------------------------

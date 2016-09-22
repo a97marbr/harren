@@ -163,6 +163,11 @@ function showFacit(param, uanswer, danswer, userStats, files, moment, feedback)
 			renderTriangleTable();
 		}
 
+    if (renderId != undefined){
+        cancelAnimationFrame(renderId);
+        renderId=undefined;
+    }
+
 		init();
 		goalObject = param;
 		createGoalObject(goalObject);
@@ -771,7 +776,7 @@ function highlightVertices(){
 
 function animate() {
 	fitToContainer();
-	requestAnimationFrame(animate);
+	renderId=requestAnimationFrame(animate);
 
 	if (rotateObjects) {
 		rotateAllObjects();
