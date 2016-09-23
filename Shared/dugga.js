@@ -26,13 +26,32 @@ function toggleloginnewpass(){
 
 function closeWindows(){
 
-	$(".loginBox").css("display", "none");
-	$("#overlay").css("display","none");
-	$("#resultpopover").css("display","none");
-	$("#login #username").val("");
-	$("#login #password").val("");
-	$("#previewpopover").css("display","none");
-	
+	var index_highest = 0;   
+	var e;
+	// more effective to have a class for the div you want to search and 
+	// pass that to your selector
+	$("*").each(function() {
+	    // always use a radix when using parseInt
+	    var index_current = parseInt($(this).css("zIndex"), 10);
+	    if(index_current > index_highest && this.style.display == "block") {
+	        index_highest = index_current;
+					e=this;
+	    }
+	});
+
+	if (index_highest > 0){
+			e.style.display = "none";
+			/* Overlay is only present for loginbox which 
+			 * has z-index of 9000, so if we closed such a 
+			 * window, hide the overlay and clear any values
+			 * as well.
+			 */
+			if (index_highest < 10000) {
+					$("#overlay").css("display","none");
+					$("#login #username").val("");
+					$("#login #password").val("");
+			}
+	}
 	window.removeEventListener("keypress", loginEventHandler, false);
 }
 
@@ -617,6 +636,7 @@ function getCookie(cname) {
 	return "";
 }
 
+// EventListner for when ESC is pressed do a closeWindows()
 $(window).load(function() {
 	//There is an issue with using this code, it generates errors that stop execution
       $(window).keyup(function(event){
@@ -627,10 +647,6 @@ $(window).load(function() {
 $(window).load(function() {
 	$('.loginBox').draggable({ handle:'.loginBoxheader'});
 	$('.loginBox').draggable({ containment: "window"});	//contains the draggable box within window-boundaries
-	//There is an issue with using this code, it generates errors that stop execution
-	$(window).keyup(function(event){
-		if(event.keyCode == 27) closeWindows();
-	});
 });
 
 //----------------------------------------------------------------------------------

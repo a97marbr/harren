@@ -42,12 +42,6 @@ pdoConnect();
 	<?php
 		include '../Shared/loginbox.php';
 	?>
-
-<script>
-		$(window).keyup(function(event){
-			if(event.keyCode == 27) closeWindows();
-		});
-</script>
 			
 	<!---------------------=============####### Result Popover #######=============--------------------->
 	
