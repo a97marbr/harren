@@ -124,13 +124,13 @@
 
 .gifwrapper {	  
     position: relative;
+		display: flex;
+		align-items: center;
 }
 
 .playbutton {
-  display:inline-block;
-	position: absolute; 
-	top: 50px;
-	left: 59px;
+	position: relative;
+	left: -98px;
   border: 2px solid black;
   padding:2px;
   width: 32px;

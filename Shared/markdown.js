@@ -29,7 +29,7 @@ function toggleGif(url1, url2,handle){
 		showGif(url2, 150 + "px",handle); //Show thumbnail
 	}
 	else{
-		showGif(url1, 100 + "%",handle); //Show big animation gif
+		showGif(url1, 60 + "%",handle); //Show big animation gif
 	}
 }
 
