@@ -123,7 +123,7 @@
 				if(file_exists ( "templates/".$duggafile.".html")){
 					readfile("templates/".$duggafile.".html");
 
-					echo "<table width='100%'>";
+					echo "<table id='submitButtonTable' width='100%'>";
 					echo "<tr>";
 					echo "<td align='center'>";
 					echo "<input id='saveDuggaButton' class='submit-button' type='button' value='Save' onclick='saveClick();' style='width:160px;height:48px;line-height:48px;' />";
