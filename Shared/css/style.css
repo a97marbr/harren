@@ -789,6 +789,7 @@ header td {
     vertical-align: bottom;
     padding-left: 10px;
     cursor:move;
+    display:flex;
 /*  padding-top: 15px; */
 }
 .loginBoxheader h3 {
@@ -796,8 +797,6 @@ header td {
     margin-top: 10px;
     line-height: 0.5em;
     color: #fff;
-    float: left;
-    width: 50%;
 }
 .loginBoxheader div {
     padding: 2px 20px;

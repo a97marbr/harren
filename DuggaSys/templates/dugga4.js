@@ -108,8 +108,8 @@ function returnedDugga(data)
 			document.getElementById('feedbackTable').innerHTML = fb;		
 			document.getElementById('feedbackBox').style.display = "block";
 	}
-	$("#submitButtonTable")
-	    .appendTo("#content");
+	$("#submitButtonTable").appendTo("#content");
+	$("#lockedDuggaInfo").appendTo("#content");
 }
 
 function reset()
