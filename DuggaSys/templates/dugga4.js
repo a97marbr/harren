@@ -403,12 +403,16 @@ function drawCross(cx, cy, col, size)
 
 function toggleSelectOperation(e){
 		if ($(e).closest("tr").hasClass("selectedOp")){
-				$(e).closest("tr").removeClass("selectedOp")
-				document.getElementById("addOpButton").value = "Add Op."
+				$(e).closest("tr").removeClass("selectedOp");
+				document.getElementById("addOpButton").value = "Add Op.";
 				$("#operationList").find("tr:odd").css('background-color', '#dad8db');
 		} else {
-				$(e).closest("tr").addClass("selectedOp")
-				document.getElementById("addOpButton").value = "Change Op."
+				$(e).closest("tr").addClass("selectedOp");
+				document.getElementById("addOpButton").value = "Change Op.";
+				// Unselect any previous selected row
+				$("#operationList").find("tr").each(function (){
+						if (this.id != $(e).closest("tr").attr('id')) $(this).removeClass("selectedOp");
+				});
 		}		
 }
 
@@ -418,11 +422,10 @@ function newbutton()
 	var newOp = $('#function > optgroup > option:selected').text();
 	var newOpCode = $("#function").val();
 
-	if($("*[id*=op_]").hasClass("selectedOp")){
+	if($("#operationList").find("tr").hasClass("selectedOp")){
 			$(".selectedOp").each(function(){
-				this.innerHTML = newOp;
-				var index = this.id.replace("op_","");
-				document.getElementById("opCode_"+index).innerHTML=newOpCode;
+				$(this).find("*[id^=op_]").html(newOp);
+				$(this).find("*[id^=opCode_]").html(newOpCode);
 				toggleSelectOperation(this);
 			});
 	} else {
@@ -451,6 +454,8 @@ function refreshOpNum(){
 	$("*[id^=opNum]").each(function (){
 			this.innerHTML = idx++;
 	});
+	$("#operationList").find("tr:odd").css('background-color', '#dad8db');
+	$("#operationList").find("tr:even").css('background-color', '#ffffff');
 }
 
 function drawCommand(cstr) 
