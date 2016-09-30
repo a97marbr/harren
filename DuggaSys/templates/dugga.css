@@ -257,3 +257,5 @@ input.submit-button:hover {
     	border-radius:4px;	
 }
 						
+table tbody tr:nth-child(even) {background-color:#dad8db;}
+.selectedOp {background-color: #c6cdb8 !important;}
