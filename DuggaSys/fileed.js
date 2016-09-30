@@ -36,6 +36,14 @@ function deleteFile(fileid,filename){
 		}
 }
 
+function toggleTableVisibility(tbody) {
+		if (document.getElementById(tbody).style.display == "none"){
+				document.getElementById(tbody).style.display = "table-row-group";
+		} else {
+				document.getElementById(tbody).style.display = "none";
+		}
+}
+
 function createLink()
 {
 		$("#uploadbuttonname").html("<input class='submit-button' type='submit' value='Upload URL' /></td>");
@@ -134,7 +142,10 @@ function returnedFile(data)
 		str3="";
 		str4="";
 		str1+="<table class='list' style='margin-bottom:8px;' >";
+		str1+="<thead>";
+		str1+="<tr><th><input class='submit-button' type='button' value='v' onclick='toggleTableVisibility(\"linksBody\");'/></th><th colspan='2'><input class='submit-button' type='button' value='Add Link' onclick='createLink();'/></th></tr>";
 		str1+="<tr><th class='first' style='width:64px;'>ID</th><th>Link URL</th><th style='width:30px' class='last'></th></tr>";
+		str1+="<thead><tbody id='linksBody'>"
 
 		if (data['entries'].length > 0) {
 			for(i=0;i<data['entries'].length;i++){
@@ -150,9 +161,11 @@ function returnedFile(data)
 							str1+="</tr>";
 					}
 			}
-			str1+="</table>";
+			str1+="</tbody></table>";
 			str2+="<table class='list' style='margin-bottom:8px;' >";
+			str2+="<tr><th><input class='submit-button' type='button' value='v' onclick='toggleTableVisibility(\"globalBody\");'/></th><th colspan='2'><input class='submit-button' type='button' value='Add File' onclick='createFile(\"GFILE\");'/></th></tr>"
 			str2+="<tr><th class='first' style='width:64px;'>ID</th><th>Global File</th><th style='width:30px' class='last'></th></tr>";
+			str2+="<thead><tbody id='globalBody'>"
 			
 			for(i=0;i<data['entries'].length;i++){
 				var item=data['entries'][i];
@@ -171,9 +184,12 @@ function returnedFile(data)
 
 				}
 			}
-			str2+="</table>";
+			str2+="</tbody></table>";
 			str3+="<table class='list' style='margin-bottom:8px;' >";
+			str3+="<thead>";
+			str3+="<tr><th><input class='submit-button' type='button' value='v' onclick='toggleTableVisibility(\"courseBody\");'/></th><th colspan='2'><input class='submit-button' type='button' value='Add File' onclick='createFile(\"MFILE\");'/></th></tr>";
 			str3+="<tr><th class='first' style='width:64px;'>ID</th><th>Course Local File</th><th style='width:30px' class='last'></th></tr>";
+			str3+="<thead><tbody id='courseBody'>";
 			for(i=0;i<data['entries'].length;i++){
 				var item=data['entries'][i];
 				if(parseInt(item['kind'])==3){
@@ -190,9 +206,12 @@ function returnedFile(data)
 					str3+="</tr>";
 				}
 			}
-			str3+="</table>";
+			str3+="</tbody></table>";
 			str4+="<table class='list' style='margin-bottom:8px;' >";
+			str4+="<thead>";
+			str4+="<tr><th><input class='submit-button' type='button' value='v' onclick='toggleTableVisibility(\"localBody\");'/></th><th colspan='2'><input class='submit-button' type='button' value='Add File' onclick='createFile(\"LFILE\");'/></th></tr>";
 			str4+="<tr><th class='first' style='width:64px;'>ID</th><th>Local File</th><th style='width:30px' class='last'></th></tr>";
+			str4+="<thead><tbody id='localBody'>"
 			for(i=0;i<data['entries'].length;i++){
 				var item=data['entries'][i];
 				if(parseInt(item['kind'])==4){
@@ -209,7 +228,7 @@ function returnedFile(data)
 					str4+="</tr>";
 				}
 			}
-		str4+="</table>";
+		str4+="</tbody></table>";
 				
 		// overwrite the tables with the data fetched from mysql into the divs on the html page
 		//-------------------------------------------------------------------------------------
@@ -228,4 +247,3 @@ function returnedFile(data)
 	//-------------------------------------------------------------------------------------
 	if(data['debug']!="NONE!") alert(data['debug']);
 }
-
