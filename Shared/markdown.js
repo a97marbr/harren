@@ -27,10 +27,12 @@ function toggleGif(url1, url2,handle){
 	//alert();
 	if(currentSrc == url1){
 		$(handle).removeClass("gifimage-fullsize");
+		document.getElementById("overlay").style.display="none";
 		showGif(url2, 150 + "px",handle); //Show thumbnail
 	}
 	else{
 		showGif(url1, 80 + "%",handle); //Show big animation gif
+		document.getElementById("overlay").style.display="block";		
 		$(handle).addClass("gifimage-fullsize");
 	}
 }
