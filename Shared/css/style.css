@@ -151,7 +151,7 @@ p {
 
 #content {
     background: #fff;
-    min-height: 100vh;
+    min-height: calc(100vh - 90px);
     padding: 65px 10px 25px 10px;
 }
 
@@ -1351,14 +1351,8 @@ input.new-item-button:hover {
 .loginTransparent {
 	display:block;
 	height: 60px;
-	width: 100%;
 	background-color: #614875;
-	position: static;
-	bottom: 0;
-	left: 0;
 	text-align: left;
-	margin-top: 40px;
-	clear: both;
 }
 
 .loginTransparent img{
@@ -1375,4 +1369,31 @@ input.new-item-button:hover {
 		vertical-align: middle;
 		padding-left: 15px;
 		color:#fff;
+}
+
+.pane {
+    border-top: 2px solid  #614875;
+    border-left: 2px solid  #614875;
+    border-right: 2px solid  #614875;
+    display: inline-block;
+    padding: 5px 15px 5px 15px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    color:#000000;
+}
+
+.pane-active {
+    background-color: #614875;
+    color: #FFFFFF;
+}
+
+.pane-header {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.pane-body {
+  border:2px solid #614875;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
 }

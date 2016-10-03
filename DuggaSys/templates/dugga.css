@@ -142,7 +142,6 @@ input.submit-button:hover {
 .instructions-container{
 	width:100%;
 	margin-bottom:25px;
-	margin-top:10px;
 }
 
 .instructions-content {
@@ -259,3 +258,6 @@ input.submit-button:hover {
 						
 table tbody tr:nth-child(even) {background-color:#dad8db;}
 .selectedOp {background-color: #c6cdb8 !important;}
+svg text {
+	pointer-events: none;
+}

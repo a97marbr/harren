@@ -142,7 +142,7 @@
 					echo "<div class='err'><span style='font-weight:bold;'>Bummer!</span> The link you asked for does not currently exist!</div>";
 				}
 
-				echo "<div class='loginTransparent' id='lockedDuggaInfo' style='margin-top:5px;'>";
+				echo "<div class='loginTransparent' id='lockedDuggaInfo' style='margin-bottom:5px;'>";
 				echo "<img src='../Shared/icons/duggaLock.svg'>";
 				echo "<p>Not logged in!<br>You can view the assignment but you need to be logged in to save your test result.</p>";
 				echo "</div>";

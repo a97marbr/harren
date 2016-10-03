@@ -31,10 +31,11 @@ var facitarray=[];
 
 function setup()
 {
-
+	window.onresize = function(event) {
+	    redrawgfx();
+	};
 	var canvas = document.getElementById("myCanvas");
 	ctx = canvas.getContext("2d");
-
 
 	AJAXService("GETPARAM",{ },"PDUGGA");
 }
@@ -60,6 +61,8 @@ function returnedDugga(data)
 		ClickCounter.showClicker();
 	}
 	
+	running=true;
+	
 	if(data['debug']!="NONE!") alert(data['debug']);
 
 	if(data['param']=="UNK"){
@@ -71,7 +74,6 @@ function returnedDugga(data)
 			bitarray=previousAnswer[3].split(',');
 			for (var i=0;i<bitarray.length;i++) bitarray[i]=parseInt(bitarray[i]); 
 		}
-		redrawgfx();
 		document.getElementById('helptxt').innerHTML=dta[0].Text;
 	}
 	// Teacher feedback
@@ -88,7 +90,15 @@ function returnedDugga(data)
 			document.getElementById('feedbackTable').innerHTML = fb;		
 			document.getElementById('feedbackBox').style.display = "block";
 	}
-		
+	$("#submitButtonTable").appendTo("#content");
+	$("#lockedDuggaInfo").prependTo("#content");
+	
+	if (running) {
+		renderId = requestAnimationFrame(redrawgfx);
+	} else {
+		cancelAnimationFrame(renderId);
+	}
+	
 }
 
 //--------------------================############================--------------------
@@ -185,15 +195,30 @@ function flipbit(bitno)
 	}else{
 		bitarray[bitno]=0;        		
 	}
-	
 	redrawgfx();
 }
 
+function fitToContainer() 
+{
+	// Make it visually fill the positioned parent
+	
+	divw = $("#content").width();
+	if (divw < window.innerHeight) {
+		ctx.width = divw;
+		ctx.height = divw;
+	} else {
+		ctx.width = window.innerHeight - 270;
+		ctx.height = ctx.width;
+	}
+	
+}
+	
 //----------------------------------------------------------------------------------
 // redraw shape
 //----------------------------------------------------------------------------------
 function redrawgfx()
 {
+	fitToContainer();
 	if (facitarray.length<1) facitarray = bitarray;
 	
 	str="";
@@ -250,7 +275,9 @@ function redrawgfx()
 	}
 
 
-	document.getElementById('foo').innerHTML=str;        
+	document.getElementById('foo').innerHTML=str;   
+	document.getElementById('foo').setAttribute("height", ctx.height+"px");
+	document.getElementById('foo').setAttribute("width", ctx.width+"px");
 }
 
 
