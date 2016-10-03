@@ -26,10 +26,12 @@ function toggleGif(url1, url2,handle){
 	currentSrc = currentSrc.substr(n+1);
 	//alert();
 	if(currentSrc == url1){
+		$(handle).removeClass("gifimage-fullsize");
 		showGif(url2, 150 + "px",handle); //Show thumbnail
 	}
 	else{
-		showGif(url1, 60 + "%",handle); //Show big animation gif
+		showGif(url1, 80 + "%",handle); //Show big animation gif
+		$(handle).addClass("gifimage-fullsize");
 	}
 }
 

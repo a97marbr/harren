@@ -118,7 +118,7 @@
 /* "gifimage", "gifwrapper" and "playbutton" are styles for showing gif clips for tutorials etc. */
 
 .gifimage{
-		width: 150px;
+		width: 150px !important;
 		border: 3px solid teal;
 }
 
@@ -133,9 +133,17 @@
 	left: -98px;
   border: 2px solid black;
   padding:2px;
-  width: 32px;
-  height: 32px;
+  width: 32px !important;
+  height: 32px  !important;
   border-radius: 32px 32px;
   pointer-events: none;
   background-color: rgba(255,255,255,0.5);
+}
+
+.gifimage-fullsize {
+	position: fixed;
+	top:55px;
+	left:20%;
+	width:60% !important;
+	z-index: 10000;
 }
