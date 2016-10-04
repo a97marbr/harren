@@ -791,7 +791,7 @@ function displayPreview(filepath, filename, fileseq, filetype, fileext, fileinde
 		$("#previewpopover").css("display", "block");
 }
 function displayDuggaStatus(answer,grade,submitted,marked){
-		var str="<td id='duggaStatus' align='center' class='LightBox' style='vertical-align: middle;'>";
+		var str="<td style='vertical-align:middle;'><div style='display:flex;justify-content:flex-end;align-items:center;'><div class='LightBox'>";
 		// Get proper dates
 		if(submitted!=="UNK") {
 			var t = submitted.split(/[- :]/);
@@ -803,15 +803,15 @@ function displayDuggaStatus(answer,grade,submitted,marked){
 		}
 		
 		if (answer == "UNK" && (grade == "UNK" || grade <= 1)){
-				str+="<div class='StopLight WhiteLight' style='margin:4px;'></div><td><span>Dugga not yet submitted!</span>";
+				str+="<div class='StopLight WhiteLight' style='margin:4px;'></div></div><div>Dugga not yet submitted!</div>";
 		} else if (submitted != "UNK" && answer != "UNK" && marked == "UNK" || ( submitted !== "UNK" && marked !== "UNK" && (submitted.getTime() > marked.getTime()))) {
-				str+="<div class='StopLight YellowLight' style='margin:4px;'></div><td><span>Dugga submitted."+submitted+"</span>";
+				str+="<div class='StopLight YellowLight' style='margin:4px;'></div></div><div>Dugga submitted."+submitted+"</div>";
 		} else if (grade != "UNK" && grade <= 1 && (submitted.getTime() < marked.getTime()) ) {
-				str+="<div class='StopLight RedLight' style='margin:4px;'></div><td><span>Dugga marked as fail: "+marked+"</span>";
+				str+="<div class='StopLight RedLight' style='margin:4px;'></div></div><div>Dugga marked as fail: "+marked+"</div>";
 		} else if (grade > 1) {
-				str+="<div class='StopLight GreenLight' style='margin:4px;'></div><td><span>Dugga marked as pass: "+marked+"</span>";
+				str+="<div class='StopLight GreenLight' style='margin:4px;'></div></div><div>Dugga marked as pass: "+marked+"</div>";
 		}
 		
-		str+="</td>";
-		document.getElementById("duggaStatus").outerHTML = str;
+		str+="</div></td>";
+		document.getElementById("duggaStatus").innerHTML = str;
 }

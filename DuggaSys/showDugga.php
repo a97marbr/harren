@@ -125,7 +125,7 @@
 
 					echo "<table id='submitButtonTable' width='100%'>";
 					echo "<tr>";
-					echo "<td id='duggaStatus' align='center' class='LightBox'>Knebus";
+					echo "<td id='duggaStatus' align='center'>Knebus";
           echo "</td>";
           echo "<td align='center'>";
 					echo "<input id='saveDuggaButton' class='submit-button' type='button' value='Save' onclick='saveClick();' style='width:160px;height:48px;line-height:48px;' />";
