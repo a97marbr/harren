@@ -99,7 +99,7 @@ function returnedDugga(data)
 				document.getElementById('feedbackTable').innerHTML = fb;		
 				document.getElementById('feedbackBox').style.display = "block";
 		}
-
+		displayDuggaStatus(data["answer"],data["grade"],data["submitted"],data["marked"]);
 }
 
 //--------------------================############================--------------------

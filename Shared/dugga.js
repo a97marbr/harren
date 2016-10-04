@@ -790,3 +790,28 @@ function displayPreview(filepath, filename, fileseq, filetype, fileext, fileinde
 		
 		$("#previewpopover").css("display", "block");
 }
+function displayDuggaStatus(answer,grade,submitted,marked){
+		var str="<td id='duggaStatus' align='center' class='LightBox' style='vertical-align: middle;'>";
+		// Get proper dates
+		if(submitted!=="UNK") {
+			var t = submitted.split(/[- :]/);
+			submitted=new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
+		}
+		if(marked!=="UNK") {
+			var tt = marked.split(/[- :]/);
+			marked=new Date(tt[0], tt[1]-1, tt[2], tt[3], tt[4], tt[5]);
+		}
+		
+		if (answer == "UNK" && (grade == "UNK" || grade <= 1)){
+				str+="<div class='StopLight WhiteLight' style='margin:4px;'></div><td><span>Dugga not yet submitted!</span>";
+		} else if (submitted != "UNK" && answer != "UNK" && marked == "UNK" || ( submitted !== "UNK" && marked !== "UNK" && (submitted.getTime() > marked.getTime()))) {
+				str+="<div class='StopLight YellowLight' style='margin:4px;'></div><td><span>Dugga submitted."+submitted+"</span>";
+		} else if (grade != "UNK" && grade <= 1 && (submitted.getTime() < marked.getTime()) ) {
+				str+="<div class='StopLight RedLight' style='margin:4px;'></div><td><span>Dugga marked as fail: "+marked+"</span>";
+		} else if (grade > 1) {
+				str+="<div class='StopLight GreenLight' style='margin:4px;'></div><td><span>Dugga marked as pass: "+marked+"</span>";
+		}
+		
+		str+="</td>";
+		document.getElementById("duggaStatus").outerHTML = str;
+}

@@ -92,7 +92,7 @@ function returnedDugga(data)
 	}
 	$("#submitButtonTable").appendTo("#content");
 	$("#lockedDuggaInfo").prependTo("#content");
-	
+	displayDuggaStatus(data["answer"],data["grade"],data["submitted"],data["marked"]);
 	if (running) {
 		renderId = requestAnimationFrame(redrawgfx);
 	} else {
