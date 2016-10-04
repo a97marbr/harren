@@ -301,15 +301,20 @@ function returnedCourse(data)
 			var item = data['entries'][i];
 
 			str += "<span class='bigg item' id='C" + item['cid'] + "' ";
+			
+			var textStyle ="";
 			if (parseInt(item['visibility']) == 0) {
-				str += "style='opacity:0.3;' ";
+				textStyle += "style='opacity:0.3;' ";
+			}	else	if (parseInt(item['visibility']) == 2) {
+				textStyle += "style='color:#612' ";
 			}
+
 			str += ">";
 
 			if (data['writeaccess']) {
-				str += "<span style='margin-right:15px;'><a href='sectioned.php?courseid=" + item['cid'] + "&coursename=" + item['coursename'] + "&coursevers=" + item['activeversion'] + "'>" + item['coursename'] + "</a></span>";
+				str += "<span style='margin-right:15px;'><a "+textStyle+" href='sectioned.php?courseid=" + item['cid'] + "&coursename=" + item['coursename'] + "&coursevers=" + item['activeversion'] + "'>" + item['coursename'] + "</a></span>";
 			} else {
-				str += "<span><a style='margin-right:15px;' href='sectioned.php?courseid=" + item['cid'] + "&coursename=" + item['coursename'] +"&coursevers=" + item['activeversion'] + "'>" + item['coursename'] + "</a></span>";
+				str += "<span style='margin-right:15px;'><a "+textStyle+" href='sectioned.php?courseid=" + item['cid'] + "&coursename=" + item['coursename'] +"&coursevers=" + item['activeversion'] + "'>" + item['coursename'] + "</a></span>";
 			}
 
 			if (data['writeaccess']) {
