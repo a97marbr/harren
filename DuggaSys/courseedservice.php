@@ -373,24 +373,19 @@ $query = $pdo->prepare("SELECT coursename,coursecode,cid,visibility,activeversio
 
 */
 
-/* Help function to determin if user has write access to aspecific course */
-function checkWriteAcces($course, $array) {
-		$ret = false;
-    if (array_key_exists ($course, $array)){
-				if ($array[$course] == "W") $ret = true;
-		}
-		return $ret;
-} 
-
 if(!$query->execute()) {
 	$error=$query->errorInfo();
 	$debug="Error reading courses".$error[2];
 }else{
 	foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row){
+			$writeAccess = false;
+			if (isset ($userCourse[$row['cid']])){
+					if ($userCourse[$row['cid']] == "W") $writeAccess = true;
+			}
 			if ($isSuperUserVar || 
 					$row['visibility']==1 || 
-					($row['visibility']==2 && (array_key_exists ($row['cid'] , $userCourse ))) ||
-					($row['visibility']==0 && (checkWriteAcces($row['cid'],$userCourse)))){
+					($row['visibility']==2 && (isset ($userCourse[$row['cid']] ))) ||
+					($row['visibility']==0 && $writeAccess)){
 					array_push(
 						$entries,
 						array(

@@ -213,7 +213,7 @@ if(!$query->execute()) {
 
 $cvisibility=false;
 if ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-		if($isSuperUserVar||$row['visibility']==1||($row['visibility']==2&&hasread)) $cvisibility=true;
+		if($isSuperUserVar||$row['visibility']==1||($row['visibility']==2&&($hasread||$haswrite))||($row['visibility']==0&&$haswrite)) $cvisibility=true;
 }
 
 $ha = (checklogin() && ($haswrite || $isSuperUserVar));
@@ -258,7 +258,7 @@ if($cvisibility){
 	
 	foreach($query->fetchAll() as $row) {	
 		// Push info
-		if($isSuperUserVar||$row['visible']==1||($row['visible']==2&&$hasread==true)){
+		if($isSuperUserVar||$row['visible']==1||($row['visible']==2&&($hasread||$haswrite))||($row['visible']==0&&$haswrite==true)){
 				array_push(
 					$entries,
 					array(

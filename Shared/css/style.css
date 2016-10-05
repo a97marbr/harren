@@ -242,6 +242,23 @@ p {
     padding-right:8px;
 }
 
+#Courselist .public {
+  
+}
+
+#Courselist .hidden {
+    opacity:0.3;
+}
+
+#Courselist .login {
+    color:#612
+}
+
+#Courselist .deleted {
+    text-decoration: line-through;
+    opacity:0.3;
+}
+
 #Sectionlist{
     margin:0px auto;
     background-color: #fff;
