@@ -242,6 +242,23 @@ p {
     padding-right:8px;
 }
 
+#Courselist .public {
+  
+}
+
+#Courselist .hidden {
+    opacity:0.3;
+}
+
+#Courselist .login {
+    color:#612
+}
+
+#Courselist .deleted {
+    text-decoration: line-through;
+    opacity:0.3;
+}
+
 #Sectionlist{
     margin:0px auto;
     background-color: #fff;
@@ -353,13 +370,13 @@ p {
 			background-color:#eae8eb;
 }
 
-#Sectionlist .LightBox {
+.LightBox {
 		width:36px;
 		vertical-align:bottom;
 		overflow:hidden;
 }
 
-#Sectionlist .LightBoxFilled {
+.LightBoxFilled {
 		width:36px;
 		vertical-align:bottom;
 		overflow:hidden;
@@ -369,7 +386,7 @@ p {
 }
 
 
-#Sectionlist .StopLight {
+.StopLight {
 		vertical-align:bottom;
 		overflow:hidden;
 		border:1px solid yellow;
@@ -383,20 +400,20 @@ p {
 		border:1px solid #000;
 }
 
-#Sectionlist .WhiteLight{
+.WhiteLight{
 		background: radial-gradient(white, grey, white);
 }
 
 
-#Sectionlist .YellowLight{
+.YellowLight{
 		background: radial-gradient(yellow 50%, grey, white 60%);
 }
 
-#Sectionlist .RedLight{
+.RedLight{
 		background: radial-gradient(red 55%, grey, white 60%);
 }
 
-#Sectionlist .GreenLight{
+.GreenLight{
 		background: radial-gradient(green 55%, grey, white 60%);
 }
 

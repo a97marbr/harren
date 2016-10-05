@@ -110,6 +110,7 @@ function returnedDugga(data)
 	}
 	$("#submitButtonTable").appendTo("#content");
 	$("#lockedDuggaInfo").appendTo("#content");
+	displayDuggaStatus(data["answer"],data["grade"],data["submitted"],data["marked"]);
 }
 
 function reset()

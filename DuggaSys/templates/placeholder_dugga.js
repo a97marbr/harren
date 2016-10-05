@@ -66,6 +66,7 @@ function returnedDugga(data)
 				document.getElementById('instructions').innerHTML = msg;
 			});
 		}		
+		displayDuggaStatus(data["answer"],data["grade"],data["submitted"],data["marked"]);
 }
 
 //--------------------================############================--------------------
@@ -120,4 +121,3 @@ function closeFacit(){
 //--------------------================############================--------------------
 //                                  Local Functions
 //--------------------================############================--------------------
-

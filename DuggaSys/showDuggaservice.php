@@ -38,6 +38,9 @@ $param = "UNK";
 $savedanswer = "";
 $highscoremode = "";
 $quizfile = "UNK";
+$grade = "";
+$submitted = "";
+$marked ="";
 
 $hr=false;
 $insertparam = false;
@@ -120,7 +123,7 @@ if($demo){
 } else if ($hr){
 	// We are part of the course - assign variant
 	// See if we already have a result i.e. a chosen variant.
-	$query = $pdo->prepare("SELECT score,aid,cid,quiz,useranswer,variant,moment,vers,uid,marked,feedback FROM userAnswer WHERE uid=:uid AND cid=:cid AND moment=:moment AND vers=:coursevers;");
+	$query = $pdo->prepare("SELECT score,aid,cid,quiz,useranswer,variant,moment,vers,uid,marked,feedback,grade,submitted FROM userAnswer WHERE uid=:uid AND cid=:cid AND moment=:moment AND vers=:coursevers;");
 	$query->bindParam(':cid', $courseid);
 	$query->bindParam(':coursevers', $coursevers);
 	$query->bindParam(':uid', $userid);
@@ -142,6 +145,9 @@ if($demo){
 		} else {
 				$duggafeedback = "UNK";
 		}
+		$grade = $row['grade'];
+		$submitted = $row['submitted'];
+		$marked = $row['marked'];
 	}
 	
 	// If selected variant is not found - pick another from working list.
@@ -302,6 +308,19 @@ if(checklogin()){
 				}	else {
 					$savedanswer = $answer;
 				}
+				// check if the user already has a grade on the assignment
+				$query = $pdo->prepare("SELECT submitted from userAnswer WHERE uid=:uid AND cid=:cid AND moment=:moment AND vers=:coursevers;");
+				$query->bindParam(':cid', $courseid);
+				$query->bindParam(':coursevers', $coursevers);
+				$query->bindParam(':uid', $userid);
+				$query->bindParam(':moment', $moment);
+				if(!$query->execute()) {
+					$error=$query->errorInfo();
+					$debug="Error fetching submit date. (row ".__LINE__.") ".$error[2];
+				}				
+				if ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+					$submitted=$row['submitted'];
+				}
 			}
 		}
 }
@@ -329,7 +348,7 @@ if(strcmp($opt,"GETVARIANTANSWER")==0){
 		$setanswer.=$row['variantanswer'].",";
 		$savedanswer.=$row['useranswer'].",";
 	}
-
+	
 	makeLogEntry($userid,2,$pdo,$first);
 	$insertparam = true;
 	$param = $setanswer;
@@ -342,6 +361,9 @@ $savedanswer = str_replace("*###*", '&cap;', $savedanswer);
 $param = str_replace("*####*", '&cup;', $param);
 $savedanswer = str_replace("*####*", '&cup;', $savedanswer);
 if(strcmp($savedanswer,"") == 0){$savedanswer = "UNK";} // Return UNK if we have not submitted any answer
+if(strcmp($grade,"") == 0){$grade = "UNK";} // Return UNK if we have no grade
+if(strcmp($submitted,"") == 0){$submitted = "UNK";} // Return UNK if we have not submitted 
+if(strcmp($marked,"") == 0){$marked = "UNK";} // Return UNK if we have not been marked
 
 $files= array();
 $query = $pdo->prepare("select subid,uid,vers,did,fieldnme,filename,extension,mime,updtime,kind,filepath,seq,segment from submission where uid=:uid and vers=:vers and cid=:cid and did=:did order by subid,fieldnme,updtime asc;");
@@ -421,6 +443,9 @@ $array = array(
 		"score" => $score,
 		"highscoremode" => $highscoremode,
 		"feedback" => $duggafeedback,
+		"grade" => $grade,
+		"submitted" => $submitted,
+		"marked" => $marked,
 		"files" => $files,
 	);
 

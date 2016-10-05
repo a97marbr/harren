@@ -95,6 +95,7 @@ function returnedDugga(data)
 
 
 	}
+	displayDuggaStatus(data["answer"],data["grade"],data["submitted"],data["marked"]);
 }
 
 function reset()
