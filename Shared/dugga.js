@@ -791,7 +791,7 @@ function displayPreview(filepath, filename, fileseq, filetype, fileext, fileinde
 		$("#previewpopover").css("display", "block");
 }
 function displayDuggaStatus(answer,grade,submitted,marked){
-		var str="<td style='vertical-align:middle;'><div style='display:flex;justify-content:flex-end;align-items:center;'><div class='LightBox'>";
+		var str="<td style='vertical-align:middle;'><div style='display:flex;justify-content:center;align-items:center;'><div class='LightBox'>";
 		// Get proper dates
 		if(submitted!=="UNK") {
 			var t = submitted.split(/[- :]/);
@@ -813,5 +813,5 @@ function displayDuggaStatus(answer,grade,submitted,marked){
 		}
 		
 		str+="</div></td>";
-		document.getElementById("duggaStatus").innerHTML = str;
+		$("<td id='duggaStatus' align='center'>"+str+"</td>").insertAfter("#menuHook");
 }
