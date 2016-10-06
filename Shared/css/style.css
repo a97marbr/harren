@@ -242,21 +242,21 @@ p {
     padding-right:8px;
 }
 
-#Courselist .public {
+.public {
   
 }
 
-#Courselist .hidden {
-    opacity:0.3;
+.hidden {
+    opacity:0.3 !important;
 }
 
-#Courselist .login {
-    color:#612
+.login {
+    color:#612 !important;
 }
 
-#Courselist .deleted {
-    text-decoration: line-through;
-    opacity:0.3;
+.deleted {
+    text-decoration: line-through !important;
+    opacity:0.3 !important;
 }
 
 #Sectionlist{

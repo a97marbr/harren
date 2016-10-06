@@ -510,11 +510,13 @@ function returnedSection(data)
 				
 					var blorf="";
 					if (parseInt(item['visible']) === 0){
-							blorf=" hiddensection";
-					}else if(parseInt(item['visible']) === 1){
-							blorf="";
+							blorf=" hidden";
+					}else if(parseInt(item['visible']) === 3){
+							blorf=" deleted";
+					}else if(parseInt(item['visible']) === 2){
+							blorf=" login";
 					}else{
-							blorf=" loginsection";
+							blorf="";
 					}
 					
 					// kind 0 == Header || 1 == Section || 2 == Code  ||�3 == Test (Dugga)|| 4 == Moment�|| 5 == Link
@@ -680,14 +682,14 @@ function returnedSection(data)
 				}else if (parseInt(item['kind']) == 4) {		// Moment
 					str+="<span class='"+blorf+"' style='padding-left:5px;'>"+item['entryname']+"</span>";
 				}else if (parseInt(item['kind']) == 2) {		// Code Example
-					str+="<span><a class='"+blorf+"l' style='margin-left:15px;' href='codeviewer.php?exampleid="+item['link']+"&courseid="+querystring['courseid']+"&cvers="+querystring['coursevers']+"'>"+item['entryname']+"</a></span>";
+					str+="<span><a class='"+blorf+"' style='margin-left:15px;' href='codeviewer.php?exampleid="+item['link']+"&courseid="+querystring['courseid']+"&cvers="+querystring['coursevers']+"'>"+item['entryname']+"</a></span>";
 				}else if (parseInt(item['kind']) == 3 ) {		// Test / Dugga
-					str+="<a class='"+blorf+"l' style='cursor:pointer;margin-left:15px;' onClick='changeURL(\"showDugga.php?cid="+querystring['courseid']+"&coursevers="+querystring['coursevers']+"&did="+item['link']+"&moment="+item['lid']+"&segment="+momentexists+"&highscoremode="+item['highscoremode']+"\");' >"+item['entryname']+"</a>";
+					str+="<a class='"+blorf+"' style='cursor:pointer;margin-left:15px;' onClick='changeURL(\"showDugga.php?cid="+querystring['courseid']+"&coursevers="+querystring['coursevers']+"&did="+item['link']+"&moment="+item['lid']+"&segment="+momentexists+"&highscoremode="+item['highscoremode']+"\");' >"+item['entryname']+"</a>";
 				}else if(parseInt(item['kind']) == 5){			// Link
 					if(item['link'].substring(0,4) === "http"){
-						str+= "<a class='"+blorf+"l' style='cursor:pointer;margin-left:15px;'  href=" + item['link'] + " target='_blank' >"+item['entryname']+"</a>";
+						str+= "<a class='"+blorf+"' style='cursor:pointer;margin-left:15px;'  href=" + item['link'] + " target='_blank' >"+item['entryname']+"</a>";
 					}else{
-						str+="<a class='"+blorf+"l' style='cursor:pointer;margin-left:15px;' onClick='changeURL(\"showdoc.php?cid="+querystring['courseid']+"&coursevers="+querystring['coursevers']+"&fname="+item['link']+"\");' >"+item['entryname']+"</a>";
+						str+="<a class='"+blorf+"' style='cursor:pointer;margin-left:15px;' onClick='changeURL(\"showdoc.php?cid="+querystring['courseid']+"&coursevers="+querystring['coursevers']+"&fname="+item['link']+"\");' >"+item['entryname']+"</a>";
 					}
 				}
 													
