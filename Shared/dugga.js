@@ -791,7 +791,7 @@ function displayPreview(filepath, filename, fileseq, filetype, fileext, fileinde
 		$("#previewpopover").css("display", "block");
 }
 function displayDuggaStatus(answer,grade,submitted,marked){
-		var str="<td style='vertical-align:middle;'><div style='display:flex;justify-content:center;align-items:center;'><div class='LightBox'>";
+		var str="<div style='display:flex;justify-content:center;align-items:center;'><div class='LightBox'>";
 		// Get proper dates
 		if(submitted!=="UNK") {
 			var t = submitted.split(/[- :]/);
@@ -812,6 +812,7 @@ function displayDuggaStatus(answer,grade,submitted,marked){
 				str+="<div class='StopLight GreenLight' style='margin:4px;'></div></div><div>Dugga marked as pass: "+marked+"</div>";
 		}
 		
-		str+="</div></td>";
+		str+="</div>";
+		$("#duggaStatus").remove();
 		$("<td id='duggaStatus' align='center'>"+str+"</td>").insertAfter("#menuHook");
 }
