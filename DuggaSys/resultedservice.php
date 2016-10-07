@@ -151,6 +151,9 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 	if(strcmp($opt,"RESP")==0){
 
 			$currcvd=getcwd();
+			$duggafeedback = $responsetext;
+			$duggaentry=$listentry;
+			$duggauser=$luid;
 
 			$query = $pdo->prepare("SELECT lastname,firstname,username FROM user WHERE uid=:uid");
 			$query->bindParam(':uid', $luid);

@@ -210,7 +210,13 @@ function leaveCell(thisObj)
 function displayPreview(filepath, filename, fileseq, filetype, fileext, fileindex, displaystate)
 {
 		clickedindex=fileindex;
+		/*
+		document.getElementById("responseArea").innerHTML="";
+		document.getElementById("responseArea").innerHTML=allData["files"][allData["duggaentry"]][clickedindex].feedback;
+		*/
+		document.getElementById("responseArea").outerHTML='<textarea id="responseArea" style="width: 100%;height:100%;-webkit-box-sizing: border-box; -moz-box-sizing: border-box;box-sizing: border-box;">'+allData["files"][allData["duggaentry"]][clickedindex].feedback+'</textarea>'
 		
+		//alert(clickedindex+" : " + allData["files"][allData["duggaentry"]][clickedindex].feedback);
 		if(displaystate){
 				document.getElementById("markMenuPlaceholderz").style.display="block";		
 		}else{
@@ -232,9 +238,7 @@ function displayPreview(filepath, filename, fileseq, filetype, fileext, fileinde
 		 		}
 		}
 		document.getElementById("popPrev").innerHTML=str;
-		document.getElementById("responseArea").innerHTML = allData["files"][allData["duggaentry"]][clickedindex].feedback;
 
-		
 		$("#previewpopover").css("display", "block");
 }
 
@@ -257,9 +261,9 @@ function saveResponse()
 	
 		var filename=allData["files"][allData["duggaentry"]][clickedindex].filename+allData["files"][allData["duggaentry"]][clickedindex].seq;
 	
-		AJAXService("RESP", { cid : querystring['cid'],vers : querystring['coursevers'],resptext:respo, respfile:filename, duggaid: allData["duggaid"],luid : allData["duggauser"] }, "RESULT");	
-		AJAXService("DUGGA", { cid : querystring['cid'], vers : querystring['coursevers'], moment : allData["duggaentry"], luid : allData["duggauser"] }, "RESULT");
-		
+		AJAXService("RESP", { cid : querystring['cid'],vers : querystring['coursevers'],resptext:respo, respfile:filename, duggaid: allData["duggaid"],luid : allData["duggauser"],moment : allData["duggaentry"], luid : allData["duggauser"] }, "RESULT");	
+		//AJAXService("DUGGA", { cid : querystring['cid'], vers : querystring['coursevers'], moment : allData["duggaentry"], luid : allData["duggauser"] }, "RESULT");
+		document.getElementById("responseArea").innerHTML = "";
 		$("#previewpopover").css("display", "none");
 }
 
