@@ -46,6 +46,16 @@ function setup()
 
 		AJAXService("GETPARAM", { }, "PDUGGA");
 	}
+	canvas.addEventListener('click', function() { 
+			if (running) {
+					running = false;
+					cancelAnimationFrame(renderId);
+			} else {
+					running = true;
+					renderId = requestAnimationFrame(foo);
+			}
+	
+	}, false);
 }
 
 function returnedDugga(data) 
