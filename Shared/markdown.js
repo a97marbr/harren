@@ -93,29 +93,30 @@ function parseMarkdown(inString)
 
 	// append '@@@' to all code block indicators '~~~'
 	inString = inString.replace(/^\~{3}(\r\n|\n|\r)/gm, '~~~@@@');
+	// append '¤¤¤' to all console block indicators '=|='
+	inString = inString.replace(/^\=\|\=(\r\n|\n|\r)/gm, '=|=¤¤¤');
 
-	// Split on code block
-	codearray=inString.split('~~~');
-	
+	// Split on code or console block
+	var codearray=inString.split(/[\~{3}\=\|\=]/);
+	console.log(codearray);
 	var str="";
-	var kodblock=0;
+	var specialBlockStart=true;
 	for(var i=0;i<codearray.length;i++){
 			workstr=codearray[i];
-
-			if(workstr.substr(0,3)==="@@@"){
-					kodblock=!kodblock;
-					workstr = workstr.substr(3);
-			}			
-
-			if(kodblock && workstr != ""){
-
-					workstr='<pre><code>'+workstr+'</code></pre>';
-			}else{
-					workstr=markdownBlock(workstr);
+			if(workstr.substr(0,3)==="@@@" && specialBlockStart===true){
+					specialBlockStart=false;
+					workstr='<pre><code>'+workstr.substr(3)+'</code></pre>';
+			} else if(workstr.substr(0,3)==="¤¤¤" && specialBlockStart===true) {
+					specialBlockStart=false;
+					workstr='<div class="console"><pre>'+workstr.substr(3)+'</pre></div>';
+			} else if(workstr !== "") {
+					workstr=markdownBlock(workstr.replace(/^\¤{3}|^\@{3}/gm, ''));
+					specialBlockStart=true;					
+			} else{
+					// What to do with "" strings?
 			}
 			str+=workstr;
 	}
-	
 	return str;
 }
 
@@ -231,7 +232,7 @@ function markdownBlock(inString)
 	// Quote text, this will be displayed in an additional box
 	// ^ Text you want to quote ^
 	inString = inString.replace(/\^{1}\s(.*?\S)\s\^{1}/g, "<blockquote>$1</blockquote><br/>");
-	
+		
 	//Markdown smileys
 	//Supported: :D :) ;) :( :'( :P :/ :o <3 (Y) (N)
 	inString = inString.replace(/:D/g, "<img class='smileyjs' src='../Shared/icons/happy.svg'/>");
