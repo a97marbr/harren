@@ -1,13 +1,13 @@
-p{font-family: Calibri,sans-serif;font-size:0.95em; color: #000; line-height: 1.3em; }
+/*p{font-family: Calibri,sans-serif;font-size:0.95em; color: #000; line-height: 1.3em; }
 h1{font-family: Calibri,sans-serif;font-size:1.8em; color: #000;}
 h2{font-family: Calibri,sans-serif;font-size:1.5em; color: #000;}
 h3{font-family: Calibri,sans-serif;font-size:1.3em; color: #000;}
 h4{font-family: Calibri,sans-serif;font-size:1.2em; color: #000;}
-
+*/
 strong {font-weight: bold;}
 
 .outertd{
-	font-family:calibri;
+	/*font-family:calibri;*/
 	padding:4px;
 	font-size:20px;
 }
