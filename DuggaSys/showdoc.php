@@ -12,26 +12,27 @@
 				$inString=preg_replace("/\>/", "&gt;",$inString);
 
 				$inString=preg_replace("/^\~{3}(\r\n|\n|\r)/m", "~~~@@@",$inString);
+				$inString=preg_replace("/^\=\|\=(\r\n|\n|\r)/m", "=|=&&&",$inString);
 				
 				$str="";
 
-				$codearray=explode('~~~', $inString);
-				$kodblock=0;
+				//$codearray=explode('~~~', $inString);
+				$codearray=preg_split("/\~{3}|\=\|\=/", $inString);
 				
-				// This is a straight 1:1 port of the javascript code
+				$specialBlockStart=true;
 				foreach ($codearray as $workstr) {
-						if(substr($workstr,0,3)==="@@@"){
-								$kodblock=!$kodblock;
-								$workstr=substr($workstr,3);
+						if(substr($workstr,0,3)==="@@@" && $specialBlockStart===true){
+								$specialBlockStart=false;
+								$str.="<pre><code>".substr($workstr,3)."</code></pre>";
+						} else if (substr($workstr,0,3)==="&&&" && $specialBlockStart===true){
+								$specialBlockStart=false;
+								$str.="<div class='console'><pre>".substr($workstr,3)."</pre></div>";
+						} else if ($workstr !== "") {
+								$str.=markdownBlock(preg_replace("/^\&{3}|^\@{3}/","",$workstr));
+								$specialBlockStart=true;
+						} else {
+								$str.=$workstr;
 						}
-
-						if($kodblock){
-								$workstr="<pre><code>".$workstr."</code></pre>";
-						}else{
-								$workstr=markdownBlock($workstr);
-						}
-    				
-    				$str.=$workstr;
 				}
 		
 				return $str;
@@ -110,7 +111,17 @@
 
 				// Importand Rows in code file in different window ===
 				// ===filename,start row,end row, text to show===
-				$inString = preg_replace("/\={3}(.*?\S),(.*?\S),(.*?\S),(.*?\S)\={3}/", "<span class='impword' onmouseover=\"highlightRows(\'$1\',$2,$3)\" onmouseout=\"dehighlightRows(\'$1\',$2,$3)\">$4</span>", $instring);
+				$instring = preg_replace("/\={3}(.*?\S),(.*?\S),(.*?\S),(.*?\S)\={3}/", "<span class='impword' onmouseover=\"highlightRows(\'$1\',$2,$3)\" onmouseout=\"dehighlightRows(\'$1\',$2,$3)\">$4</span>", $instring);
+
+				// Three or more dots should always be converted to an ellipsis.
+				$instring = preg_replace("/\.{3,}/", "&hellip;", $instring);
+				
+				// Iframe, website inside a inline frame - (--url,width,height--)
+				$instring = preg_replace("/\(\-{2}(.*?\S),(.*?\S),(.*?\S)\-{2}\)/", "<iframe src='$1' style='width:$2px; height:$3px;'></iframe>", $instring);
+				
+				// Quote text, this will be displayed in an additional box
+				// ^ Text you want to quote ^
+				$instring = preg_replace("/\^{1}\s(.*?\S)\s\^{1}/", "<blockquote>$1</blockquote><br/>", $instring);
 
 				return $instring;		
 		}
