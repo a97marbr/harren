@@ -402,7 +402,7 @@
 			$filename=$row['filename'];
 			$content="";
 						
-			$ruery = $pdo->prepare("SELECT filename,kind FROM fileLink WHERE cid=:cid AND UPPER(filename)=UPPER(:fname) LIMIT 1;");
+			$ruery = $pdo->prepare("SELECT filename,kind from fileLink WHERE (cid=:cid or isGlobal='1') and UPPER(filename)=UPPER(:fname) ORDER BY kind DESC LIMIT 1;");
 			$ruery->bindParam(':cid', $courseId);
 			$ruery->bindParam(':fname', $filename);
 			$sesult = $ruery->execute();

@@ -193,7 +193,7 @@ if($ha){
 				
 								
 				//  if the file is of type "GFILE"(global) or "MFILE"(course local) and it doesn't exists in the db, add a row into the db
-			  $allowedT = array("applicaton/octet-stream","application/x-zip","application/x-msdownload","application/x-pdf","application/pdf","application/x-rar-compressed","application/zip", "application/octet-stream","application/force-download","application/x-download", "application/x-zip-compressed", "binary/octet-stream", "application/download","application/application-download", "text/html");
+			  $allowedT = array("applicaton/octet-stream","application/x-zip","application/x-msdownload","application/x-pdf","application/pdf","application/x-rar-compressed","application/zip", "application/octet-stream","application/force-download","application/x-download", "application/x-zip-compressed", "binary/octet-stream", "application/download","application/application-download", "text/html", "application/save");
 				$allowedX = array("pdf","zip","rar");
 				
 				$swizzled = swizzleArray($_FILES['uploadedfile']);
