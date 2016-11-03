@@ -432,7 +432,7 @@ function returnedSection(data)
     
 		str="";
 
-		str+="<table width='100%' border='1'><tr>";			
+		str+="<table class='navheader'><tr>";			
 
 		if(data['writeaccess']) {
 			str+="<td style='width:112px;'><select class='course-dropdown' onchange='goToVersion(this)'>";
@@ -452,26 +452,26 @@ function returnedSection(data)
 			}
 			str+="</select></td>";
 			
-			str+="<td style='width:112px;'><div class='submit-button' title='Edit the selected version' onclick='showEditVersion";
+			str+="<td style='width:112px;'><input type='button' value='Edit version' class='submit-button' title='Edit the selected version' onclick='showEditVersion";
 			str+='("'+querystring['coursevers']+'","'+versionname+'")';
-			str+=";'>Edit version</div></td>";	
+			str+=";'></td>";	
 
-			str+="<td style='width:112px;'><div class='submit-button' title='Create a new version of this course' onclick='showCreateVersion();'>New version</div></td>";
-			str+="<td style='width:112px;'><div class='submit-button' title='Give students access to the selected version' onclick='accessCourse();'/>Access</div></td>";
-			str+="<td style='width:112px;'><div class='submit-button' title='Edit student results' onclick='changeURL(\"resulted.php?cid="+querystring['courseid']+"&coursevers="+querystring['coursevers']+"\")' />Results</div></td>";
+			str+="<td style='width:112px;'><input type='button' value='New version' class='submit-button' title='Create a new version of this course' onclick='showCreateVersion();'></td>";
+			str+="<td style='width:112px;'><input type='button' value='Access' class='submit-button' title='Give students access to the selected version' onclick='accessCourse();'/></td>";
+			str+="<td style='width:112px;'><input type='button' value='Results' class='submit-button' title='Edit student results' onclick='changeURL(\"resulted.php?cid="+querystring['courseid']+"&coursevers="+querystring['coursevers']+"\")' /></td>";
 			
-			str+="<td style='width:112px;'><div class='submit-button' id='testbutton' onclick='changeURL(\"duggaed.php?cid="+querystring['courseid']+"&coursevers="+querystring['coursevers']+"\")'/>Tests</div></td>";
-			str+="<td style='width:112px;'><div class='submit-button' onclick='changeURL(\"fileed.php?cid="+querystring['courseid']+"&coursevers="+querystring['coursevers']+"\")'/>Files</div></td>";
-			str+="<td style='width:112px;'><div class='submit-button' onclick='changeURL(\"resultlisted.php?cid="+querystring['courseid']+"&coursevers="+querystring['coursevers']+"\")'/>List</div></td>";
+			str+="<td style='width:112px;'><input type='button' value='Tests' class='submit-button' id='testbutton' onclick='changeURL(\"duggaed.php?cid="+querystring['courseid']+"&coursevers="+querystring['coursevers']+"\")'/></td>";
+			str+="<td style='width:112px;'><input type='button' value='Files' class='submit-button' onclick='changeURL(\"fileed.php?cid="+querystring['courseid']+"&coursevers="+querystring['coursevers']+"\")'/></td>";
+			str+="<td style='width:112px;'><input type='button' value='List' class='submit-button' onclick='changeURL(\"resultlisted.php?cid="+querystring['courseid']+"&coursevers="+querystring['coursevers']+"\")'/></td>";
 			
 		}else{
 			// No version selector for students
 		}
 
 		if(retdata["writeaccess"]){
-      str += "<td><div class='submit-button' onclick='newItem();'/>New Item</div><td>";
+      str += "<td><input type='button' value='New Item' class='submit-button' onclick='newItem();'/><td>";
 			str+="</tr></table>";
-      str += "<div class='fab' onclick='newItem();'>+</div>";
+      str += "<input type='button' class='fab' value='+' onclick='newItem();'>";
 		}else{
 			str+="</tr></table>";
 		}

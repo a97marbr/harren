@@ -454,6 +454,10 @@ header td {
 		display:none;
 }
 
+.navheader {
+    width:100%;
+}
+
 .navButt {
     width:32px;
     vertical-align: middle;
@@ -944,6 +948,7 @@ button.option {
 }
 
 input.submit-button {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     background-color:#614875;
     border:0px;
     width:110px;

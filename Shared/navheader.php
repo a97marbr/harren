@@ -1,6 +1,6 @@
 	<header>
 		<?php
-			echo "<table width='100%'><tr>";
+			echo "<table class='navheader'><tr>";
 
 			include_once "../Shared/basic.php";
 
