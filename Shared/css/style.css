@@ -1012,6 +1012,11 @@ input.new-item-button:hover {
     height:35px;
     text-align: right;
 }
+input.large-button {
+    width:160px !important;
+    height:48px !important;
+    line-height:48px !important;
+}
 
 .list {width:100%;padding:1px;border-left:2px solid #dbd0d8;border-bottom:2px solid #dbd0d8;margin-top:20px;}
 

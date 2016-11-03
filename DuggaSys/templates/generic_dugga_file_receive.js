@@ -27,8 +27,6 @@ function setup()
 
 function returnedDugga(data) 
 {	
-	$("#content").css({"position":"relative","top":"50px"});
-
 	dataV = data;
 	
 	if (data['debug'] != "NONE!") { alert(data['debug']); }
