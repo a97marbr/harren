@@ -118,25 +118,6 @@ strong {font-weight: bold;}
 	border-right: 0;
 	background: #fff;
 }
-	
-input.submit-button {
-	background-color:#614875;
-	border:0px;
-	width:100px;
-	height:30px;
-	color:#fff;
-	cursor:pointer;
-	margin-top:6px;
-	margin-bottom:2px;
-	margin-left:4px;
-	font-size:14px;
-}
-
-input.submit-button:hover {
-	background-color:#7B5A96; 
-	border-radius:4px;
-}
-
 
 /* --------------================################================-------------- *
  *                        Instructions for dugga 1 and 2                        *
@@ -159,6 +140,7 @@ input.submit-button:hover {
 }
 
 .instructions-button {
+	cursor: pointer;
 	background-color: #ccc;
 	width:100%;
 	display:inline-block;

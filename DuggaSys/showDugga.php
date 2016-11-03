@@ -11,7 +11,7 @@
 
 	<link type="text/css" href="../Shared/css/style.css" rel="stylesheet">
 	<link type="text/css" href="../Shared/css/markdown.css" rel="stylesheet">
-	<link type="text/css" href="templates/dugga.css" rel="stylesheet">
+	<link type="text/css" href="../Shared/css/dugga.css" rel="stylesheet">
 
 	
 	<script src="../Shared/js/jquery-1.11.0.min.js"></script>
