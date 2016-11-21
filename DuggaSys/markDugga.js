@@ -11,10 +11,21 @@ var msx = 0, msy = 0;
 var rProbe = null;
 var needMarking=0;
 var allData;
+var benchmarkData = performance.timing; // Will be updated after onload event
+var ajaxStart;
 
 var clickedindex;
+function setup(){
 
-AJAXService("GET", { cid : querystring['cid'],vers : querystring['coursevers'] }, "RESULT");
+	// Benchmarking function
+	benchmarkData = performance.timing;
+	console.log("Network Latency: "+(benchmarkData.responseEnd-benchmarkData.fetchStart));
+	console.log("responseEnd -> onload: "+(benchmarkData.loadEventEnd-benchmarkData.responseEnd));
+
+	AJAXService("GET", { cid : querystring['cid'],vers : querystring['coursevers'] }, "MARK");
+	ajaxStart = new Date();
+	console.log("ajax star: "+ajaxStart);
+}
 
 $(function()
 {
@@ -121,7 +132,7 @@ function hoverResult(cid, vers, moment, firstname, lastname, uid, submitted, mar
 		msx = -1;
 		msy = -1;
 
-		AJAXService("DUGGA", { cid : cid, vers : vers, moment : moment, luid : uid }, "RESULT");
+		AJAXService("DUGGA", { cid : cid, vers : vers, moment : moment, luid : uid }, "MARK");
 }
 
 function clickResult(cid, vers, moment, firstname, lastname, uid, submitted, marked, foundgrade, gradeSystem, lid)
@@ -146,7 +157,7 @@ function clickResult(cid, vers, moment, firstname, lastname, uid, submitted, mar
 		menu += "</div> <!-- Menu Dialog END -->";
 		document.getElementById('markMenuPlaceholder').innerHTML=menu;
 		
-		AJAXService("DUGGA", { cid : cid, vers : vers, moment : moment, luid : uid, coursevers : vers }, "RESULT");
+		AJAXService("DUGGA", { cid : cid, vers : vers, moment : moment, luid : uid, coursevers : vers }, "MARK");
 }
 
 function changeGrade(newMark, gradesys, cid, vers, moment, uid, mark, ukind)
@@ -155,7 +166,7 @@ function changeGrade(newMark, gradesys, cid, vers, moment, uid, mark, ukind)
 		if (document.getElementById('newFeedback') !== null){
 				newFeedback = document.getElementById('newFeedback').value;
 		}
-		AJAXService("CHGR", { cid : cid, vers : vers, moment : moment, luid : uid, mark : newMark, ukind : ukind, newFeedback : newFeedback }, "RESULT");
+		AJAXService("CHGR", { cid : cid, vers : vers, moment : moment, luid : uid, mark : newMark, ukind : ukind, newFeedback : newFeedback }, "MARK");
 }
 
 function moveDist(e)
@@ -261,7 +272,7 @@ function saveResponse()
 	
 		var filename=allData["files"][allData["duggaentry"]][clickedindex].filename+allData["files"][allData["duggaentry"]][clickedindex].seq;
 	
-		AJAXService("RESP", { cid : querystring['cid'],vers : querystring['coursevers'],resptext:respo, respfile:filename, duggaid: allData["duggaid"],luid : allData["duggauser"],moment : allData["duggaentry"], luid : allData["duggauser"] }, "RESULT");	
+		AJAXService("RESP", { cid : querystring['cid'],vers : querystring['coursevers'],resptext:respo, respfile:filename, duggaid: allData["duggaid"],luid : allData["duggauser"],moment : allData["duggaentry"], luid : allData["duggauser"] }, "MARK");	
 		//AJAXService("DUGGA", { cid : querystring['cid'], vers : querystring['coursevers'], moment : allData["duggaentry"], luid : allData["duggauser"] }, "RESULT");
 		document.getElementById("responseArea").innerHTML = "";
 		$("#previewpopover").css("display", "none");
@@ -523,7 +534,9 @@ function returnedResults(data)
 				}
 				var slist = document.getElementById("content");
 				slist.innerHTML = str;
+				console.log("ajaxStart -> pre table:"+ (new Date() - ajaxStart));
 				document.getElementById("needMarking").innerHTML = "Students: " + allData['entries'].length + "<BR />Unmarked : " + needMarking;
+		    console.log("ajaxStart -> post table:"+ (new Date() - ajaxStart));
 		}
 
 

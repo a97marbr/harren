@@ -799,6 +799,7 @@ header td {
     padding-left: 10px;
     cursor:move;
     display:flex;
+    justify-content: space-around;
 /*  padding-top: 15px; */
 }
 .loginBoxheader h3 {
@@ -806,6 +807,7 @@ header td {
     margin-top: 10px;
     line-height: 0.5em;
     color: #fff;
+    width: 100%;
 }
 .loginBoxheader div {
     padding: 2px 20px;
@@ -1026,21 +1028,22 @@ input.large-button {
 .innertable {background:#fff;box-shadow:2px 3px 2px #a09098 inset;border-top: 2px solid #dbd0d8;border-bottom: 2px solid #dbd0d8;}
 .innertable td {color:#000;line-height:28px;border:none;}
 
-.list tr:hover { background-color: #dbd0d8; }
+.list tr:hover { /*background-color: #dbd0d8;*/ }
 
 .list--nomargin {
     margin: 0!important;
 }
 
-.markinglist {width:100%;padding:1px;border-left:2px solid #dbd0d8;border-bottom:2px solid #dbd0d8;margin-top:20px;font-family: hack,"Lucida Console", Monaco, monospace; font-size: 12px;}
+.markinglist {width:100%;padding:1px;border-left:2px solid #dbd0d8;border-bottom:2px solid #dbd0d8;margin-top:20px; font-family: hack,"Lucida Console", Monaco, monospace;}
 
-.markinglist td {border-right:2px solid #dbd0d8;;padding-left:8px;font-family: hack,"Lucida Console", Monaco, monospace; font-size: 10px; }
-.markinglist th {background:#614875; color:#fff;font-style: italic;}
+.markinglist td {border-right:2px solid #dbd0d8;font-size: 10px;}
+.markinglist th {background:#614875; color:#fff;font-style: italic; font-size: 12px;}
 
-.markinginnertable {background:#fff;box-shadow:2px 3px 2px #a09098 inset;border-top: 2px solid #dbd0d8;border-bottom: 2px solid #dbd0d8;font-family: hack,"Lucida Console", Monaco, monospace; font-size: 12px;}
-.markinginnertable td {color:#000;border:none; font-family: hack,"Lucida Console", Monaco, monospace; font-size: 10px; }
+.markinginnertable {background:#fff;box-shadow:2px 3px 2px #a09098 inset;border-top: 2px solid #dbd0d8;border-bottom: 2px solid #dbd0d8;}
+.markinginnertable td {color:#000;border:none; }
 
-.markinglist tr:hover { background-color: #dbd0d8; }
+.markinglist tr {opacity: 0.8;}
+.markinglist tr:hover {}
 
 .markinglist--nomargin {
     margin: 0!important;
@@ -1429,4 +1432,138 @@ input.large-button {
     z-index:4000;
     border:none;
     cursor: pointer;
+}
+
+.dugga-pass {
+		border-left: 2px solid rgb(219, 208, 216); 
+		background-color: rgb(221, 255, 238);
+}
+
+.dugga-pass-highlighted {
+		background-color: rgb(181,215,168) !important;
+}
+
+.dugga-pending {
+		border-left: 2px solid rgb(219, 208, 216); 
+		background-color: rgb(255, 255, 221);
+}
+
+.dugga-pending-highlighted {
+		background-color: rgb(215,215,181) !important;
+}
+
+.dugga-fail {
+		border-left: 2px solid rgb(219, 208, 216); 
+		background-color: rgb(255, 170, 170);
+}
+
+.dugga-fail-highlighted {
+		background-color: rgb(215, 155, 155) !important;
+}
+
+.dugga-assigned {
+		border-left: 2px solid rgb(219, 208, 216); 
+		background-color: rgb(248, 232, 248);
+}
+.dugga-assigned-highlighted {
+		background-color: rgb(208,192,208) !important;
+}
+
+.dugga-unassigned {
+		border-left: 2px solid rgb(219, 208, 216); 
+		background-color: rgb(255, 255, 255);
+}
+
+.dugga-unassigned-highlighted {
+		background-color: rgb(215,215,215) !important;
+}
+
+.result-header {
+    border-left:2px solid white;
+    padding-right: 3px;
+}
+
+.result-data {
+    padding:0px;
+    min-width: 95px;
+    vertical-align: top;
+}
+
+.result-data-cell {
+    min-width: 105px;
+    padding-left: 2px;
+    display:flex;
+    justify-content: space-around;
+}
+
+.text-right {
+      text-align:right;
+}
+
+.text-center {
+      text-align:center;;
+}
+
+.text-left {
+      text-align:left;
+}
+
+.fist {
+    width:24px;
+    height:24px;
+    float:right;
+    /*margin-right:8px;*/
+}
+.grade-img {
+    width:24px;
+    height:24px;
+}
+.highlightRow {
+    opacity: 1.0 !important;
+}
+.responseArea {
+    width: 100%;
+    height:100%;
+    -webkit-box-sizing: border-box; 
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.markCont {
+    position:absolute; 
+    left:4px; 
+    right:204px; 
+    top:34px; 
+    bottom:4px; 
+    border:2px inset #aaa;
+    background:#bbb; 
+    overflow:scroll;
+}
+#teacherFeedbackTable {
+    padding:2px;
+}
+.show {
+    display:block;
+}
+
+.dialogBoxheader {
+    height: 25px;
+    background-color: #614875;
+    vertical-align: bottom;
+    padding-left: 10px;
+    cursor:move;
+    display:flex;
+    justify-content: space-around;
+/*  padding-top: 15px; */
+}
+.dialogBoxheader h3 {
+    font-size: 14px;
+    margin-top: 10px;
+    line-height: 0.5em;
+    color: #fff;
+    width: 100%;
+}
+.gradeContainer {
+    display: flex;
+    justify-content: space-around;
+    padding: 5px 0 5px 0;
 }

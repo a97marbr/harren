@@ -194,12 +194,31 @@ $entries=array();
 $gentries=array();
 $sentries=array();
 $lentries=array();
+$snus=array();
 
 if(strcmp($opt,"DUGGA")!==0){
 	if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESSION['uid']))) {
 		// Users connected to the current course version
-		
-		$query = $pdo->prepare("SELECT user_course.cid AS cid,user.uid AS uid,username,firstname,lastname,ssn FROM user,user_course WHERE user.uid=user_course.uid AND user_course.cid=:cid AND user_course.vers=:coursevers;");
+		/*
+		$q = $pdo->prepare("SELECT user_course.cid AS cid,user.uid AS uid,username,firstname,lastname,ssn,aid,quiz,variant,moment,grade,useranswer,submitted,user_course.vers as vers,marked,timeUsed,totalTimeUsed,stepsUsed,totalStepsUsed FROM user,user_course,userAnswer WHERE user.uid=user_course.uid AND user_course.cid=:cid AND user.uid=userAnswer.uid AND user_course.vers=:coursevers order by lastname,quiz;");
+		$q->bindParam(':coursevers', $vers);
+		$q->bindParam(':cid', $cid);
+
+		if(!$q->execute()) {
+			$error=$q->errorInfo();
+			$debug="Error retreiving users. (row ".__LINE__.") ".$q->rowCount()." row(s) were found. Error code: ".$error[2];
+		}
+
+		foreach($q->fetchAll(PDO::FETCH_ASSOC) as $row){
+				if (array_key_exists($row['uid'], $snus){
+					
+				} else {
+						
+				}
+				
+		}
+		*/
+		$query = $pdo->prepare("SELECT user_course.cid AS cid,user.uid AS uid,username,firstname,lastname,ssn FROM user,user_course WHERE user.uid=user_course.uid AND user_course.cid=:cid AND user_course.vers=:coursevers LIMIT 120;");
 		//		$query = $pdo->prepare("select user_course.cid as cid,user.uid as uid,username,firstname,lastname,ssn,access from user,user_course where user.uid=user_course.uid and user_course.cid=:cid;");
 		$query->bindParam(':coursevers', $vers);
 		$query->bindParam(':cid', $cid);
@@ -394,6 +413,7 @@ foreach($query->fetchAll() as $row) {
 if (sizeof($files) === 0) {$files = (object)array();} // Force data type to be object
 
 $serviceTime = microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"];
+$benchmark =  array('totalServiceTime' => $serviceTime);
 $array = array(
 	'entries' => $entries,
 	'moments' => $gentries,
@@ -413,7 +433,7 @@ $array = array(
 	'duggafeedback' => $duggafeedback,
 	'moment' => $listentry,
 	'files' => $files,
-	'benchmark' => array('totalServiceTime' => $serviceTime)
+	'benchmark' => $benchmark
 );
 
 echo json_encode($array);

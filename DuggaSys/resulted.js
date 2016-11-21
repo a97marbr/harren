@@ -49,7 +49,7 @@ function gradeDugga(e, gradesys, cid, vers, moment, uid, mark, ukind){
 }
 
 function makeImg(gradesys, cid, vers, moment, uid, mark, ukind,gfx,cls){
-	return "<img style=\"width:24px;height:24px\" src=\""+gfx+"\" id=\"grade-"+moment+"-"+uid+"\" class=\""+cls+"\" onclick=\"gradeDugga(event,"+gradesys+","+cid+",'"+vers+"',"+moment+","+uid+","+mark+",'"+ukind+"');\"  />";
+	return "<img src=\""+gfx+"\" id=\"grade-"+moment+"-"+uid+"\" class=\"grade-img "+cls+"\" onclick=\"gradeDugga(event,"+gradesys+","+cid+",'"+vers+"',"+moment+","+uid+","+mark+",'"+ukind+"');\"  />";
 }
 
 
@@ -128,12 +128,11 @@ function clickResult(cid, vers, moment, firstname, lastname, uid, submitted, mar
 {
 		$("#Nameof").html(firstname + " " + lastname + " - Submitted: " + submitted + " Marked: " + marked);
 
-		var menu = "<div class='' style='width:100px;display:block;'>";
-		menu +=	"<div class='loginBoxheader'>";
+		var menu = "<div id='feedbackContainer'>";
+		menu +=	"<div class='loginBoxheader text-center'>";
 		menu += "<h3>Grade</h3>";
 		menu += "</div>";
-		menu += "<table>";
-		menu += "<tr><td>";
+		menu += "<div class='gradeContainer'>";
 		if (foundgrade === null && submitted === null) {
 			menu += makeSelect(parseInt(gradeSystem), querystring['cid'], querystring['coursevers'], parseInt(lid), parseInt(uid), null, "I");
 		}else if (foundgrade !== null){
@@ -141,8 +140,7 @@ function clickResult(cid, vers, moment, firstname, lastname, uid, submitted, mar
 		}else {
 			menu += makeSelect(parseInt(gradeSystem), querystring['cid'], querystring['coursevers'], parseInt(lid), parseInt(uid), null, "U");
 		}
-		menu += "</td></tr>";
-		menu += "</table>";
+		menu += "</div>";
 		menu += "</div> <!-- Menu Dialog END -->";
 		document.getElementById('markMenuPlaceholder').innerHTML=menu;
 		
@@ -178,29 +176,69 @@ function moveDist(e)
 
 function enterCell(thisObj)
 {
-		rProbe=$(thisObj).css('backgroundColor');
-		if(rProbe!="transparent"){
-				if(rProbe=="rgb(248, 232, 248)"){
-						cliffton="rgb(208,192,208)";
-				}else if(rProbe=="rgb(221, 255, 238)"){
-						cliffton="rgb(181,215,168)";
-				}else if(rProbe=="rgb(255, 255, 221)"){
-						cliffton="rgb(215,215,181)";
-				}else if(rProbe=="rgb(255, 238, 221)"){
-						cliffton="rgb(215,198,181)";
-				}else if(rProbe=="rgb(255, 255, 255)"){
-						cliffton="rgb(215,215,215)";
-				}else{
-						cliffton="#FFF";
+		var c="";
+		var u="";
+		var cls = thisObj.className;
+		var clsArr = cls.split(" ");
+		for (var i=0;i<clsArr.length;i++){
+				if (clsArr[i].indexOf("dugga-")!= -1){
+						c = clsArr[i];
+				} else if (clsArr[i].indexOf("u_")!= -1){
+						u="."+clsArr[i];
 				}
-
-				$(thisObj).css('backgroundColor',cliffton);
+		}
+		// highligt the row first
+		$("tr"+u).addClass("highlightRow");
+		
+		if (c==="dugga-pass")	{
+				$(thisObj).addClass("dugga-pass-highlighted");
+		} else if (c==="dugga-fail") {
+				$(thisObj).addClass("dugga-fail-highlighted");			
+		} else if (c==="dugga-pending") {
+				$(thisObj).addClass("dugga-pending-highlighted");			
+		} else if (c==="dugga-assigned") {
+				$(thisObj).addClass("dugga-assigned-highlighted");
+		} else if (c==="dugga-unassigned") {
+				$(thisObj).addClass("dugga-unassigned-highlighted");			
+		} else {
+			
 		}
 }
 
 function leaveCell(thisObj)
 {
-		if(rProbe!==null&&rProbe!=="transparent") $(thisObj).css('backgroundColor',rProbe);
+	
+		$(thisObj).removeClass("dugga-pass-highlighted dugga-fail-highlighted dugga-assigned-highlighted dugga-unassigned-highlighted dugga-pending-highlighted");
+		$("tr").removeClass("highlightRow");
+		
+}
+
+function enterRow(thisObj)
+{
+	var u="";
+	var cls = thisObj.className;
+	var clsArr = cls.split(" ");
+	for (var i=0;i<clsArr.length;i++){
+			if (clsArr[i].indexOf("u_")!= -1){
+					u="tr."+clsArr[i];
+					break;
+			} 
+	}
+	if (u!="")	$(u).addClass("highlightRow");
+}
+
+function leaveRow(thisObj)
+{
+	var u="";
+	var cls = thisObj.className;
+	var clsArr = cls.split(" ");
+	for (var i=0;i<clsArr.length;i++){
+			if (clsArr[i].indexOf("u_")!= -1){
+					u="."+clsArr[i];
+					break;
+			} 
+	}
+	if (u!="")	$(u).removeClass("highlightRow");
 }
 
 //----------------------------------------
@@ -214,12 +252,14 @@ function displayPreview(filepath, filename, fileseq, filetype, fileext, fileinde
 		document.getElementById("responseArea").innerHTML="";
 		document.getElementById("responseArea").innerHTML=allData["files"][allData["duggaentry"]][clickedindex].feedback;
 		*/
-		document.getElementById("responseArea").outerHTML='<textarea id="responseArea" style="width: 100%;height:100%;-webkit-box-sizing: border-box; -moz-box-sizing: border-box;box-sizing: border-box;">'+allData["files"][allData["duggaentry"]][clickedindex].feedback+'</textarea>'
+		document.getElementById("responseArea").outerHTML='<textarea id="responseArea" class="responsArea">'+allData["files"][allData["duggaentry"]][clickedindex].feedback+'</textarea>'
 		
 		//alert(clickedindex+" : " + allData["files"][allData["duggaentry"]][clickedindex].feedback);
 		if(displaystate){
-				document.getElementById("markMenuPlaceholderz").style.display="block";		
+				$("#markMenuPlaceholderz").addClass("show");
+				//document.getElementById("markMenuPlaceholderz").style.display="block";		
 		}else{
+				$("#markMenuPlaceholderz").removeClass("show");
 				document.getElementById("markMenuPlaceholderz").style.display="none";		
 		} 
 				
@@ -308,12 +348,11 @@ function orderResults(moments)
 //----------------------------------------
 function renderResultTableHeader(data)
 {
-	//console.log(data);
 		var str = "<thead>"
-		str += "<tr><th id='needMarking' style='text-align:right;'></th>";
+		str += "<tr><th id='needMarking' class='result-header text-right'></th>";
 		for (var i = 0; i < data.length; i++) {
 				if ((data[i][0].kind === 3 && data[i][0].moment === null) || (data[i][0].kind === 4)) {
-					str += "<th style='border-left:2px solid white;'>";
+					str += "<th class='result-header'>";
 					str += data[i][0].entryname;
 					str += "</th>";
 				}
@@ -330,18 +369,18 @@ function renderMoment(data, userResults, userId, fname, lname)
 	var str = "";
 	// Each of the section entries (i.e. moments)
 	for ( var j = 0; j < data.length; j++) {
-			str += "<td style='padding:0px;'>";
+			str += "<td class='result-data u_"+userId+"' id='u_"+userId+"_m_"+data[j][0].lid+"'>";
 
 			// There are results to display.
-			str += "<table width='100%' class='markinginnertable' >";
-			str += "<tr>";
+			str += "<table width='100%' class='markinginnertable u_"+userId+"' >";
+			str += "<tr class='u_"+userId+"' onmouseover='enterRow(this);' onmouseout='leaveRow(this);'>";
 
 			if (data[j][0].kind === 3 && data[j][0] === null){
 					//str += renderStandaloneDugga(data[j][0], userResults);
 
 			} else if (data[j][0].kind === 4 && data[j][0] !== null && data[j][0].visible == 1) {
 						str += renderMomentChild(data[j][0], userResults, userId, fname, lname, 1);
-						str += "</tr><tr>";
+						str += "</tr><tr class='u_"+userId+"'>";
 				for (var k = 1; k < data[j].length; k++){
 					if(data[j][k].visible == 1){
 						str += renderMomentChild(data[j][k], userResults, userId, fname, lname, 0);
@@ -432,9 +471,9 @@ function renderMomentChild(dugga, userResults, userId, fname, lname, moment)
 
 		var zttr="";
 		if (moment){
-			zttr += '<div style="display:inline-block;min-width:95px">'
+			zttr += "<div class='result-data-cell'>";
 		} else {
-			zttr += '<div style="min-width:95px">'
+			zttr += "<div class='result-data-cell'>";
 		}
 		// If no result is found i.e. No Fist
 		if (foundgrade === null && useranswer === null && submitted === null) {
@@ -445,26 +484,26 @@ function renderMomentChild(dugga, userResults, userId, fname, lname, moment)
 			zttr += makeSelect(dugga['gradesystem'], querystring['cid'], querystring['coursevers'], dugga['lid'], userId, null, "U");
 		}
 		if(useranswer!==null){
-			zttr += "<img id='korf' style='width:24px;height:24px;float:right;margin-right:8px;' src='../Shared/icons/FistV.png' onclick='clickResult(\"" + querystring['cid'] + "\",\"" + querystring['coursevers'] + "\",\"" + dugga.lid + "\",\"" + fname + "\",\"" + lname + "\",\"" + userId + "\",\"" + submitted + "\",\"" + marked + "\",\"" + foundgrade + "\",\"" + dugga.gradesystem + "\",\"" + dugga["lid"] + "\");' />";
+			zttr += "<img id='korf' class='fist' src='../Shared/icons/FistV.png' onclick='clickResult(\"" + querystring['cid'] + "\",\"" + querystring['coursevers'] + "\",\"" + dugga.lid + "\",\"" + fname + "\",\"" + lname + "\",\"" + userId + "\",\"" + submitted + "\",\"" + marked + "\",\"" + foundgrade + "\",\"" + dugga.gradesystem + "\",\"" + dugga["lid"] + "\");' />";
 		}
-		zttr += '</div>'
+		zttr += "</div>";
 		// If no submission - white. If submitted and not marked or resubmitted U - yellow. If G or better, green. If U, pink. visited but not saved lilac
 		if(foundgrade===1 && submitted<marked){
-				yomama="background-color:#faa";
+				yomama="dugga-fail";
 		}else if(foundgrade>1){
-				yomama="background-color:#dfe";
+				yomama="dugga-pass";
 		}else if(variant!==null&&useranswer===null){
-				yomama="background-color:#F8E8F8";
+				yomama="dugga-assigned";
 		}else if((useranswer!==null&&foundgrade===null)||(foundgrade===1&&submitted>marked)||(useranswer!==null&&foundgrade===0)){
-				yomama="background-color:#ffd";
+				yomama="dugga-pending";
 				needMarking++;
 		}else{
-				yomama="background-color:#fff";
+				yomama="dugga-unassigned";
 		}
 		if (moment){
-			str += "<td style='border-left:2px solid #dbd0d8;"+yomama+"' onmouseover='enterCell(this);' onmouseout='leaveCell(this);' colspan='0'>";
+			str += "<td id='u_"+userId+"_d_"+dugga.lid+"' class='"+yomama+" u_"+userId+"' onmouseover='enterCell(this);' onmouseout='leaveCell(this);' colspan='0'>";
 		} else {
-			str += "<td style='border-left:2px solid #dbd0d8;"+yomama+"' onmouseover='enterCell(this);' onmouseout='leaveCell(this);'>";
+			str += "<td id='u_"+userId+"_d_"+dugga.lid+"' class='"+yomama+" u_"+userId+"' onmouseover='enterCell(this);' onmouseout='leaveCell(this);'>";
 		}
 		str += "<div style=\"display:inline-block; overflow:hidden;\">"+dugga['entryname'] + "</div> ";
 		str +=zttr;
@@ -502,6 +541,12 @@ function returnedResults(data)
 				showAll=true;
 
 				results = allData['results'];
+				console.log(results);
+				var daBomb = [];
+				for (var k=0;k<results.length;k++){
+						daBomb[results.k[0].uid]=results[k];
+				}
+				console.log(daBomb);
 				m = orderResults(allData['moments']);
 				str += "<table class='markinglist'>";
 				str += renderResultTableHeader(m);
@@ -510,11 +555,11 @@ function returnedResults(data)
 						for ( i = 0; i < allData['entries'].length; i++) {
 								var user = allData['entries'][i];
 								if (user["role"]==="R" || showAll){
-									str += "<tr class='fumo'>";
+									str += "<tr class='fumo u_"+user['uid']+"'>";
 	
 									// One row for each student
-									str += "<td>";
-									str += user['firstname'] + " " + user['lastname'] + "<br/>" + user['username'] + "<br/>" + user['ssn'];
+									str += "<td class='result-data u_"+user['uid']+"'>";
+									str += "<div>"+user['firstname'] + " " + user['lastname'] + "</div><div>" + user['username'] + "</div><div>" + user['ssn'] + "</div>";
 									str += "</td>";
 									str += renderMoment(m, results[user['uid']], user['uid'], user['firstname'], user['lastname']);
 									str += "</tr>";
