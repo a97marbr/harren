@@ -349,7 +349,7 @@ function orderResults(moments)
 function renderResultTableHeader(data)
 {
 		var str = "<thead>"
-		str += "<tr><th id='needMarking' class='result-header text-right'></th>";
+		str += "<tr class='markinglist-header'><th id='needMarking' class='result-header text-right'></th>";
 		for (var i = 0; i < data.length; i++) {
 				if ((data[i][0].kind === 3 && data[i][0].moment === null) || (data[i][0].kind === 4)) {
 					str += "<th class='result-header'>";

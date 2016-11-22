@@ -1039,11 +1039,12 @@ input.large-button {
 .markinglist td {border-right:2px solid #dbd0d8;font-size: 10px;}
 .markinglist th {background:#614875; color:#fff;font-style: italic; font-size: 12px;}
 
-.markinginnertable {background:#fff;box-shadow:2px 3px 2px #a09098 inset;border-top: 2px solid #dbd0d8;border-bottom: 2px solid #dbd0d8;}
+.markinginnertable {background:#fff;border-top: 2px solid #dbd0d8;border-bottom: 2px solid #dbd0d8;}
 .markinginnertable td {color:#000;border:none; }
 
 .markinglist tr {opacity: 0.8;}
 .markinglist tr:hover {}
+.markinglist-header {opacity: 1.0!important;}
 
 .markinglist--nomargin {
     margin: 0!important;
