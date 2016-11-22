@@ -541,12 +541,7 @@ function returnedResults(data)
 				showAll=true;
 
 				results = allData['results'];
-				console.log(results);
-				var daBomb = [];
-				for (var k=0;k<results.length;k++){
-						daBomb[results.k[0].uid]=results[k];
-				}
-				console.log(daBomb);
+
 				m = orderResults(allData['moments']);
 				str += "<table class='markinglist'>";
 				str += renderResultTableHeader(m);
