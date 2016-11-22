@@ -27,19 +27,15 @@ $(function()
 //----------------------------------------
 
 function gradeDugga(e, gradesys, cid, vers, moment, uid, mark, ukind){
-		//console.log(e);
-
 		closeWindows();
 
-		var pressed = e.target.className;
-
-		if (pressed === "Uc"){
+		if ($(e.target ).hasClass("Uc")){
 				changeGrade(1, gradesys, cid, vers, moment, uid, mark, ukind);
-		} else if (pressed === "Gc") {
+		} else if ($(e.target ).hasClass("Gc")) {
 				changeGrade(2, gradesys, cid, vers, moment, uid, mark, ukind);
-		} else if (pressed === "VGc"){
+		} else if ($(e.target ).hasClass("VGc")){
 				changeGrade(3, gradesys, cid, vers, moment, uid, mark, ukind);
-		} else if (pressed === "U") {
+		} else if ($(e.target ).hasClass("U")) {
 				changeGrade(1, gradesys, cid, vers, moment, uid, mark, ukind);
 		}
 		else {

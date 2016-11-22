@@ -80,12 +80,12 @@ function returnedDugga(data)
 	if (data["feedback"] == null || data["feedback"] === "" || data["feedback"] === "UNK") {
 			// No feedback
 	} else {
-			var fb = "<table><thead><tr><th>Date</th><th>Feedback</th></tr></thead><tbody>";
+			var fb = "<table class='list feedback-list'><thead><tr><th>Date</th><th>Feedback</th></tr></thead><tbody>";
 			var feedbackArr = data["feedback"].split("||");
 			for (var k=feedbackArr.length-1;k>=0;k--){
 				var fb_tmp = feedbackArr[k].split("%%");
 				fb+="<tr><td>"+fb_tmp[0]+"</td><td>"+fb_tmp[1]+"</td></tr>";
-			} 
+			} 		
 			fb += "</tbody></table>";
 			document.getElementById('feedbackTable').innerHTML = fb;		
 			document.getElementById('feedbackBox').style.display = "block";
@@ -162,15 +162,15 @@ function showFacit(param, uanswer, danswer, userStats, files, moment, feedback)
 
 	redrawgfx();
 	// Teacher feedback
-	var fb = "<table><thead><tr><th>Date</th><th>Feedback</th></tr></thead><tbody>";
-	if (feedback !== undefined){
+	var fb = "<textarea id='newFeedback'></textarea><div class='feedback-info'>* grade to save feedback.</div><table class='list feedback-list'><caption>Previous feedback</caption><thead><tr><th>Date</th><th>Feedback</th></tr></thead><tbody>";
+	if (feedback !== undefined && feedback !== "UNK" && feedback !== ""){
 		var feedbackArr = feedback.split("||");
 		for (var k=feedbackArr.length-1;k>=0;k--){
 			var fb_tmp = feedbackArr[k].split("%%");
 			fb+="<tr><td>"+fb_tmp[0]+"</td><td>"+fb_tmp[1]+"</td></tr>";
 		} 		
 	}
-	fb += "</tbody></table><br><textarea id='newFeedback'></textarea>";
+	fb += "</tbody></table>";
 	if (feedback !== undefined){
 			document.getElementById('teacherFeedbackTable').innerHTML = fb;
 	}

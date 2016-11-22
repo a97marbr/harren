@@ -1050,6 +1050,22 @@ input.large-button {
     margin: 0!important;
 }
 
+.feedback-list caption {
+    border-left:2px solid #dbd0d8;background:#614875; color:#fff;line-height:28px;
+}
+.feedback-list {
+    table-layout:fixed;
+    width:100%;
+    margin-top: 2px!important;
+}
+.feedback-list th,td {
+    font-size: 12px;
+    word-wrap: break-word;
+}
+
+.feedback-list td {
+    line-height: normal;
+}
 
 .Trow{
     font-family: "Lucida Console", Monaco, monospace;
@@ -1567,4 +1583,13 @@ input.large-button {
     display: flex;
     justify-content: space-around;
     padding: 5px 0 5px 0;
+}
+#newFeedback {
+    width:98%;
+    height: 140px;
+    padding: 2px;
+}
+.feedback-info {
+    font-size: 10px;
+    font-style: italic;
 }
