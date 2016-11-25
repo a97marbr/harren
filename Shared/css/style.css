@@ -1042,9 +1042,9 @@ input.large-button {
 .markinginnertable {background:#fff;border-top: 2px solid #dbd0d8;border-bottom: 2px solid #dbd0d8;}
 .markinginnertable td {color:#000;border:none; }
 
-.markinglist tr {opacity: 0.8;}
+
 .markinglist tr:hover {}
-.markinglist-header {opacity: 1.0!important;}
+
 
 .markinglist--nomargin {
     margin: 0!important;
@@ -1503,7 +1503,6 @@ input.large-button {
 .result-data {
     padding:0px;
     min-width: 95px;
-    vertical-align: top;
 }
 
 .result-data-cell {
@@ -1592,4 +1591,22 @@ input.large-button {
 .feedback-info {
     font-size: 10px;
     font-style: italic;
+}
+.dugga-moment{
+		background-image:url('../icons/Stripes2.png');
+}
+
+.dugga-result-subheader
+{
+		border-top:2px solid white;
+}	
+
+.dugga-result-subheader-div
+{
+		direction:rtl;
+		max-width:140px;
+		min-width:100px;
+		overflow:hidden;
+		white-space:nowrap;
+		text-overflow:ellipsis;
 }

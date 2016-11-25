@@ -218,7 +218,7 @@ if(strcmp($opt,"DUGGA")!==0){
 				
 		}
 		*/
-		$query = $pdo->prepare("SELECT user_course.cid AS cid,user.uid AS uid,username,firstname,lastname,ssn FROM user,user_course WHERE user.uid=user_course.uid AND user_course.cid=:cid AND user_course.vers=:coursevers LIMIT 120;");
+		$query = $pdo->prepare("SELECT user_course.cid AS cid,user.uid AS uid,username,firstname,lastname,ssn FROM user,user_course WHERE user.uid=user_course.uid AND user_course.cid=:cid AND user_course.vers=:coursevers;");
 		//		$query = $pdo->prepare("select user_course.cid as cid,user.uid as uid,username,firstname,lastname,ssn,access from user,user_course where user.uid=user_course.uid and user_course.cid=:cid;");
 		$query->bindParam(':coursevers', $vers);
 		$query->bindParam(':cid', $cid);
@@ -254,8 +254,9 @@ if(strcmp($opt,"DUGGA")!==0){
 		}
 
 		// All results from current course and vers?
-		$query = $pdo->prepare("select aid,quiz,variant,moment,grade,uid,useranswer,submitted,vers,marked,timeUsed,totalTimeUsed,stepsUsed,totalStepsUsed from userAnswer where cid=:cid;");
+		$query = $pdo->prepare("select aid,quiz,variant,userAnswer.moment as dugga,grade,uid,useranswer,submitted,userAnswer.vers,marked,timeUsed,totalTimeUsed,stepsUsed,totalStepsUsed,listentries.moment as moment,if((submitted > marked && !isnull(marked))||(isnull(marked) && !isnull(useranswer)), true, false) as needMarking from userAnswer,listentries where userAnswer.cid=:cid and userAnswer.vers=:vers and userAnswer.moment=listentries.lid;");
 		$query->bindParam(':cid', $cid);
+		$query->bindParam(':vers', $vers);
 
 		if(!$query->execute()) {
 			$error=$query->errorInfo();
@@ -272,7 +273,8 @@ if(strcmp($opt,"DUGGA")!==0){
 				array(
 					'aid' => (int)$row['quiz'],
 					'variant' => (int)$row['variant'],
-					'moment' => (int)$row['moment'],
+					'dugga' => (int)$row['dugga'],
+					'moment' => (int)$row['moment'],					
 					'grade' => (int)$row['grade'],
 					'uid' => (int)$row['uid'],
 					'useranswer' => $row['useranswer'],
@@ -282,7 +284,8 @@ if(strcmp($opt,"DUGGA")!==0){
 					'timeUsed' => $row['timeUsed'],
 					'totalTimeUsed' => $row['totalTimeUsed'],
 					'stepsUsed' => $row['stepsUsed'],
-					'totalStepsUsed' => $row['totalStepsUsed']
+					'totalStepsUsed' => $row['totalStepsUsed'],
+					'needMarking' => (bool)$row['needMarking']
 				)
 			);
 		}

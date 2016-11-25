@@ -246,3 +246,25 @@ table tbody tr:nth-child(even) {background-color:#dad8db;}
 svg text {
 	pointer-events: none;
 }
+
+#markMenuPlaceholderz {
+		background:#bbb;
+}
+.dugga-moment{
+		background-image:url('../icons/Stripes2.png');
+}
+
+.dugga-result-subheader
+{
+		border-top:2px solid white;
+}	
+
+.dugga-result-subheader-div
+{
+		direction:rtl;
+		max-width:140px;
+		min-width:100px;
+		overflow:hidden;
+		white-space:nowrap;
+		text-overflow:ellipsis;
+}

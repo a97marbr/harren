@@ -16,15 +16,36 @@ var ajaxStart;
 
 var clickedindex;
 function setup(){
-
 	// Benchmarking function
 	benchmarkData = performance.timing;
 	console.log("Network Latency: "+(benchmarkData.responseEnd-benchmarkData.fetchStart));
 	console.log("responseEnd -> onload: "+(benchmarkData.loadEventEnd-benchmarkData.responseEnd));
+	window.onscroll = function() {magicHeading()};
 
 	AJAXService("GET", { cid : querystring['cid'],vers : querystring['coursevers'] }, "MARK");
 	ajaxStart = new Date();
 	console.log("ajax star: "+ajaxStart);
+}
+
+
+function magicHeading()
+{
+		if(window.pageYOffset-20>$("#needMarking").offset().top){
+				$("#upperDecker").css("display","block");
+		}else{
+				$("#upperDecker").css("display","none");						
+		}
+		
+		$("#froocht").css("width",$("#needMarking").outerWidth()+"px");
+		
+		$(".dugga-result-subheader").each(function(){
+				var elemid=$(this).attr('id');
+				var elemwidth=$(this).width();
+				$("#"+elemid+"magic").css("width",elemwidth+"px");
+				
+		});
+
+		$("#upperDecker").css("top",(window.pageYOffset-20)+"px");
 }
 
 $(function()
@@ -513,6 +534,124 @@ function returnedResults(data)
 				showAll=true;
 
 				results = allData['results'];
+				//console.log(results);
+				var daBomb = new Object();
+				var strtim = new Date();
+				for (var uid in results) {
+						// skip loop if the property is from prototype
+						if (!results.hasOwnProperty(uid)) continue;
+
+						// add moment and dugga structure
+						if(typeof daBomb[uid] === "undefined"){
+								daBomb[uid] = new Object();				
+								daBomb[uid].moments =new Object();
+								for (var l=0;l<allData["moments"].length;l++){
+										var m = allData["moments"][l];
+										if (typeof daBomb[uid].moments[m.moment] === "undefined"){
+												daBomb[uid].moments[m.moment] = new Object();														
+												daBomb[uid].moments[m.moment].duggas = new Object();
+										}
+										if (m.visible === 1) {
+												if (m.kind === 4) daBomb[uid].moments[m.moment].name = m.entryname;
+												daBomb[uid].moments[m.moment].duggas[m.lid]=m;
+										} 
+								}
+						}
+						// Fill with grades
+						var r = results[uid];
+						
+						$(results[uid]).each(function(){
+							if(typeof daBomb[this.uid].moments[this.moment].duggas[this.dugga] !== "undefined"){
+								if (typeof daBomb[uid].moments[this.moment].duggas[this.dugga].result === "undefined"){
+									daBomb[uid].moments[this.moment].duggas[this.dugga].result = this;
+								}
+							}
+						});
+						//console.log(daBomb[uid]);
+						/*
+						for (var k=0; k<r.length;k++){					
+								if(typeof daBomb[r.uid].moments[r[k].moment].duggas[r[k].dugga] !== "undefined"){
+										daBomb[r.uid].moments[r[k].moment].duggas[r[k].dugga].result = r[k];		
+								}
+						}
+						*/
+				}
+
+				if (allData['entries'].length > 0) {
+						for (var i = 0; i < allData['entries'].length; i++) {
+								var user = allData['entries'][i];
+								if(typeof daBomb[user['uid']] !== "undefined"){
+										daBomb[user['uid']]["firstname"]=user['firstname'];
+										daBomb[user['uid']]["lastname"]=user['lastname'];
+										daBomb[user['uid']]["username"]=user['username'];
+										daBomb[user['uid']]["ssn"]=user['ssn'];
+										daBomb[user['uid']]["cancel"]=false; // Could be used for filtering
+								}
+						}
+				}
+				console.log("Sorting: "+(new Date() - strtim));
+				console.log(daBomb);
+
+				var strt ="<div id='upperDecker' style='z-index:8000;position:absolute;left:8px;'><table class='markinglist'>";
+				strt += "<thead class='markinglist'>";
+				strt += "<tr class='markinglist-header'><th>&nbsp;</th>";				
+				var hd = daBomb[Object.keys(daBomb)[0]]; // Get one of the rows and use as template for headings
+				for (var umf in hd.moments) {
+						strt += "<th colspan='"+Object.keys(hd.moments[umf].duggas).length+"'>"+hd.moments[umf].name+"</th>";
+				}
+				strt += "</tr><tr class='markinglist-header'><th>&nbsp;</th>";
+				for (var umf in hd.moments) {
+						for (var lumf in hd.moments[umf].duggas) {
+								strt += "<th class='dugga-result-subheader'><div class='dugga-result-subheader-div' title='"+hd.moments[umf].duggas[lumf].entryname+"'>"+hd.moments[umf].duggas[lumf].entryname+"</div></th>";
+						}
+				}
+				strt += "</tr>";				
+				strt += "</thead>";				
+				for (var uid in daBomb) {
+						// skip loop if the property is from prototype
+						if (!results.hasOwnProperty(uid)) continue;
+
+						var u = daBomb[uid];
+						//if (typeof u.firstname !== "undefined"){
+						if (true){
+								strt +="<tr><td>";
+								strt += "<div>"+u.firstname+ " " +u.lastname+ "</div>";
+								strt += "<div>"+u.username+"</div>";
+								strt += "<div>"+u.ssn+"</div>";
+								strt += "</td>";
+								for (var m in u.moments){
+									/*
+										strt += "<td class='result-data'>";
+										strt += "<div style='background-color:#fed'>"+u.moments[m].name+"</div>";
+										"</td>";
+										*/
+										for (var j in u.moments[m].duggas) {
+												if (u.moments[m].duggas[j].visible === 1) {
+													strt += "<td class='result-data";
+													if  (u.moments[m].duggas[j].kind === 4) {
+														strt += " dugga-moment"
+													}
+													// color based on pass,fail,pending,assigned,unassigned
+													if (u.moments[m].duggas[j].result.grade === 1 && u.moments[m].duggas[j].result.needMarking === false) {strt += " dugga-fail"}
+													else if (u.moments[m].duggas[j].result.grade > 1) {strt += " dugga-pass"}
+													else if (u.moments[m].duggas[j].result.variant !== null && u.moments[m].duggas[j].result.userAnswer === null) {strt += " dugga-assigned"}
+													else if (u.moments[m].duggas[j].result.needMarking === true) {strt += " dugga-pending"}
+													else {strt += " dugga-unassigned"}
+													
+													strt += "'>";
+													strt += "<div class='gradeContainer'>";
+													strt += makeSelect(u.moments[m].duggas[j].gradesystem, querystring['cid'], u.moments[m].duggas[j].vers, u.moments[m].duggas[j].lid, uid, null, u.moments[m].duggas[j].ukind);
+													strt += "</div>";
+													strt += "</td>";											
+												}
+										}
+								}
+								strt += "</tr>";							
+						}
+				}
+				strt += "</table>"
+				var slist = document.getElementById("content").innerHTML = strt;
+/*
 				m = orderResults(allData['moments']);
 				str += "<table class='markinglist'>";
 				str += renderResultTableHeader(m);
@@ -537,6 +676,7 @@ function returnedResults(data)
 				console.log("ajaxStart -> pre table:"+ (new Date() - ajaxStart));
 				document.getElementById("needMarking").innerHTML = "Students: " + allData['entries'].length + "<BR />Unmarked : " + needMarking;
 		    console.log("ajaxStart -> post table:"+ (new Date() - ajaxStart));
+				*/
 		}
 
 
