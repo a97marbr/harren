@@ -45,7 +45,7 @@ function magicHeading()
 				
 		});
 
-		$("#upperDecker").css("top",(window.pageYOffset-20)+"px");
+		$("#upperDecker").css("top",(window.pageYOffset+30)+"px");
 }
 
 $(function()
@@ -592,21 +592,38 @@ function returnedResults(data)
 				console.log("Sorting: "+(new Date() - strtim));
 				console.log(daBomb);
 
-				var strt ="<div id='upperDecker' style='z-index:8000;position:absolute;left:8px;'><table class='markinglist'>";
+				var strt ="<div id='upperDecker' style='z-index:1000;position:absolute;left:8px;'><table class='markinglist'>";
 				strt += "<thead class='markinglist'>";
-				strt += "<tr class='markinglist-header'><th>&nbsp;</th>";				
+				strt += "<tr class='markinglist-header'><th><div id='froocht'>&nbsp;</div></th>";				
 				var hd = daBomb[Object.keys(daBomb)[0]]; // Get one of the rows and use as template for headings
 				for (var umf in hd.moments) {
 						strt += "<th colspan='"+Object.keys(hd.moments[umf].duggas).length+"'>"+hd.moments[umf].name+"</th>";
 				}
 				strt += "</tr><tr class='markinglist-header'><th>&nbsp;</th>";
+				var idx=0;
 				for (var umf in hd.moments) {
+						idx++;
 						for (var lumf in hd.moments[umf].duggas) {
-								strt += "<th class='dugga-result-subheader'><div class='dugga-result-subheader-div' title='"+hd.moments[umf].duggas[lumf].entryname+"'>"+hd.moments[umf].duggas[lumf].entryname+"</div></th>";
+								strt += "<th class='dugga-result-subheader'><div id='header"+idx+"magic' class='dugga-result-subheader-div' title='"+hd.moments[umf].duggas[lumf].entryname+"'>"+hd.moments[umf].duggas[lumf].entryname+"</div></th>";
 						}
 				}
 				strt += "</tr>";				
-				strt += "</thead>";				
+				strt += "</thead><tbody></tbody></table></div><table id='needMarking' class='markinglist'>";				
+				strt += "<tr class='markinglist-header'><th><div>&nbsp;</div></th>";				
+				var hd = daBomb[Object.keys(daBomb)[0]]; // Get one of the rows and use as template for headings
+				for (var umf in hd.moments) {
+						strt += "<th colspan='"+Object.keys(hd.moments[umf].duggas).length+"'>"+hd.moments[umf].name+"</th>";
+				}
+				strt += "</tr><tr class='markinglist-header'><th>&nbsp;</th>";
+				var idx=0;
+				for (var umf in hd.moments) {
+						idx++;
+						for (var lumf in hd.moments[umf].duggas) {
+								strt += "<th class='dugga-result-subheader'><div id='header"+idx+"' class='dugga-result-subheader-div' title='"+hd.moments[umf].duggas[lumf].entryname+"'>"+hd.moments[umf].duggas[lumf].entryname+"</div></th>";
+						}
+				}
+				strt += "</tr>";				
+				strt += "</thead><tbody>";				
 				for (var uid in daBomb) {
 						// skip loop if the property is from prototype
 						if (!results.hasOwnProperty(uid)) continue;
