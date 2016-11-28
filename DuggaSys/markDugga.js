@@ -250,26 +250,8 @@ function process()
 	clist=localStorage.getItem(querystring['cid']+"-"+querystring['coursevers']+"-checkees");
 	if (clist){	
 			clist=clist.split("**"); 
-	} else {
-		// Update dropdown list
-		var dstr="";
-		for(var j=0;j<moments.length;j++){
-				var lid=moments[j].lid;
-				var name=moments[j].entryname;
-				dstr+="<div";				
-				if (moments[j].visible == 0) dstr +=" style='opacity:0.4;'";
-				
-				dstr +="><input type='checkbox' class='headercheck' id='hdr"+lid;
-				dstr+="check'";
-				dstr+=">";
-				dstr += "<label class='headerlabel' id='hdr"+lid;
-				dstr+="' for='hdr"+lid+"check' ";
-				dstr+=">"+name+"</label></div>";
-			}
-			dstr+="<div style='display:flex;justify-content:flex-end;border-top:1px solid #888'><button onclick='leave()'>Filter</button></div>"
-			document.getElementById("dropdownc").innerHTML=dstr;	
-	}
-		
+	} 
+	
 	// Create temporary list that complies with dropdown
 	momtmp=new Array;
 	for(var l=0;l<moments.length;l++){
@@ -278,6 +260,9 @@ function process()
 					if(clist[index+1]=="true"){
 							momtmp.push(moments[l]);
 					}
+			} else {
+					/* default to show every moment/dugga */
+					momtmp.push(moments[l]);
 			}
 	}
 	// Reconstitute table
@@ -333,7 +318,10 @@ function process()
 									dstr+=" checked ";
 							}
 					}										
-				}				
+				}	else {
+						/* default to display every dugga/moment */
+						dstr+=" checked ";
+				}			
 				dstr+=">";
 				dstr+= "<label class='headerlabel' id='hdr"+lid;
 				dstr+="' for='hdr"+lid+"check' ";
