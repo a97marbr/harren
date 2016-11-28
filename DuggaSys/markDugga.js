@@ -32,7 +32,53 @@ function redrawtable()
 		//console.log(students);
 		
 		// Redraw table
-		str="<table>"
+		
+		// Magic heading 
+		/*var strt ="<div id='upperDecker' style='z-index:1000;position:absolute;left:8px;'><table class='markinglist'>";
+		strt += "<thead class='markinglist'>";
+		strt += "<tr class='markinglist-header'><th><div id='froocht'>&nbsp;</div></th>";				
+
+		strt += "</tr>";				
+		strt += "</thead><tbody></tbody></table>";				
+		*/
+		str = "<div id='upperDecker' style='z-index:4000;position:absolute;left:8px;display:none;'>";
+		str += "<table class='markinglist'>";
+		str += "<thead>";
+		str += "<tr class='markinglist-header'>";
+		str += "<td><div id='froocht'>&nbsp;</div></th>"
+		if (momtmp.length > 0){
+				// Make first header row!
+				/*
+				var colsp=1;
+				var colpos=1;
+				for(var j=1;j<momtmp.length;j++){
+						if(momtmp[j].kind==4){
+								str+="<th class='result-header' colspan='"+colsp+"'>"+momtmp[colpos].entryname+"</th>"								
+								colpos=j;
+								colsp=0;
+						}
+						colsp++;
+				}
+				str+="<th class='result-header' colspan='"+colsp+"'>"+momtmp[colpos].entryname+"</th>"								
+				str+="</tr><tr class='markinglist-header'>";
+				*/
+				
+				// Make second header row!
+				for(var j=0;j<momtmp.length;j++){
+						if(momtmp[j].kind==3){
+								str+="<th class='result-header dugga-result-subheadermagic'><div id='header"+j+"magic' class='dugga-result-subheader-div' title='"+momtmp[j].entryname+"'>"+momtmp[j].entryname+"</div></th>"													
+						}else{
+								//str+="<th class='result-header dugga-result-subheadermagic'>Course part grade</th>"								
+								str+="<th class='result-header dugga-result-subheadermagic'><div id='header"+j+"magic' class='dugga-result-subheader-div' title='Course part grade'>Course part grade</div></th>"													
+						}
+				}
+				str+="</tr>";
+		}		
+		str += "</thead>"
+		str += "</table>"
+		str += "</div>"
+		
+		str+="<table>"
 		str+="<table class='markinglist'>";
 		str+="<thead>";
 		str+="<tr class='markinglist-header'>";
@@ -59,12 +105,12 @@ function redrawtable()
 				// Make second header row!
 				for(var j=0;j<momtmp.length;j++){
 						if(momtmp[j].kind==3){
-								str+="<th class='result-header dugga-result-subheader'>"+momtmp[j].entryname+"</th>"													
+								str+="<th class='result-header dugga-result-subheader' id='header"+j+"'><div class='dugga-result-subheader-div' title='"+momtmp[j].entryname+"'>"+momtmp[j].entryname+"</div></th>"													
 						}else{
-								str+="<th class='result-header dugga-result-subheader'>Course part grade</th>"								
+								str+="<th class='result-header dugga-result-subheader' id='header"+j+"'><div class='dugga-result-subheader-div' title='Course part grade'>Course part grade</div></th>"								
 						}
 				}
-				str+="</tr>";
+				str+="</tr></thead><tbody>";
 
 				// Make mf table
 				for(var i=0;i<students.length;i++){
@@ -84,17 +130,27 @@ function redrawtable()
 										else if (student[j].needMarking === true) {str += " dugga-pending"}
 										else {str += " dugga-unassigned"}
 										str += "'>";
-										str += "<div class='gradeContainer'>";
-										if (student[j].ishere) str += makeSelect(student[j].gradeSystem, querystring['cid'], student[j].vers, student[j].lid, student[j].uid, student[j].grade, student[j].kind);
-										if(student[j].useranswer!==null){
-											str += "<img id='korf' class='fist' src='../Shared/icons/FistV.png' onclick='clickResult(\"" + querystring['cid'] + "\",\"" + student[j].vers + "\",\"" + student[j].lid + "\",\"" + "fname" + "\",\"" + "lname" + "\",\"" + student[j].uid + "\",\"" + student[j].submitted + "\",\"" + student[j].marked + "\",\"" + student[j].grade + "\",\"" + student[j].gradeSystem + "\",\"" + student[j].lid + "\");' />";
+										str += "<div class='gradeContainer";
+										if(student[j].ishere===false){
+											str += " grading-hidden";
 										}
+										str += "'>";
+										if (student[j].grade === null){
+												str += makeSelect(student[j].gradeSystem, querystring['cid'], student[j].vers, student[j].lid, student[j].uid, student[j].grade, 'I');
+										} else {
+												str += makeSelect(student[j].gradeSystem, querystring['cid'], student[j].vers, student[j].lid, student[j].uid, student[j].grade, 'U');
+										}										
+										str += "<img id='korf' class='fist";
+										if(student[j].userAnswer===null){
+											str += " grading-hidden";
+										}
+										str +="' src='../Shared/icons/FistV.png' onclick='clickResult(\"" + querystring['cid'] + "\",\"" + student[j].vers + "\",\"" + student[j].lid + "\",\"" + student[0].firstname + "\",\"" + student[0].lastname + "\",\"" + student[j].uid + "\",\"" + student[j].submitted + "\",\"" + student[j].marked + "\",\"" + student[j].grade + "\",\"" + student[j].gradeSystem + "\",\"" + student[j].lid + "\");' />";
 										str += "</div>";
 										str += "</td>";											
 
 								}
 						}
-						str+="</tr>"
+						str+="</tr></tbody>"
 				}
 				str+="</table>";
 				document.getElementById("content").innerHTML=str;
@@ -191,7 +247,7 @@ function process()
 	console.log("process");
 		
 	// Read dropdown from local storage
-	clist=localStorage.getItem("checkees");
+	clist=localStorage.getItem(querystring['cid']+"-"+querystring['coursevers']+"-checkees");
 	if (clist){	
 			clist=clist.split("**"); 
 	} else {
@@ -206,19 +262,22 @@ function process()
 				dstr +="><input type='checkbox' class='headercheck' id='hdr"+lid;
 				dstr+="check'";
 				dstr+=">";
-				dstr += "<label id='hdr"+lid;
+				dstr += "<label class='headerlabel' id='hdr"+lid;
 				dstr+="' for='hdr"+lid+"check' ";
 				dstr+=">"+name+"</label></div>";
 			}
+			dstr+="<div style='display:flex;justify-content:flex-end;border-top:1px solid #888'><button onclick='leave()'>Filter</button></div>"
 			document.getElementById("dropdownc").innerHTML=dstr;	
 	}
 		
 	// Create temporary list that complies with dropdown
 	momtmp=new Array;
 	for(var l=0;l<moments.length;l++){
-			index=clist.indexOf("hdr"+moments[l].lid+"check");
-			if(clist[index+1]=="true"){
-					momtmp.push(moments[l]);
+			if (clist !== null ){
+					index=clist.indexOf("hdr"+moments[l].lid+"check");
+					if(clist[index+1]=="true"){
+							momtmp.push(moments[l]);
+					}
 			}
 	}
 	// Reconstitute table
@@ -276,10 +335,11 @@ function process()
 					}										
 				}				
 				dstr+=">";
-				dstr+= "<label id='hdr"+lid;
+				dstr+= "<label class='headerlabel' id='hdr"+lid;
 				dstr+="' for='hdr"+lid+"check' ";
 				dstr+=">"+name+"</label></div>";
 		}
+		dstr+="<div style='display:flex;justify-content:flex-end;border-top:1px solid #888'><button onclick='leave()'>Filter</button></div>"
 		document.getElementById("dropdownc").innerHTML=dstr;	
 		
 	console.log(performance.now()-tim);
@@ -301,8 +361,8 @@ function leave()
 			str+=$(this).attr("id")+"**"+$(this).is(':checked')+"**";
 	});
 	
-	old=localStorage.getItem("checkees");
-	localStorage.setItem("checkees",str);
+	old=localStorage.getItem(querystring['cid']+"-"+querystring['coursevers']+"-checkees");
+	localStorage.setItem(querystring['cid']+"-"+querystring['coursevers']+"-checkees",str);
 
 	if(str!=old) process();
 }
@@ -313,11 +373,6 @@ function setup(){
 	// Benchmarking function
 	benchmarkData = performance.timing;
 
-	$(document).ready(function () {
-					$("#dropdownc").mouseleave(function () {
-							leave();
-					});
-	});
 	console.log("Network Latency: "+(benchmarkData.responseEnd-benchmarkData.fetchStart));
 	console.log("responseEnd -> onload: "+(benchmarkData.loadEventEnd-benchmarkData.responseEnd));
 	window.onscroll = function() {magicHeading()};
@@ -331,7 +386,7 @@ function setup(){
 
 function magicHeading()
 {
-		if(window.pageYOffset-20>$("#needMarking").offset().top){
+		if(window.pageYOffset-10>$("#needMarking").offset().top){
 				$("#upperDecker").css("display","block");
 		}else{
 				$("#upperDecker").css("display","none");						
@@ -342,11 +397,12 @@ function magicHeading()
 		$(".dugga-result-subheader").each(function(){
 				var elemid=$(this).attr('id');
 				var elemwidth=$(this).width();
+				console.log(elemid + " " + elemwidth);
 				$("#"+elemid+"magic").css("width",elemwidth+"px");
 				
 		});
 
-		$("#upperDecker").css("top",(window.pageYOffset+30)+"px");
+		$("#upperDecker").css("top",(window.pageYOffset+50)+"px");
 }
 
 $(function()
@@ -364,15 +420,13 @@ function gradeDugga(e, gradesys, cid, vers, moment, uid, mark, ukind){
 
 		closeWindows();
 
-		var pressed = e.target.className;
-
-		if (pressed === "Uc"){
+		if ($(e.target ).hasClass("Uc")){
 				changeGrade(1, gradesys, cid, vers, moment, uid, mark, ukind);
-		} else if (pressed === "Gc") {
+		} else if ($(e.target ).hasClass("Gc")) {
 				changeGrade(2, gradesys, cid, vers, moment, uid, mark, ukind);
-		} else if (pressed === "VGc"){
+		} else if ($(e.target ).hasClass("VGc")){
 				changeGrade(3, gradesys, cid, vers, moment, uid, mark, ukind);
-		} else if (pressed === "U") {
+		} else if ($(e.target ).hasClass("U")) {
 				changeGrade(1, gradesys, cid, vers, moment, uid, mark, ukind);
 		}
 		else {
@@ -382,7 +436,7 @@ function gradeDugga(e, gradesys, cid, vers, moment, uid, mark, ukind){
 }
 
 function makeImg(gradesys, cid, vers, moment, uid, mark, ukind,gfx,cls){
-	return "<img style=\"width:24px;height:24px\" src=\""+gfx+"\" id=\"grade-"+moment+"-"+uid+"\" class=\""+cls+"\" onclick=\"gradeDugga(event,"+gradesys+","+cid+",'"+vers+"',"+moment+","+uid+","+mark+",'"+ukind+"');\"  />";
+	return "<img src=\""+gfx+"\" id=\"grade-"+moment+"-"+uid+"\" class=\""+cls+"\" onclick=\"gradeDugga(event,"+gradesys+","+cid+",'"+vers+"',"+moment+","+uid+","+mark+",'"+ukind+"');\"  />";
 }
 
 
@@ -601,211 +655,6 @@ function saveResponse()
 }
 
 //----------------------------------------
-// Sort results
-//----------------------------------------
-function orderResults(moments)
-{
-	var arr = [];
-	var currentMomentIndex=0;
-	arr[currentMomentIndex] = [];
-	var currentMoment=null;
-	for(var i=0; i < moments.length;i++){
-		if(moments[i].kind === 3 && moments[i].moment === null){
-			// Standalone dugga
-			arr[currentMomentIndex] = moments[i];
-			currentMomentIndex++;
-			alert("Added standalone");
-		} else if (moments[i].kind === 4 && moments[i].moment !== null){
-			if (currentMoment === null){
-				// Moment : first or same as previous
-				arr[currentMomentIndex].push(moments[i]);
-				currentMoment = moments[i].moment;
-			} else if (currentMoment === moments[i].moment) {
-				arr[currentMomentIndex].push(moments[i]);
-			}else {
-				// Moment : new
-				currentMomentIndex++;
-				currentMoment = moments[i].moment;
-				arr[currentMomentIndex] = [];
-				arr[currentMomentIndex].push(moments[i]);
-			}
-		} else if (moments[i].kind === 3 && moments[i].moment !== null){
-				arr[currentMomentIndex].push(moments[i]);
-		}
-	}
-	return arr;
-}
-
-//----------------------------------------
-// Render Result Table Header
-//----------------------------------------
-function renderResultTableHeader(data)
-{
-	//console.log(data);
-		var str = "<thead>"
-		str += "<tr><th id='needMarking' style='text-align:right;'></th>";
-		for (var i = 0; i < data.length; i++) {
-				if ((data[i][0].kind === 3 && data[i][0].moment === null) || (data[i][0].kind === 4)) {
-					str += "<th style='border-left:2px solid white;'>";
-					str += data[i][0].entryname;
-					str += "</th>";
-				}
-		}
-		str += "</tr></thead>";
-		return str;
-}
-
-//----------------------------------------
-// Render Moment
-//----------------------------------------
-function renderMoment(data, userResults, userId, fname, lname)
-{
-	var str = "";
-	// Each of the section entries (i.e. moments)
-	for ( var j = 0; j < data.length; j++) {
-			str += "<td style='padding:0px;'>";
-
-			// There are results to display.
-			str += "<table width='100%' class='markinginnertable' >";
-			str += "<tr>";
-
-			if (data[j][0].kind === 3 && data[j][0] === null){
-					//str += renderStandaloneDugga(data[j][0], userResults);
-
-			} else if (data[j][0].kind === 4 && data[j][0] !== null && data[j][0].visible == 1) {
-						str += renderMomentChild(data[j][0], userResults, userId, fname, lname, 1);
-						str += "</tr><tr>";
-				for (var k = 1; k < data[j].length; k++){
-					if(data[j][k].visible == 1){
-						str += renderMomentChild(data[j][k], userResults, userId, fname, lname, 0);
-					}
-				}
-			} else {
-					alert("Malformed data!\nThe test may not have an existing moment");
-			}
-			str += "</tr>";
-			str += "</table>";
-			str += "</td>";
-	}
-	return str;
-
-}
-
-//----------------------------------------
-// Render Standalone Dugga
-//----------------------------------------
-function renderStandaloneDugga(data, userResults)
-{
-	var foundgrade = null;
-	var useranswer = null;
-	var submitted = null;
-	var marked = null;
-	var variant = null;
-	var studres = result[userId];
-
-	if (studres !== null) {
-		for (var l = 0; l < studres.length; l++) {
-			var resultitem = studres[l];
-			if (resultitem['moment'] === data.lid) {
-				// There is a result to print
-				foundgrade = resultitem['grade'];
-				useranswer = resultitem['useranswer'];
-				submitted = resultitem['submitted'];
-				marked = resultitem['marked'];
-				variant = resultitem['variant'];
-
-				if(submitted!==null) {
-					var t = submitted.split(/[- :]/);
-					submitted=new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
-				}
-				if(marked!==null) {
-					var tt = marked.split(/[- :]/);
-					marked=new Date(tt[0], tt[1]-1, tt[2], tt[3], tt[4], tt[5]);
-				}
-			}
-		}
-	}
-
-}
-
-//----------------------------------------
-// Render Moment child
-//----------------------------------------
-
-function renderMomentChild(dugga, userResults, userId, fname, lname, moment)
-{
-		var str = "";
-		var foundgrade = null;
-		var useranswer = null;
-		var submitted = null;
-		var marked = null;
-		var variant = null;
-		if (userResults !== undefined) {
-				for (var l = 0; l < userResults.length; l++) {
-						var resultitem = userResults[l];
-						if (resultitem.moment === dugga.lid) {
-								// There is a result to print
-								foundgrade = resultitem.grade;
-								useranswer = resultitem.useranswer;
-								submitted = resultitem.submitted;
-								marked = resultitem.marked;
-								variant = resultitem.variant	;
-
-								if(submitted!==null) {
-									var t = submitted.split(/[- :]/);
-									submitted=new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
-								}
-								if(marked!==null) {
-									var tt = marked.split(/[- :]/);
-									marked=new Date(tt[0], tt[1]-1, tt[2], tt[3], tt[4], tt[5]);
-								}
-						}
-				}
-		}
-
-		var zttr="";
-		if (moment){
-			zttr += '<div style="display:inline-block;min-width:95px">'
-		} else {
-			zttr += '<div style="min-width:95px">'
-		}
-		// If no result is found i.e. No Fist
-		if (foundgrade === null && useranswer === null && submitted === null) {
-			zttr += makeSelect(dugga.gradesystem, querystring['cid'], querystring['coursevers'], dugga.lid, userId, null, "I");
-		}else if (foundgrade !== null){
-			zttr += makeSelect(dugga.gradesystem, querystring['cid'], querystring['coursevers'], dugga['lid'], userId, foundgrade, "U");
-		}else {
-			zttr += makeSelect(dugga['gradesystem'], querystring['cid'], querystring['coursevers'], dugga['lid'], userId, null, "U");
-		}
-		if(useranswer!==null){
-			zttr += "<img id='korf' style='width:24px;height:24px;float:right;margin-right:8px;' src='../Shared/icons/FistV.png' onclick='clickResult(\"" + querystring['cid'] + "\",\"" + querystring['coursevers'] + "\",\"" + dugga.lid + "\",\"" + fname + "\",\"" + lname + "\",\"" + userId + "\",\"" + submitted + "\",\"" + marked + "\",\"" + foundgrade + "\",\"" + dugga.gradesystem + "\",\"" + dugga["lid"] + "\");' />";
-		}
-		zttr += '</div>'
-		// If no submission - white. If submitted and not marked or resubmitted U - yellow. If G or better, green. If U, pink. visited but not saved lilac
-		if(foundgrade===1 && submitted<marked){
-				yomama="background-color:#faa";
-		}else if(foundgrade>1){
-				yomama="background-color:#dfe";
-		}else if(variant!==null&&useranswer===null){
-				yomama="background-color:#F8E8F8";
-		}else if((useranswer!==null&&foundgrade===null)||(foundgrade===1&&submitted>marked)||(useranswer!==null&&foundgrade===0)){
-				yomama="background-color:#ffd";
-				needMarking++;
-		}else{
-				yomama="background-color:#fff";
-		}
-		if (moment){
-			str += "<td style='border-left:2px solid #dbd0d8;"+yomama+"' onmouseover='enterCell(this);' onmouseout='leaveCell(this);' colspan='0'>";
-		} else {
-			str += "<td style='border-left:2px solid #dbd0d8;"+yomama+"' onmouseover='enterCell(this);' onmouseout='leaveCell(this);'>";
-		}
-		str += "<div style=\"display:inline-block; overflow:hidden;\">"+dugga['entryname'] + "</div> ";
-		str +=zttr;
-		str += "</td>";
-		return str;
-}
-
-//----------------------------------------
 // Renderer
 //----------------------------------------
 
@@ -825,118 +674,32 @@ function returnedResults(data)
 		needMarking=0;
 
 		if (data['debug'] !== "NONE!") alert(data['debug']);
-
-		var showAll = false;
-		process();
+		/*		Add filter menu		*/
+		var filt ="";	
+		filt+='<td><span class="dropdown" onmouseover="hover();" style="color:#fff;font-size:24px;padding:3px;border:1px solid green;position:relative;z-index:9000;">'
+		filt+='<span>Filter duggas</span>'
+		filt+='<div id="dropdownc" style="padding:8px;width:300px;overflow:hidden;font-size:12px;z-index:8000;display:none;position:absolute;background:#fff;box-shadow:2px 2px 8px #000;">'
+		filt+='</div>'
+		filt+='</span></td>'
+		$("#menuHook").html(filt);
+		$(document).ready(function () {
+						$("#dropdownc").mouseleave(function () {
+								leave();
+						});
+		});
 		//console.log(students);
 		allData = data;
 	
 		if (allData['dugganame'] !== "") {
+			/*			Display student submission			*/
 				$.getScript(allData['dugganame'], function() {
 					$("#MarkCont").html(allData['duggapage']);
 					showFacit(allData['duggaparam'],allData['useranswer'],allData['duggaanswer'], allData['duggastats'], allData['files'],allData['moment'],allData['duggafeedback']);
 				});
 				$("#resultpopover").css("display", "block");
 		} else {
-	
-//				str+="<span><label>Show Teachers</label><input id='teacherFilter' type='checkbox' name='showAll' value='1' onchange='returnedResults(allData)'>";
-//				showAll = document.getElementById("teacherFilter").checked;
-				showAll=true;		    
-		    		   
-			 //console.log(students);
-				var strt ="<div id='upperDecker' style='z-index:1000;position:absolute;left:8px;'><table class='markinglist'>";
-				strt += "<thead class='markinglist'>";
-				strt += "<tr class='markinglist-header'><th><div id='froocht'>&nbsp;</div></th>";				
-				/*
-				var hd = daBomb[Object.keys(daBomb)[0]]; // Get one of the rows and use as template for headings
-				for (var umf in moments) {
-						strt += "<th colspan='"+Object.keys(moments[umf].duggas).length+"'>"+hd.moments[umf].name+"</th>";
-				}
-				strt += "</tr><tr class='markinglist-header'><th>&nbsp;</th>";
-				
-				var idx=0;
-				for (var umf in hd.moments) {
-						idx++;
-						for (var lumf in hd.moments[umf].duggas) {
-								strt += "<th class='dugga-result-subheader'><div id='header"+idx+"magic' class='dugga-result-subheader-div' title='"+hd.moments[umf].duggas[lumf].entryname+"'>"+hd.moments[umf].duggas[lumf].entryname+"</div></th>";
-						}
-				}
-				*/
-				strt += "</tr>";				
-				strt += "</thead><tbody></tbody></table></div><table id='needMarking' class='markinglist'>";				
-				strt += "<tr class='markinglist-header'><th><div>&nbsp;</div></th>";				
-				/*
-				hd = daBomb[Object.keys(daBomb)[0]]; // Get one of the rows and use as template for headings
-				for (var umf in hd.moments) {
-						strt += "<th colspan='"+Object.keys(hd.moments[umf].duggas).length+"'>"+hd.moments[umf].name+"</th>";
-				}*/
-				strt += "</tr><tr class='markinglist-header'><th>&nbsp;</th>";
-				var idx=0;
-				/*
-				for (var umf in hd.moments) {
-						idx++;
-						for (var lumf in hd.moments[umf].duggas) {
-								strt += "<th class='dugga-result-subheader'><div id='header"+idx+"' class='dugga-result-subheader-div' title='"+hd.moments[umf].duggas[lumf].entryname+"'>"+hd.moments[umf].duggas[lumf].entryname+"</div></th>";
-						}
-				}*/
-				strt += "</tr>";				
-				strt += "</thead><tbody>";				
-/*
-				for (i=0;i<students.length;i++) {
-						strt +="<tr><td>";
-						strt += "<div>"+entries.firstname+ " " +entries.lastname+ "</div>";
-						strt += "<div>"+entries.username+"</div>";
-						strt += "<div>"+entries.ssn+"</div>";
-						strt += "</td>";
-								for (j=0;j<students[i].length;j++){
-													strt += "<td class='result-data";
-													if  (students[i][j].kind === 4) {
-														strt += " dugga-moment"
-													}
-													// color based on pass,fail,pending,assigned,unassigned
-													if (students[i][j].result.grade === 1 && students[i][j].result.needMarking === false) {strt += " dugga-fail"}
-													else if (students[i][j].result.grade > 1) {strt += " dugga-pass"}
-													else if (students[i][j].result.variant !== null && students[i][j].result.userAnswer === null) {strt += " dugga-assigned"}
-													else if (students[i][j].result.needMarking === true) {strt += " dugga-pending"}
-													else {strt += " dugga-unassigned"}
-													strt += "'>";
-													strt += "<div class='gradeContainer'>";
-													if (students[i][j].ishere) strt += students[i][j].grade;
-												//	strt += makeSelect(u.moments[m].duggas[j].gradesystem, querystring['cid'], u.moments[m].duggas[j].vers, u.moments[m].duggas[j].lid, uid, null, u.moments[m].duggas[j].ukind);
-													strt += "</div>";
-													strt += "</td>";											
-									}
-								strt += "</tr>";							
-				}
-				strt += "</table>"
-				var slist = document.getElementById("content").innerHTML = strt;
-				*/
-/*
-				m = orderResults(allData['moments']);
-				str += "<table class='markinglist'>";
-				str += renderResultTableHeader(m);
-	
-				if (allData['entries'].length > 0) {
-						for ( i = 0; i < allData['entries'].length; i++) {
-								var user = allData['entries'][i];
-								if (user["role"]==="R" || showAll){
-									str += "<tr class='fumo'>";
-	
-									// One row for each student
-									str += "<td>";
-									str += user['firstname'] + " " + user['lastname'] + "<br/>" + user['username'] + "<br/>" + user['ssn'];
-									str += "</td>";
-									str += renderMoment(m, results[user['uid']], user['uid'], user['firstname'], user['lastname']);
-									str += "</tr>";
-								}
-						}
-				}
-				var slist = document.getElementById("content");
-				slist.innerHTML = str;
-				console.log("ajaxStart -> pre table:"+ (new Date() - ajaxStart));
-				document.getElementById("needMarking").innerHTML = "Students: " + allData['entries'].length + "<BR />Unmarked : " + needMarking;
-		    console.log("ajaxStart -> post table:"+ (new Date() - ajaxStart));
-				*/
+			/*			Process and render filtered data			*/
+			process();	
 		}
 
 

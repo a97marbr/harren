@@ -37,11 +37,6 @@ pdoConnect();
 		$resultedkind = true;
 		include '../Shared/navheader.php';
 	?>
-	<span class="dropdown" onmouseover="hover();" style="top:60px;padding:3px;border:1px solid green;position:relative;z-index:9000;">
-		<span>Mouse over me</span>
-		<div id="dropdownc" style="padding:8px;width:300px;overflow:hidden;z-index:8000;display:none;position:absolute;background:#fff;box-shadow:2px 2px 8px #000;">
-		</div>
-	</span>
 
 	<div id="content"></div>
 
