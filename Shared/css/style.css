@@ -1502,7 +1502,7 @@ input.large-button {
 
 .result-data {
     padding:0px;
-    min-width: 95px;
+    min-width: 140px;
 }
 
 .result-data-cell {
@@ -1609,4 +1609,12 @@ input.large-button {
 		overflow:hidden;
 		white-space:nowrap;
 		text-overflow:ellipsis;
+}
+.checkbox-dugga-moment {
+    font-weight: bold;
+    border-top: 1px solid #888;
+}
+.checkbox-dugga-hidden {
+  opacity:0.4;
+  font-style:italic;
 }
