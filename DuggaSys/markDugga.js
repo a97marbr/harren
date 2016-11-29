@@ -18,6 +18,7 @@ var students=new Array;
 var momtmp=new Array;
 var sortcolumn=1;
 var clickedindex;
+var typechanged=false;
 
 var entries;
 var moments;
@@ -159,16 +160,20 @@ function redrawtable()
 
 // Resort
 // Column number and sorting kind
-function resort(columnno,colkind)
+function resort(columnno)
 {
-		console.log(columnno+" "+colkind);
+		var sortdir = localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sortdir");
+		var colkind = localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sorttype");
+		if(sortdir === null) {sortdir=1}
+		if(colkind === null) {colkind=0}
+		console.log(columnno+" "+colkind + " " + sortdir);
 		if(columnno==0){
 			 if(colkind==0){
 					 students.sort(function compare(a,b){
 							 if(a[0].firstname>b[0].firstname){
-									 return 1;
+									 return sortdir;
 							 }else if(a[0].firstname<b[0].firstname){
-									 return -1;
+									 return -sortdir;
 							 }else{
 									 return 0;
 							 }
@@ -176,9 +181,9 @@ function resort(columnno,colkind)
 			 }else if(colkind==1){
 					 students.sort(function compare(a,b){
 							 if(a[0].lastname>b[0].lastname){
-									 return 1;
+									 return sortdir;
 							 }else if(a[0].lastname<b[0].lastname){
-									 return -1;
+									 return -sortdir;
 							 }else{
 									 return 0;
 							 }
@@ -186,9 +191,9 @@ function resort(columnno,colkind)
 			 }else{
 					 students.sort(function compare(a,b){
 							 if(a[0].ssn>b[0].ssn){
-									 return 1;
+									 return sortdir;
 							 }else if(a[0].ssn<b[0].ssn){
-									 return -1;
+									 return -sortdir;
 							 }else{
 									 return 0;
 							 }
@@ -198,7 +203,7 @@ function resort(columnno,colkind)
 			 // other columns sort by 
 			 // 0. unmarked or marked submitted date 
 			 // 1. grade
-			colkind = localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-type");
+			if (colkind===null){colkind=0;}
 			 sortcolumn=columnno;
 			 console.log(columnno+" "+colkind+" "+sortcolumn);
 			 if(colkind==0){
@@ -206,24 +211,24 @@ function resort(columnno,colkind)
 							 console.log(a[sortcolumn].marked+" "+b[sortcolumn].marked);
 							 if(a[sortcolumn].grade==""&&b[sortcolumn].grade==""){
 									 if(a[sortcolumn].marked>b[sortcolumn.marked]){
-											 return 1;
+											 return sortdir;
 									 }if(a[sortcolumn].marked>b[sortcolumn.marked]){
-											 return -1;									
+											 return -sortdir;									
 									 }else{
 											 return 0;
 									 }
 							 }else if(a[sortcolumn].grade!=""&&b[sortcolumn].grade!=""){
 									 if(a[sortcolumn].submitted>b[sortcolumn.submitted]){
-											 return 1;
+											 return sortdir;
 									 }if(a[sortcolumn].submitted>b[sortcolumn.submitted]){
-											 return -1;									
+											 return -sortdir;									
 									 }else{
 											 return 0;
 									 }
 							 }else if(a[sortcolumn].grade==""&&b[sortcolumn].grade!=""){
-									 return -1;
+									 return -sortdir;
 							 }else if(a[sortcolumn].grade!=""&&b[sortcolumn].grade==""){
-									 return 1;
+									 return sortdir;
 							 }else{
 									 return 0
 							 }
@@ -231,9 +236,9 @@ function resort(columnno,colkind)
 			 }else{
 					 students.sort(function compare(a,b){
 							 if(a[sortcolumn].grade>b[sortcolumn].grade){		  				
-									 return 1;
+									 return sortdir;
 							 }else if(a[sortcolumn].grade<b[sortcolumn].grade){
-									 return -1;
+									 return -sortdir;
 							 }else{
 									 return 0;
 							 }
@@ -247,7 +252,7 @@ function resort(columnno,colkind)
 function process()
 {			
 	console.log("process");
-		
+			
 	// Read dropdown from local storage
 	clist=localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-checkees");
 	if (clist){	
@@ -334,30 +339,46 @@ function process()
 		document.getElementById("dropdownc").innerHTML=dstr;	
 		
 		var dstr="";
-		dstr+="<div style='border-bottom:1px solid #888'><input type='checkbox' class='headercheck'><label class='headerlabel'>Asc : date</label></div>";
-		dstr+="<div ><input name='sorty' type='radio' class='headercheck' id='resort(0,0)'><label class='headerlabel' for='resort(0,0)' >Firstname</label></div>";
-		dstr+="<div ><input name='sorty' type='radio' class='headercheck' id='resort(0,1)'><label class='headerlabel' for='resort(0,1)' >Lastname</label></div>";
-		dstr+="<div style='border-bottom:1px solid #888;' ><input name='sorty' type='radio' class='headercheck' id='resort(0,2)'><label class='headerlabel' for='resort(0,2)' >SSN</label></div>";
-
+		dstr+="<div style='border-bottom:1px solid #888'><input type='radio' class='headercheck' name='sortdir' value='1' id='sortdir1'><label class='headerlabel' for='sortdir0'>Sort ascending</label><input name='sortdir' type='radio' class='headercheck' value='-1' id='sortdir-1'><label class='headerlabel' for='sortdir-1'>Sort descending</label></div>";
+		dstr+="<div ><input name='sortcol' type='radio' class='sortradio' onclick='sorttype(0)' value='0' id='sortcol0_0'><label class='headerlabel' for='sortcol0_0' >Firstname</label></div>";
+		dstr+="<div ><input name='sortcol' type='radio' class='sortradio' onclick='sorttype(1)' value='0' id='sortcol0_1'><label class='headerlabel' for='sortcol0_1' >Lastname</label></div>";
+		dstr+="<div style='border-bottom:1px solid #888;' ><input name='sortcol' type='radio' class='sortradio' onclick='sorttype(2)' value='0' id='sortcol0_2'><label class='headerlabel' for='sortcol0_2' >SSN</label></div>";
 
 		dstr+="<table><tr><td>";
-		for(var j=0;j<moments.length;j++){
+		for(var j=1;j<moments.length;j++){
 				var lid=moments[j].lid;
 				var name=moments[j].entryname;
 
 				dstr+="<div class='";				
 				if (moments[j].visible == 0){
-						dstr+="checkbox-dugga-hidden'><input name='sorty' type='radio' class='headercheck' id='resort("+(j+1)+",0)' onclick='resort("+(j+1)+",0)'><label class='headerlabel' for='resort("+(j+1)+",0)' >"+name+"</label></div>";
+						dstr+="checkbox-dugga-hidden'><input name='sortcol' type='radio' class='sortradio' onclick='sorttype(0)' id='sortcol"+j+"' value='"+j+"'><label class='headerlabel' for='sortcol"+j+"' >"+name+"</label></div>";
 				}else{
-						dstr+="'><input name='sorty' type='radio' class='headercheck' id='resort("+(j+1)+",0)' onclick='resort("+(j+1)+",0)'><label class='headerlabel' for='resort("+(j+1)+",0)' >"+name+"</label></div>";
+						dstr+="'><input name='sortcol' type='radio' class='sortradio' id='sortcol"+j+"' onclick='sorttype(0)' value='"+j+"'><label class='headerlabel' for='sortcol"+j+"' >"+name+"</label></div>";
 				}
 		}
 		dstr+="</td><td style='vertical-align:top;'>";
-		dstr+="<div><input name='sortysort' type='radio' class='headercheck' onclick='sorttype(0)'><label class='headerlabel' for='resort(0,1)' >Date</label></div>";
-		dstr+="<div><input name='sortysort' type='radio' class='headercheck' onclick='sorttype(1)'><label class='headerlabel' for='resort(0,2)' >Grade</label></div>";
+		dstr+="<div><input name='sorttype' type='radio' class='sortradio' onclick='sorttype(0)' id='sorttype0' value='0'><label class='headerlabel' for='sorttype0' >Date</label></div>";
+		dstr+="<div><input name='sorttype' type='radio' class='sortradio' onclick='sorttype(1)' id='sorttype1' value='1'><label class='headerlabel' for='sorttype1' >Grade</label></div>";
 		dstr+="</td></tr></table>";
 		dstr+="<div style='display:flex;justify-content:flex-end;border-top:1px solid #888'><button onclick='leave()'>Filter</button></div>"
 		document.getElementById("dropdowns").innerHTML=dstr;	
+		
+		// Read sorting config from localStorage	
+		var dir=localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sortdir");
+		if (dir === null){dir=1;}
+		$("#sortdir"+dir).prop("checked", true);
+		var type=localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sorttype");
+		var col=localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sortcol");
+		if (type === null){type=0;}
+		if (col === null){col=0;}
+		if (col == 0) {				
+				$("#sortcol0_"+type).prop("checked", true);
+		} else {
+				$("#sortcol"+col).prop("checked", true);
+				$("#sorttype"+type).prop("checked", true);
+		}
+		//console.log("ls: "+dir + " " + col + " " + type);
+		resort(col);
 		
 	console.log(performance.now()-tim);
 }
@@ -393,23 +414,36 @@ function leaves()
 {
 	console.log("LeaveS");
 	$('#dropdowns').css('display','none'); 
+	var col=0;
+	var type=0;
+	var dir=1;
+	var ocol=localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sortcol");
+	var odir=localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sortdir"); 
 	
-	// Update columns only now
-	/*
-	var str="";
-	$(".headercheck").each(function(){
-			str+=$(this).attr("id")+"**"+$(this).is(':checked')+"**";
-	});
+	type = localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sorttype");
+	if (type === null){type=0;}
 	
-	old=localStorage.getItem(querystring['cid']+"-"+querystring['coursevers']+"-checkees");
-	localStorage.setItem(querystring['cid']+"-"+querystring['coursevers']+"-checkees",str);
+	$("input[name='sortcol']:checked").each(function() {col=this.value;});
+	$("input[name='sortdir']:checked").each(function() {dir=this.value;});
 
-	if(str!=old) process();
-	*/
+	localStorage.setItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sorttype", type);
+	localStorage.setItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sortcol", col);
+	localStorage.setItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sortdir", dir);
+	//console.log(ocol+" "+col +" "+ odir+" "+dir + " " + typechanged);
+	if (!(ocol==col && odir==dir) || typechanged) {typechanged=false; resort(col);}
 }
 
 function sorttype(t){
 		localStorage.setItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sorttype",t);
+		typechanged=true;
+		
+		// See if we should change the radio button for sorttype
+		var col=$("input[name='sortcol']:checked").val();
+		if (col == 0){
+				$("input[name='sorttype'").prop("checked", false);
+		} else {
+				$("#sorttype"+t).prop("checked", true);
+		}
 }
 
 function setup(){
