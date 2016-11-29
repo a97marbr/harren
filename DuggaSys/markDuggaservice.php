@@ -415,8 +415,13 @@ foreach($query->fetchAll() as $row) {
 
 if (sizeof($files) === 0) {$files = (object)array();} // Force data type to be object
 
-$serviceTime = microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"];
-$benchmark =  array('totalServiceTime' => $serviceTime);
+if(isset($_SERVER["REQUEST_TIME_FLOAT"])){
+		$serviceTime = microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"];	
+		$benchmark =  array('totalServiceTime' => $serviceTime);
+}else{
+		$benchmark="-1";
+}
+
 $array = array(
 	'entries' => $entries,
 	'moments' => $gentries,

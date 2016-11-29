@@ -66,10 +66,10 @@ function redrawtable()
 				// Make second header row!
 				for(var j=0;j<momtmp.length;j++){
 						if(momtmp[j].kind==3){
-								str+="<th class='result-header dugga-result-subheadermagic'><div id='header"+j+"magic' class='dugga-result-subheader-div' title='"+momtmp[j].entryname+"'>"+momtmp[j].entryname+" [ <span onclick='resort("+(j+1)+",0)' style='cursor:pointer'>S</span> ] / [ <span onclick='resort("+(j+1)+",1)' style='cursor:pointer'>G</span> ]</div></th>"													
+								str+="<th class='result-header dugga-result-subheadermagic'><div id='header"+j+"magic' class='dugga-result-subheader-div' title='"+momtmp[j].entryname+"'>"+momtmp[j].entryname+"</div></th>"													
 						}else{
 								//str+="<th class='result-header dugga-result-subheadermagic'>Course part grade</th>"								
-								str+="<th class='result-header dugga-result-subheadermagic'><div id='header"+j+"magic' class='dugga-result-subheader-div' title='Course part grade'>Course part grade [ <span onclick='resort("+(j+1)+",0)' style='cursor:pointer'>S</span> ] / [ <span onclick='resort("+(j+1)+",1)' style='cursor:pointer'>G</span> ]</div></th>"													
+								str+="<th class='result-header dugga-result-subheadermagic'><div id='header"+j+"magic' class='dugga-result-subheader-div' title='Course part grade'>Course part</div></th>"													
 						}
 				}
 				str+="</tr>";
@@ -84,7 +84,7 @@ function redrawtable()
 		str+="<tr class='markinglist-header'>";
 
 		str+="<th colspan='1' id='needMarking' class='result-header' rowspan='2'>";
-		str+=" [ <span onclick='resort(0,0)' style='cursor:pointer'>First</span> ] / [ <span onclick='resort(0,1)' style='cursor:pointer'>Last</span> ] / [ <span onclick='resort(0,2)' style='cursor:pointer'>SSN</span> ]";
+		str+="";
 		str+="</th>";
 
 		if (momtmp.length > 0){
@@ -105,9 +105,9 @@ function redrawtable()
 				// Make second header row!
 				for(var j=0;j<momtmp.length;j++){
 						if(momtmp[j].kind==3){
-								str+="<th class='result-header dugga-result-subheader' id='header"+j+"'><div class='dugga-result-subheader-div' title='"+momtmp[j].entryname+"'>"+momtmp[j].entryname+" [ <span onclick='resort("+(j+1)+",0)' style='cursor:pointer'>S</span> ] / [ <span onclick='resort("+(j+1)+",1)' style='cursor:pointer'>G</span> ]</div></th>"													
+								str+="<th class='result-header dugga-result-subheader' id='header"+j+"'><div class='dugga-result-subheader-div' title='"+momtmp[j].entryname+"'>"+momtmp[j].entryname+"</div></th>"													
 						}else{
-								str+="<th class='result-header dugga-result-subheader' id='header"+j+"'><div class='dugga-result-subheader-div' title='Course part grade'>Course part grade [ <span onclick='resort("+(j+1)+",0)' style='cursor:pointer'>S</span> ] / [ <span onclick='resort("+(j+1)+",1)' style='cursor:pointer'>G</span> ]</div></th>"								
+								str+="<th class='result-header dugga-result-subheader' id='header"+j+"'><div class='dugga-result-subheader-div' title='Course part grade'>Course part</div></th>"								
 						}
 				}
 				str+="</tr></thead><tbody>";
@@ -162,7 +162,7 @@ function redrawtable()
 function resort(columnno,colkind)
 {
 		console.log(columnno+" "+colkind);
-	 if(columnno==0){
+		if(columnno==0){
 			 if(colkind==0){
 					 students.sort(function compare(a,b){
 							 if(a[0].firstname>b[0].firstname){
@@ -198,6 +198,7 @@ function resort(columnno,colkind)
 			 // other columns sort by 
 			 // 0. unmarked or marked submitted date 
 			 // 1. grade
+			colkind = localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-type");
 			 sortcolumn=columnno;
 			 console.log(columnno+" "+colkind+" "+sortcolumn);
 			 if(colkind==0){
@@ -248,7 +249,7 @@ function process()
 	console.log("process");
 		
 	// Read dropdown from local storage
-	clist=localStorage.getItem(querystring['cid']+"-"+querystring['coursevers']+"-checkees");
+	clist=localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-checkees");
 	if (clist){	
 			clist=clist.split("**"); 
 	} 
@@ -329,22 +330,72 @@ function process()
 				dstr+=">"+name+"</label></div>";
 		}
 		dstr+="<div style='display:flex;justify-content:flex-end;border-top:1px solid #888'><button onclick='leave()'>Filter</button></div>"
+
 		document.getElementById("dropdownc").innerHTML=dstr;	
+		
+		var dstr="";
+		dstr+="<div style='border-bottom:1px solid #888'><input type='checkbox' class='headercheck'><label class='headerlabel'>Asc : date</label></div>";
+		dstr+="<div ><input name='sorty' type='radio' class='headercheck' id='resort(0,0)'><label class='headerlabel' for='resort(0,0)' >Firstname</label></div>";
+		dstr+="<div ><input name='sorty' type='radio' class='headercheck' id='resort(0,1)'><label class='headerlabel' for='resort(0,1)' >Lastname</label></div>";
+		dstr+="<div style='border-bottom:1px solid #888;' ><input name='sorty' type='radio' class='headercheck' id='resort(0,2)'><label class='headerlabel' for='resort(0,2)' >SSN</label></div>";
+
+
+		dstr+="<table><tr><td>";
+		for(var j=0;j<moments.length;j++){
+				var lid=moments[j].lid;
+				var name=moments[j].entryname;
+
+				dstr+="<div class='";				
+				if (moments[j].visible == 0){
+						dstr+="checkbox-dugga-hidden'><input name='sorty' type='radio' class='headercheck' id='resort("+(j+1)+",0)' onclick='resort("+(j+1)+",0)'><label class='headerlabel' for='resort("+(j+1)+",0)' >"+name+"</label></div>";
+				}else{
+						dstr+="'><input name='sorty' type='radio' class='headercheck' id='resort("+(j+1)+",0)' onclick='resort("+(j+1)+",0)'><label class='headerlabel' for='resort("+(j+1)+",0)' >"+name+"</label></div>";
+				}
+		}
+		dstr+="</td><td style='vertical-align:top;'>";
+		dstr+="<div><input name='sortysort' type='radio' class='headercheck' onclick='sorttype(0)'><label class='headerlabel' for='resort(0,1)' >Date</label></div>";
+		dstr+="<div><input name='sortysort' type='radio' class='headercheck' onclick='sorttype(1)'><label class='headerlabel' for='resort(0,2)' >Grade</label></div>";
+		dstr+="</td></tr></table>";
+		dstr+="<div style='display:flex;justify-content:flex-end;border-top:1px solid #888'><button onclick='leave()'>Filter</button></div>"
+		document.getElementById("dropdowns").innerHTML=dstr;	
 		
 	console.log(performance.now()-tim);
 }
 
-function hover()
+function hoverc()
 {
 	$('#dropdownc').css('display','block');
 }
 
-function leave()
+function leavec()
 {
-	console.log("Leave");
+	console.log("LeaveC");
 	$('#dropdownc').css('display','none'); 
 	
 	// Update columns only now
+	var str="";
+	$(".headercheck").each(function(){
+			str+=$(this).attr("id")+"**"+$(this).is(':checked')+"**";
+	});
+	
+	old=localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-checkees");
+	localStorage.setItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-checkees",str);
+
+	if(str!=old) process();
+}
+
+function hovers()
+{
+	$('#dropdowns').css('display','block');
+}
+
+function leaves()
+{
+	console.log("LeaveS");
+	$('#dropdowns').css('display','none'); 
+	
+	// Update columns only now
+	/*
 	var str="";
 	$(".headercheck").each(function(){
 			str+=$(this).attr("id")+"**"+$(this).is(':checked')+"**";
@@ -354,8 +405,12 @@ function leave()
 	localStorage.setItem(querystring['cid']+"-"+querystring['coursevers']+"-checkees",str);
 
 	if(str!=old) process();
+	*/
 }
 
+function sorttype(t){
+		localStorage.setItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sorttype",t);
+}
 
 function setup(){
 	console.log("setup");
@@ -664,15 +719,27 @@ function returnedResults(data)
 		if (data['debug'] !== "NONE!") alert(data['debug']);
 		/*		Add filter menu		*/
 		var filt ="";	
-		filt+='<td><span class="dropdown" onmouseover="hover();" style="color:#fff;font-size:24px;padding:3px;border:1px solid green;position:relative;z-index:9000;">'
-		filt+='<span>Filter duggas</span>'
-		filt+='<div id="dropdownc" style="padding:8px;width:300px;overflow:hidden;font-size:12px;z-index:8000;display:none;position:absolute;background:#fff;box-shadow:2px 2px 8px #000;">'
-		filt+='</div>'
-		filt+='</span></td>'
+		filt+="<td><span class='dropdown' onmouseover='hoverc();' style='position:relative;z-index:9000;'>";
+		filt+="<img class='navButt' src='../Shared/icons/tratt_white.svg'>";
+		filt+="<div id='dropdownc' style='padding:8px;width:300px;overflow:hidden;font-size:12px;z-index:8000;display:none;position:absolute;background:#fff;box-shadow:2px 2px 8px #000;'>";
+		filt+="</div>";
+		filt+="</span></td>";
+
+		filt+="<td><span class='dropdown' onmouseover='hovers();' style='position:relative;z-index:9000;'>";
+		filt+="<img class='navButt' src='../Shared/icons/sort_white.svg'>";
+		filt+="<div id='dropdowns' style='padding:8px;width:300px;overflow:hidden;font-size:12px;z-index:8000;display:none;position:absolute;background:#fff;box-shadow:2px 2px 8px #000;'>";
+		filt+="</div>";
+		filt+="</span></td>";
+
 		$("#menuHook").html(filt);
 		$(document).ready(function () {
 						$("#dropdownc").mouseleave(function () {
-								leave();
+								leavec();
+						});
+		});
+		$(document).ready(function () {
+						$("#dropdowns").mouseleave(function () {
+								leaves();
 						});
 		});
 		//console.log(students);

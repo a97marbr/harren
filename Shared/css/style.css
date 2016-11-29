@@ -1604,8 +1604,8 @@ input.large-button {
 .dugga-result-subheader-div
 {
 		direction:rtl;
-		/*max-width:140px;*/
-		min-width:100px;
+		max-width:140px;
+		min-width:140px;
 		overflow:hidden;
 		white-space:nowrap;
 		text-overflow:ellipsis;
