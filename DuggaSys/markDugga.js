@@ -28,7 +28,7 @@ var tim;
 
 function redrawtable()
 {
-		console.log(momtmp);
+		//console.log(momtmp);
 		//console.log(students);
 		
 		// Redraw table
@@ -66,10 +66,10 @@ function redrawtable()
 				// Make second header row!
 				for(var j=0;j<momtmp.length;j++){
 						if(momtmp[j].kind==3){
-								str+="<th class='result-header dugga-result-subheadermagic'><div id='header"+j+"magic' class='dugga-result-subheader-div' title='"+momtmp[j].entryname+"'>"+momtmp[j].entryname+"</div></th>"													
+								str+="<th class='result-header dugga-result-subheadermagic'><div id='header"+j+"magic' class='dugga-result-subheader-div' title='"+momtmp[j].entryname+"'>"+momtmp[j].entryname+" [ <span onclick='resort("+(j+1)+",0)' style='cursor:pointer'>S</span> ] / [ <span onclick='resort("+(j+1)+",1)' style='cursor:pointer'>G</span> ]</div></th>"													
 						}else{
 								//str+="<th class='result-header dugga-result-subheadermagic'>Course part grade</th>"								
-								str+="<th class='result-header dugga-result-subheadermagic'><div id='header"+j+"magic' class='dugga-result-subheader-div' title='Course part grade'>Course part grade</div></th>"													
+								str+="<th class='result-header dugga-result-subheadermagic'><div id='header"+j+"magic' class='dugga-result-subheader-div' title='Course part grade'>Course part grade [ <span onclick='resort("+(j+1)+",0)' style='cursor:pointer'>S</span> ] / [ <span onclick='resort("+(j+1)+",1)' style='cursor:pointer'>G</span> ]</div></th>"													
 						}
 				}
 				str+="</tr>";
@@ -83,8 +83,8 @@ function redrawtable()
 		str+="<thead>";
 		str+="<tr class='markinglist-header'>";
 
-		str+="<th colspan='1' id='needMarking' class='result-header text-right' rowspan='2'>";
-		str+="Students: 40<br>Unmarked : 25";
+		str+="<th colspan='1' id='needMarking' class='result-header' rowspan='2'>";
+		str+=" [ <span onclick='resort(0,0)' style='cursor:pointer'>First</span> ] / [ <span onclick='resort(0,1)' style='cursor:pointer'>Last</span> ] / [ <span onclick='resort(0,2)' style='cursor:pointer'>SSN</span> ]";
 		str+="</th>";
 
 		if (momtmp.length > 0){
@@ -105,9 +105,9 @@ function redrawtable()
 				// Make second header row!
 				for(var j=0;j<momtmp.length;j++){
 						if(momtmp[j].kind==3){
-								str+="<th class='result-header dugga-result-subheader' id='header"+j+"'><div class='dugga-result-subheader-div' title='"+momtmp[j].entryname+"'>"+momtmp[j].entryname+"</div></th>"													
+								str+="<th class='result-header dugga-result-subheader' id='header"+j+"'><div class='dugga-result-subheader-div' title='"+momtmp[j].entryname+"'>"+momtmp[j].entryname+" [ <span onclick='resort("+(j+1)+",0)' style='cursor:pointer'>S</span> ] / [ <span onclick='resort("+(j+1)+",1)' style='cursor:pointer'>G</span> ]</div></th>"													
 						}else{
-								str+="<th class='result-header dugga-result-subheader' id='header"+j+"'><div class='dugga-result-subheader-div' title='Course part grade'>Course part grade</div></th>"								
+								str+="<th class='result-header dugga-result-subheader' id='header"+j+"'><div class='dugga-result-subheader-div' title='Course part grade'>Course part grade [ <span onclick='resort("+(j+1)+",0)' style='cursor:pointer'>S</span> ] / [ <span onclick='resort("+(j+1)+",1)' style='cursor:pointer'>G</span> ]</div></th>"								
 						}
 				}
 				str+="</tr></thead><tbody>";
@@ -161,6 +161,7 @@ function redrawtable()
 // Column number and sorting kind
 function resort(columnno,colkind)
 {
+		console.log(columnno+" "+colkind);
 	 if(columnno==0){
 			 if(colkind==0){
 					 students.sort(function compare(a,b){
@@ -385,7 +386,6 @@ function magicHeading()
 		$(".dugga-result-subheader").each(function(){
 				var elemid=$(this).attr('id');
 				var elemwidth=$(this).width();
-				console.log(elemid + " " + elemwidth);
 				$("#"+elemid+"magic").css("width",elemwidth+"px");
 				
 		});
