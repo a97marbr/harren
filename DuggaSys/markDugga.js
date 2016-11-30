@@ -286,26 +286,18 @@ function resort()
 							});				
 						}	else if(colkind2==4){
 							 students.sort(function compare(a,b){
-									 if(a[sortcolumn].grade==""&&b[sortcolumn].grade==""){
-											 if(a[sortcolumn].marked>b[sortcolumn.marked]){
+									 if(a[sortcolumn].needMarking==true&&b[sortcolumn].needMarking==true){
+											 if(a[sortcolumn].submitted<b[sortcolumn].submitted){
 													 return sortdir;
-											 }if(a[sortcolumn].marked>b[sortcolumn.marked]){
+											 }if(a[sortcolumn].submitted>b[sortcolumn].submitted){
 													 return -sortdir;									
 											 }else{
 													 return 0;
 											 }
-									 }else if(a[sortcolumn].grade!=""&&b[sortcolumn].grade!=""){
-											 if(a[sortcolumn].submitted>b[sortcolumn.submitted]){
-													 return sortdir;
-											 }if(a[sortcolumn].submitted>b[sortcolumn.submitted]){
-													 return -sortdir;									
-											 }else{
-													 return 0;
-											 }
-									 }else if(a[sortcolumn].grade==""&&b[sortcolumn].grade!=""){
+									 }else if(a[sortcolumn].needMarking==true&&b[sortcolumn].needMarking==false){
+												return sortdir;
+									 }if (a[sortcolumn].needMarking==false&&b[sortcolumn].needMarking==true){
 											 return -sortdir;
-									 }else if(a[sortcolumn].grade!=""&&b[sortcolumn].grade==""){
-											 return sortdir;
 									 }else{
 											 return 0
 									 }
@@ -450,7 +442,7 @@ function process()
 		dstr+="<div class='checkbox-dugga checknarrow' ><input name='sorttype' type='radio' class='sortradio' onclick='sorttype(1)' id='sorttype1' value='1'><label class='headerlabel' for='sorttype1' >Grade</label></div>";
 		dstr+="<div class='checkbox-dugga checknarrow' ><input name='sorttype' type='radio' class='sortradio' onclick='sorttype(2)' id='sorttype2' value='2'><label class='headerlabel' for='sorttype2' >Submitted</label></div>";
 		dstr+="<div class='checkbox-dugga checknarrow' ><input name='sorttype' type='radio' class='sortradio' onclick='sorttype(3)' id='sorttype3' value='3'><label class='headerlabel' for='sorttype3' >Marked</label></div>";
-		dstr+="<div class='checkbox-dugga checknarrow' ><input name='sorttype' type='radio' class='sortradio' onclick='sorttype(4)' id='sorttype4' value='4'><label class='headerlabel' for='sorttype4' >Umph</label></div>";
+		dstr+="<div class='checkbox-dugga checknarrow' ><input name='sorttype' type='radio' class='sortradio' onclick='sorttype(4)' id='sorttype4' value='4'><label class='headerlabel' for='sorttype4' >FIFO</label></div>";
 		dstr+="<div class='checkbox-dugga checknarrow' ><input name='sorttype' type='radio' class='sortradio' onclick='sorttype(5)' id='sorttype5' value='5'><label class='headerlabel' for='sorttype5' >Doah</label></div>";
 		dstr+="</td></tr></table>";
 		dstr+="<div style='display:flex;justify-content:flex-end;border-top:1px solid #888'><button onclick='leaves()'>Filter</button></div>"
