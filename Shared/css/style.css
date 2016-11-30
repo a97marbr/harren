@@ -1641,9 +1641,20 @@ input.large-button {
 }
 .headerlabel {
     color: #000;
+    direction: rtl;
+    max-width: 140px;
+    min-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .U, .Uc, .Uh, .G, .Gc, .Gh, .VG, .VGc, .VGh  {
     height:24px;
     width:24px;
+}
+
+.result-header-inverse {
+    background-color: #fff !important;
+    color:#614875 !important;
 }

@@ -84,7 +84,7 @@ function redrawtable()
 		str+="<thead>";
 		str+="<tr class='markinglist-header'>";
 
-		str+="<th colspan='1' id='needMarking' class='result-header' rowspan='2'>";
+		str+="<th colspan='1' id='needMarking' class='result-header'>";
 		str+="";
 		str+="</th>";
 
@@ -106,11 +106,12 @@ function redrawtable()
 				str+="</tr><tr class='markinglist-header'>";
 
 				// Make second header row!
+				str+="<th class='result-header dugga-result-subheader' id='header0'><div class='dugga-result-subheader-div' title='Firstname/Lastname/SSN'>Fname/Lname/SSN</div></th>"	
 				for(var j=0;j<momtmp.length;j++){
 						if(momtmp[j].kind==3){
-								str+="<th class='result-header dugga-result-subheader' id='header"+j+"'><div class='dugga-result-subheader-div' title='"+momtmp[j].entryname+"'>"+momtmp[j].entryname+"</div></th>"													
+								str+="<th class='result-header dugga-result-subheader' id='header"+(j+1)+"'><div class='dugga-result-subheader-div' title='"+momtmp[j].entryname+"'>"+momtmp[j].entryname+"</div></th>"													
 						}else{
-								str+="<th class='result-header dugga-result-subheader' id='header"+j+"'><div class='dugga-result-subheader-div' title='Course part grade'>Course part</div></th>"								
+								str+="<th class='result-header dugga-result-subheader' id='header"+(j+1)+"'><div class='dugga-result-subheader-div' title='Course part grade'>Course part</div></th>"								
 						}
 				}
 				str+="</tr></thead><tbody>";
@@ -129,8 +130,8 @@ function redrawtable()
 										// color based on pass,fail,pending,assigned,unassigned
 										if (student[j].grade === 1 && student[j].needMarking === false) {str += " dugga-fail"}
 										else if (student[j].grade > 1) {str += " dugga-pass"}
-										else if (student[j].grade === 0 /*&& student[j].userAnswer === null*/) {str += " dugga-assigned"}
 										else if (student[j].needMarking === true) {str += " dugga-pending"}
+										else if (student[j].grade === 0 /*&& student[j].userAnswer === null*/) {str += " dugga-assigned"}
 										else {str += " dugga-unassigned"}
 										str += "'>";
 										str += "<div class='gradeContainer";
@@ -149,7 +150,7 @@ function redrawtable()
 										}
 										str +="' src='../Shared/icons/FistV.png' onclick='clickResult(\"" + querystring['cid'] + "\",\"" + student[j].vers + "\",\"" + student[j].lid + "\",\"" + student[0].firstname + "\",\"" + student[0].lastname + "\",\"" + student[j].uid + "\",\"" + student[j].submitted + "\",\"" + student[j].marked + "\",\"" + student[j].grade + "\",\"" + student[j].gradeSystem + "\",\"" + student[j].lid + "\");' />";
 										str += "</div>";
-										str += "<div>" + student[j].submitted + "</div>"
+										str += "<div>" + student[j].submitted + " " +student[j].needMarking  +"</div>"
 										str += "</td>";											
 
 								}
@@ -167,13 +168,17 @@ function resort()
 {
 		// Read sorting config from localStorage	
 		var sortdir=localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sortdir");
-		if (sortdir === null){dir=1;}
+		if (sortdir === null || sortdir === undefined){dir=1;}
 		$("#sortdir"+sortdir).prop("checked", true);
-		var colkind=localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sorttype");
 		var columno=localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sortcol");
-		if (colkind === null){colkind=0;}
-		if (columno === null){columno=0;}
+		if (columno === null || columno === undefined ){columno=0;}
+		var colkind=localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sort1");
+		if (colkind == null || colkind == undefined){colkind=0;}
+		var colkind2=localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sort2");
+		if (colkind2 == null || colkind2 == undefined){colkind2=0;}			
 		
+		console.log("col:"+columno+" type:"+colkind+" type2:"+colkind2+" dir:"+sortdir);
+
 		if (students.length > 0) {
 					
 				if(columno < students[0].length){
@@ -182,7 +187,7 @@ function resort()
 								$("#sortcol0_"+colkind).prop("checked", true);
 						} else {
 								$("#sortcol"+columno).prop("checked", true);
-								$("#sorttype"+colkind).prop("checked", true);
+								$("#sorttype"+colkind2).prop("checked", true);								
 						}
 				
 						if(columno==0){
@@ -217,54 +222,111 @@ function resort()
 											 }
 									 });
 							 }
-					 }else{
-							 // other columns sort by 
-							 // 0. unmarked or marked submitted date 
-							 // 1. grade
-							if (colkind===null){colkind=0;}
-							 sortcolumn=columno;
-							 if(colkind==0){
-									 students.sort(function compare(a,b){
-											 console.log(a[sortcolumn].marked+" "+b[sortcolumn].marked);
-											 if(a[sortcolumn].grade==""&&b[sortcolumn].grade==""){
-													 if(a[sortcolumn].marked>b[sortcolumn.marked]){
-															 return sortdir;
-													 }if(a[sortcolumn].marked>b[sortcolumn.marked]){
-															 return -sortdir;									
-													 }else{
-															 return 0;
-													 }
-											 }else if(a[sortcolumn].grade!=""&&b[sortcolumn].grade!=""){
-													 if(a[sortcolumn].submitted>b[sortcolumn.submitted]){
-															 return sortdir;
-													 }if(a[sortcolumn].submitted>b[sortcolumn.submitted]){
-															 return -sortdir;									
-													 }else{
-															 return 0;
-													 }
-											 }else if(a[sortcolumn].grade==""&&b[sortcolumn].grade!=""){
-													 return -sortdir;
-											 }else if(a[sortcolumn].grade!=""&&b[sortcolumn].grade==""){
+							}else{
+							// other columns sort by 
+							// 0. unmarked or marked submitted date 
+							// 1. grade
+							if (colkind2===null){colkind2=0;}
+							sortcolumn=columno;
+							if(colkind2==0){
+							students.sort(function compare(a,b){
+								 if(a[sortcolumn].grade==""&&b[sortcolumn].grade==""){
+										 if(a[sortcolumn].marked>b[sortcolumn].marked){
+												 return sortdir;
+										 }if(a[sortcolumn].marked<b[sortcolumn].marked){
+												 return -sortdir;									
+										 }else{
+												 return 0;
+										 }
+								 }else if(a[sortcolumn].grade!=""&&b[sortcolumn].grade!=""){
+										 if(a[sortcolumn].submitted>b[sortcolumn].submitted){
+												 return sortdir;
+										 }if(a[sortcolumn].submitted<b[sortcolumn].submitted){
+												 return -sortdir;									
+										 }else{
+												 return 0;
+										 }
+								 }else if(a[sortcolumn].grade==""&&b[sortcolumn].grade!=""){
+										 return -sortdir;
+								 }else if(a[sortcolumn].grade!=""&&b[sortcolumn].grade==""){
+										 return sortdir;
+								 }else{
+										 return 0
+								 }
+							});				
+						} else if(colkind2==1){
+							students.sort(function compare(a,b){
+									if(a[sortcolumn].grade>b[sortcolumn].grade){		  				
+											return sortdir;
+									}else if(a[sortcolumn].grade<b[sortcolumn].grade){
+											return -sortdir;
+									}else{
+											return 0;
+									}
+							});				
+						} else if(colkind2==2){
+							students.sort(function compare(a,b){ 										
+									if(a[sortcolumn].submitted>b[sortcolumn].submitted){
+											return sortdir;
+									}else if(a[sortcolumn].submitted<b[sortcolumn].submitted){
+											return -sortdir;									
+									}else{
+											return 0;
+									}
+							});				
+						}	else if(colkind2==3){
+							students.sort(function compare(a,b){ 											 
+									if(a[sortcolumn].marked>b[sortcolumn].marked){
+											return sortdir;
+									}else if(a[sortcolumn].marked<b[sortcolumn].marked){
+											return -sortdir;									
+									}else{
+											return 0;
+									}
+							});				
+						}	else if(colkind2==4){
+							 students.sort(function compare(a,b){
+									 if(a[sortcolumn].grade==""&&b[sortcolumn].grade==""){
+											 if(a[sortcolumn].marked>b[sortcolumn.marked]){
 													 return sortdir;
-											 }else{
-													 return 0
-											 }
-									 });				
-							 }else{
-									 students.sort(function compare(a,b){
-											 if(a[sortcolumn].grade>b[sortcolumn].grade){		  				
-													 return sortdir;
-											 }else if(a[sortcolumn].grade<b[sortcolumn].grade){
-													 return -sortdir;
+											 }if(a[sortcolumn].marked>b[sortcolumn.marked]){
+													 return -sortdir;									
 											 }else{
 													 return 0;
 											 }
-									 });				
-							 }
-					 }					 
+									 }else if(a[sortcolumn].grade!=""&&b[sortcolumn].grade!=""){
+											 if(a[sortcolumn].submitted>b[sortcolumn.submitted]){
+													 return sortdir;
+											 }if(a[sortcolumn].submitted>b[sortcolumn.submitted]){
+													 return -sortdir;									
+											 }else{
+													 return 0;
+											 }
+									 }else if(a[sortcolumn].grade==""&&b[sortcolumn].grade!=""){
+											 return -sortdir;
+									 }else if(a[sortcolumn].grade!=""&&b[sortcolumn].grade==""){
+											 return sortdir;
+									 }else{
+											 return 0
+									 }
+							 });				
+							}else{
+							students.sort(function compare(a,b){
+								 if(a[sortcolumn].grade>b[sortcolumn].grade){		  				
+										 return sortdir;
+								 }else if(a[sortcolumn].grade<b[sortcolumn].grade){
+										 return -sortdir;
+								 }else{
+										 return 0;
+								 }
+							});				
+							}
+						}					 
 				}
 		}
 	 redrawtable();
+	 $("#header"+columno).addClass("result-header-inverse");
+
 }
 
 function process()
@@ -325,9 +387,9 @@ function process()
 					for(var j=0;j<momtmp.length;j++){
 							var momentresult=restmp[momtmp[j].lid];
 							if(typeof momentresult!='undefined'){							
-									student.push({ishere:true,grade:momentresult.grade,marked:momentresult.marked,submitted:momentresult.submitted,kind:momtmp[j].kind,lid:momtmp[j].lid,uid:uid,needMarking:momentresult.needMarking,gradeSystem:momtmp[j].gradesystem,vers:momentresult.vers,userAnswer:momentresult.useranswer});
+									student.push({ishere:true,grade:momentresult.grade,marked:new Date(momentresult.marked),submitted:new Date(momentresult.submitted),kind:momtmp[j].kind,lid:momtmp[j].lid,uid:uid,needMarking:momentresult.needMarking,gradeSystem:momtmp[j].gradesystem,vers:momentresult.vers,userAnswer:momentresult.useranswer});
 							}else{
-									student.push({ishere:false,kind:momtmp[j].kind,grade:"",lid:momtmp[j].lid,uid:uid,needMarking:false});							
+									student.push({ishere:false,kind:momtmp[j].kind,grade:"",lid:momtmp[j].lid,uid:uid,needMarking:false,marked:new Date(0),submitted:new Date(0),grade:-1});							
 							}		
 					}
 					
@@ -353,15 +415,15 @@ function process()
 								}
 						}										
 				}	else {
-						/* default to display every dugga/moment */
-						dstr+=" checked ";
+						/* default to check every visible dugga/moment */
+						if (moments[j].visible != 0) dstr+=" checked ";
 				}			
 				dstr+=">";
 				dstr+= "<label class='headerlabel' id='hdr"+lid;
 				dstr+="' for='hdr"+lid+"check' ";
 				dstr+=">"+name+"</label></div>";
 		}
-		dstr+="<div style='display:flex;justify-content:flex-end;border-top:1px solid #888'><button onclick='leave()'>Filter</button></div>"
+		dstr+="<div style='display:flex;justify-content:flex-end;border-top:1px solid #888'><button onclick='leaves()'>Filter</button></div>"
 
 		document.getElementById("dropdownc").innerHTML=dstr;	
 		
@@ -372,22 +434,26 @@ function process()
 		dstr+="<div class='checkbox-dugga' style='border-bottom:1px solid #888;' ><input name='sortcol' type='radio' class='sortradio' onclick='sorttype(2)' value='0' id='sortcol0_2'><label class='headerlabel' for='sortcol0_2' >SSN</label></div>";
 
 		dstr+="<table><tr><td>";
-		for(var j=0;j<moments.length;j++){
+		for(var j=0;j<momtmp.length;j++){
 				var lid=moments[j].lid;
-				var name=moments[j].entryname;
+				var name=momtmp[j].entryname;
 
 				dstr+="<div class='checkbox-dugga checknarrow ";				
 				if (moments[j].visible == 0){
-						dstr+="checkbox-dugga-hidden'><input name='sortcol' type='radio' class='sortradio' onclick='sorttype(0)' id='sortcol"+j+"' value='"+j+"'><label class='headerlabel' for='sortcol"+j+"' >"+name+"</label></div>";
+						dstr+="checkbox-dugga-hidden'><input name='sortcol' type='radio' class='sortradio' onclick='sorttype(-1)' id='sortcol"+(j+1)+"' value='"+(j+1)+"'><label class='headerlabel' for='sortcol"+(j+1)+"' >"+name+"</label></div>";
 				}else{
-						dstr+="'><input name='sortcol' type='radio' class='sortradio' id='sortcol"+j+"' onclick='sorttype(0)' value='"+j+"'><label class='headerlabel' for='sortcol"+j+"' >"+name+"</label></div>";
+						dstr+="'><input name='sortcol' type='radio' class='sortradio' id='sortcol"+(j+1)+"' onclick='sorttype(-1)' value='"+(j+1)+"'><label class='headerlabel' for='sortcol"+(j+1)+"' >"+name+"</label></div>";
 				}
 		}
 		dstr+="</td><td style='vertical-align:top;'>";
-		dstr+="<div class='checkbox-dugga checknarrow' ><input name='sorttype' type='radio' class='sortradio' onclick='sorttype(0)' id='sorttype0' value='0'><label class='headerlabel' for='sorttype0' >Date</label></div>";
+		dstr+="<div class='checkbox-dugga checknarrow' ><input name='sorttype' type='radio' class='sortradio' onclick='sorttype(0)' id='sorttype0' value='0'><label class='headerlabel' for='sorttype0' >Next</label></div>";
 		dstr+="<div class='checkbox-dugga checknarrow' ><input name='sorttype' type='radio' class='sortradio' onclick='sorttype(1)' id='sorttype1' value='1'><label class='headerlabel' for='sorttype1' >Grade</label></div>";
+		dstr+="<div class='checkbox-dugga checknarrow' ><input name='sorttype' type='radio' class='sortradio' onclick='sorttype(2)' id='sorttype2' value='2'><label class='headerlabel' for='sorttype2' >Submitted</label></div>";
+		dstr+="<div class='checkbox-dugga checknarrow' ><input name='sorttype' type='radio' class='sortradio' onclick='sorttype(3)' id='sorttype3' value='3'><label class='headerlabel' for='sorttype3' >Marked</label></div>";
+		dstr+="<div class='checkbox-dugga checknarrow' ><input name='sorttype' type='radio' class='sortradio' onclick='sorttype(4)' id='sorttype4' value='4'><label class='headerlabel' for='sorttype4' >Umph</label></div>";
+		dstr+="<div class='checkbox-dugga checknarrow' ><input name='sorttype' type='radio' class='sortradio' onclick='sorttype(5)' id='sorttype5' value='5'><label class='headerlabel' for='sorttype5' >Doah</label></div>";
 		dstr+="</td></tr></table>";
-		dstr+="<div style='display:flex;justify-content:flex-end;border-top:1px solid #888'><button onclick='leave()'>Filter</button></div>"
+		dstr+="<div style='display:flex;justify-content:flex-end;border-top:1px solid #888'><button onclick='leaves()'>Filter</button></div>"
 		document.getElementById("dropdowns").innerHTML=dstr;	
 		
 		resort();
@@ -431,14 +497,10 @@ function leaves()
 	var dir=1;
 	var ocol=localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sortcol");
 	var odir=localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sortdir"); 
-	
-	type = localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sorttype");
-	if (type === null){type=0;}
-	
+		
 	$("input[name='sortcol']:checked").each(function() {col=this.value;});
 	$("input[name='sortdir']:checked").each(function() {dir=this.value;});
-
-	localStorage.setItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sorttype", type);
+	
 	localStorage.setItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sortcol", col);
 	localStorage.setItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sortdir", dir);
 
@@ -449,20 +511,23 @@ function leaves()
 }
 
 function sorttype(t){
-		localStorage.setItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sorttype",t);
-		typechanged=true;
-		
-		// See if we should change the radio button for sorttype
-		var col=$("input[name='sortcol']:checked").val();
-		if (col == 0){
+		var c=$("input[name='sortcol']:checked").val();
+		if (c == 0){
+				localStorage.setItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sort1", t);		
 				$("input[name='sorttype'").prop("checked", false);
 		} else {
-				$("#sorttype"+t).prop("checked", true);
+				if (t == -1){
+						t = localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sort2", t);
+						$("#sorttype"+t).prop("checked", true);											
+				} else {
+						localStorage.setItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sort2", t);
+						$("#sorttype"+t).prop("checked", true);					
+				}
 		}
+		typechanged=true;
 }
 
 function setup(){
-	console.log("setup");
 	// Benchmarking function
 	benchmarkData = performance.timing;
 
@@ -508,7 +573,6 @@ $(function()
 //----------------------------------------
 
 function gradeDugga(e, gradesys, cid, vers, moment, uid, mark, ukind){
-		//console.log(e);
 
 		closeWindows();
 
@@ -791,14 +855,14 @@ function returnedResults(data)
 								leaves();
 						});
 		});
-		//console.log(students);
-		allData = data;
 	
-		if (allData['dugganame'] !== "") {
+		allData = data; /* used by dugga.js */
+	
+		if (data['dugganame'] !== "") {
 			/*			Display student submission			*/
-				$.getScript(allData['dugganame'], function() {
-					$("#MarkCont").html(allData['duggapage']);
-					showFacit(allData['duggaparam'],allData['useranswer'],allData['duggaanswer'], allData['duggastats'], allData['files'],allData['moment'],allData['duggafeedback']);
+				$.getScript(data['dugganame'], function() {
+					$("#MarkCont").html(data['duggapage']);
+					showFacit(data['duggaparam'],data['useranswer'],data['duggaanswer'], data['duggastats'], data['files'],data['moment'],data['duggafeedback']);
 				});
 				$("#resultpopover").css("display", "block");
 		} else {
