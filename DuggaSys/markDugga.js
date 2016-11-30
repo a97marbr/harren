@@ -92,15 +92,17 @@ function redrawtable()
 				// Make first header row!
 				var colsp=1;
 				var colpos=1;
-				for(var j=1;j<momtmp.length;j++){
-						if(momtmp[j].kind==4){
-								str+="<th class='result-header' colspan='"+colsp+"'>"+momtmp[colpos].entryname+"</th>"								
+				var momname=momtmp[0].momname;
+				for(var j=1;j<momtmp.length;j++){						
+						if(momtmp[j].momname!==momname){
+								str+="<th class='result-header' colspan='"+colsp+"'>"+momname+"</th>"								
+								momname = momtmp[j].momname;
 								colpos=j;
 								colsp=0;
 						}
 						colsp++;
 				}
-				str+="<th class='result-header' colspan='"+colsp+"'>"+momtmp[colpos].entryname+"</th>"								
+				str+="<th class='result-header' colspan='"+colsp+"'>"+momname+"</th>"								
 				str+="</tr><tr class='markinglist-header'>";
 
 				// Make second header row!
@@ -147,6 +149,7 @@ function redrawtable()
 										}
 										str +="' src='../Shared/icons/FistV.png' onclick='clickResult(\"" + querystring['cid'] + "\",\"" + student[j].vers + "\",\"" + student[j].lid + "\",\"" + student[0].firstname + "\",\"" + student[0].lastname + "\",\"" + student[j].uid + "\",\"" + student[j].submitted + "\",\"" + student[j].marked + "\",\"" + student[j].grade + "\",\"" + student[j].gradeSystem + "\",\"" + student[j].lid + "\");' />";
 										str += "</div>";
+										str += "<div>" + student[j].submitted + "</div>"
 										str += "</td>";											
 
 								}
@@ -160,171 +163,195 @@ function redrawtable()
 
 // Resort
 // Column number and sorting kind
-function resort(columnno)
+function resort()
 {
-		var sortdir = localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sortdir");
-		var colkind = localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sorttype");
-		if(sortdir === null) {sortdir=1}
-		if(colkind === null) {colkind=0}
-		console.log(columnno+" "+colkind + " " + sortdir);
-		if(columnno==0){
-			 if(colkind==0){
-					 students.sort(function compare(a,b){
-							 if(a[0].firstname>b[0].firstname){
-									 return sortdir;
-							 }else if(a[0].firstname<b[0].firstname){
-									 return -sortdir;
+		// Read sorting config from localStorage	
+		var sortdir=localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sortdir");
+		if (sortdir === null){dir=1;}
+		$("#sortdir"+sortdir).prop("checked", true);
+		var colkind=localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sorttype");
+		var columno=localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sortcol");
+		if (colkind === null){colkind=0;}
+		if (columno === null){columno=0;}
+		
+		if (students.length > 0) {
+					
+				if(columno < students[0].length){
+		
+						if (columno == 0) {				
+								$("#sortcol0_"+colkind).prop("checked", true);
+						} else {
+								$("#sortcol"+columno).prop("checked", true);
+								$("#sorttype"+colkind).prop("checked", true);
+						}
+				
+						if(columno==0){
+							 if(colkind==0){
+									 students.sort(function compare(a,b){
+											 if(a[0].firstname>b[0].firstname){
+													 return sortdir;
+											 }else if(a[0].firstname<b[0].firstname){
+													 return -sortdir;
+											 }else{
+													 return 0;
+											 }
+									 });
+							 }else if(colkind==1){
+									 students.sort(function compare(a,b){
+											 if(a[0].lastname>b[0].lastname){
+													 return sortdir;
+											 }else if(a[0].lastname<b[0].lastname){
+													 return -sortdir;
+											 }else{
+													 return 0;
+											 }
+									 });
 							 }else{
-									 return 0;
+									 students.sort(function compare(a,b){
+											 if(a[0].ssn>b[0].ssn){
+													 return sortdir;
+											 }else if(a[0].ssn<b[0].ssn){
+													 return -sortdir;
+											 }else{
+													 return 0;
+											 }
+									 });
 							 }
-					 });
-			 }else if(colkind==1){
-					 students.sort(function compare(a,b){
-							 if(a[0].lastname>b[0].lastname){
-									 return sortdir;
-							 }else if(a[0].lastname<b[0].lastname){
-									 return -sortdir;
+					 }else{
+							 // other columns sort by 
+							 // 0. unmarked or marked submitted date 
+							 // 1. grade
+							if (colkind===null){colkind=0;}
+							 sortcolumn=columno;
+							 if(colkind==0){
+									 students.sort(function compare(a,b){
+											 console.log(a[sortcolumn].marked+" "+b[sortcolumn].marked);
+											 if(a[sortcolumn].grade==""&&b[sortcolumn].grade==""){
+													 if(a[sortcolumn].marked>b[sortcolumn.marked]){
+															 return sortdir;
+													 }if(a[sortcolumn].marked>b[sortcolumn.marked]){
+															 return -sortdir;									
+													 }else{
+															 return 0;
+													 }
+											 }else if(a[sortcolumn].grade!=""&&b[sortcolumn].grade!=""){
+													 if(a[sortcolumn].submitted>b[sortcolumn.submitted]){
+															 return sortdir;
+													 }if(a[sortcolumn].submitted>b[sortcolumn.submitted]){
+															 return -sortdir;									
+													 }else{
+															 return 0;
+													 }
+											 }else if(a[sortcolumn].grade==""&&b[sortcolumn].grade!=""){
+													 return -sortdir;
+											 }else if(a[sortcolumn].grade!=""&&b[sortcolumn].grade==""){
+													 return sortdir;
+											 }else{
+													 return 0
+											 }
+									 });				
 							 }else{
-									 return 0;
+									 students.sort(function compare(a,b){
+											 if(a[sortcolumn].grade>b[sortcolumn].grade){		  				
+													 return sortdir;
+											 }else if(a[sortcolumn].grade<b[sortcolumn].grade){
+													 return -sortdir;
+											 }else{
+													 return 0;
+											 }
+									 });				
 							 }
-					 });
-			 }else{
-					 students.sort(function compare(a,b){
-							 if(a[0].ssn>b[0].ssn){
-									 return sortdir;
-							 }else if(a[0].ssn<b[0].ssn){
-									 return -sortdir;
-							 }else{
-									 return 0;
-							 }
-					 });
-			 }
-	 }else{
-			 // other columns sort by 
-			 // 0. unmarked or marked submitted date 
-			 // 1. grade
-			if (colkind===null){colkind=0;}
-			 sortcolumn=columnno;
-			 console.log(columnno+" "+colkind+" "+sortcolumn);
-			 if(colkind==0){
-					 students.sort(function compare(a,b){
-							 console.log(a[sortcolumn].marked+" "+b[sortcolumn].marked);
-							 if(a[sortcolumn].grade==""&&b[sortcolumn].grade==""){
-									 if(a[sortcolumn].marked>b[sortcolumn.marked]){
-											 return sortdir;
-									 }if(a[sortcolumn].marked>b[sortcolumn.marked]){
-											 return -sortdir;									
-									 }else{
-											 return 0;
-									 }
-							 }else if(a[sortcolumn].grade!=""&&b[sortcolumn].grade!=""){
-									 if(a[sortcolumn].submitted>b[sortcolumn.submitted]){
-											 return sortdir;
-									 }if(a[sortcolumn].submitted>b[sortcolumn.submitted]){
-											 return -sortdir;									
-									 }else{
-											 return 0;
-									 }
-							 }else if(a[sortcolumn].grade==""&&b[sortcolumn].grade!=""){
-									 return -sortdir;
-							 }else if(a[sortcolumn].grade!=""&&b[sortcolumn].grade==""){
-									 return sortdir;
-							 }else{
-									 return 0
-							 }
-					 });				
-			 }else{
-					 students.sort(function compare(a,b){
-							 if(a[sortcolumn].grade>b[sortcolumn].grade){		  				
-									 return sortdir;
-							 }else if(a[sortcolumn].grade<b[sortcolumn].grade){
-									 return -sortdir;
-							 }else{
-									 return 0;
-							 }
-					 });				
-			 }
-	 }
-	 
+					 }					 
+				}
+		}
 	 redrawtable();
 }
 
 function process()
 {			
-	console.log("process");
-			
-	// Read dropdown from local storage
-	clist=localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-checkees");
-	if (clist){	
-			clist=clist.split("**"); 
-	} 
-	
-	// Create temporary list that complies with dropdown
-	momtmp=new Array;
-	for(var l=0;l<moments.length;l++){
-			if (clist !== null ){
-					index=clist.indexOf("hdr"+moments[l].lid+"check");
-					if(clist[index+1]=="true"){
-							momtmp.push(moments[l]);
-					}
-			} else {
-					/* default to show every moment/dugga */
-					momtmp.push(moments[l]);
-			}
-	}
-	// Reconstitute table
-	students=new Array;
-		for(i=0;i<entries.length;i++){
-
-			var uid=entries[i].uid;
-								
-			// All results of this student
-			var res=results[uid];
-			var restmp=new Array;
-			
-			if (typeof res != 'undefined'){
-					// Pre-filter result list for a student for lightning-fast access
-					for(var k=0;k<res.length;k++){
-							restmp[res[k].dugga]=res[k];
-					}
-			}
-
-			var student=new Array;
-			student.push({grade:("<div>"+entries[i].firstname+" "+entries[i].lastname+"</div><div>"+entries[i].username+"</div><div>"+entries[i].ssn+"</div>"),firstname:entries[i].firstname,lastname:entries[i].lastname,ssn:entries[i].ssn});
-			
-			// Now we have a sparse array with results for each moment for current student... thus no need to loop through it
-			for(var j=0;j<momtmp.length;j++){
-					var momentresult=restmp[momtmp[j].lid];
-					if(typeof momentresult!='undefined'){							
-							student.push({ishere:true,grade:momentresult.grade,marked:momentresult.marked,submitted:momentresult.submitted,kind:momtmp[j].kind,lid:momtmp[j].lid,uid:uid,needMarking:momentresult.needMarking,gradeSystem:momtmp[j].gradesystem,vers:momentresult.vers,userAnswer:momentresult.useranswer});
-					}else{
-							student.push({ishere:false,kind:momtmp[j].kind,grade:"",lid:momtmp[j].lid,uid:uid,needMarking:false});							
-					}		
-			}
-			
-			students.push(student);
+		console.log("process");
+				
+		// Read dropdown from local storage
+		clist=localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-checkees");
+		if (clist){	
+				clist=clist.split("**"); 
+		} 
+		
+		// Create temporary list that complies with dropdown
+		momtmp=new Array;
+		var momname = "tore";
+		for(var l=0;l<moments.length;l++){
+				if (moments[l].kind===4){
+						momname = moments[l].entryname;
+				}
+				moments[l].momname = momname;		
 		}
 		
-		redrawtable();
+		// Create temporary list that complies with dropdown
+		momtmp=new Array;
+		for(var l=0;l<moments.length;l++){
+				if (clist !== null ){
+						index=clist.indexOf("hdr"+moments[l].lid+"check");
+						if(clist[index+1]=="true"){
+								momtmp.push(moments[l]);
+						}
+				} else {
+						/* default to show every moment/dugga */
+						momtmp.push(moments[l]);
+				}
+		}
+
+		// Reconstitute table
+		students=new Array;
+		for(i=0;i<entries.length;i++){
+
+					var uid=entries[i].uid;
+										
+					// All results of this student
+					var res=results[uid];
+					var restmp=new Array;
+					
+					if (typeof res != 'undefined'){
+							// Pre-filter result list for a student for lightning-fast access
+							for(var k=0;k<res.length;k++){
+									restmp[res[k].dugga]=res[k];
+							}
+					}
 		
+					var student=new Array;
+					student.push({grade:("<div>"+entries[i].firstname+" "+entries[i].lastname+"</div><div>"+entries[i].username+"</div><div>"+entries[i].ssn+"</div>"),firstname:entries[i].firstname,lastname:entries[i].lastname,ssn:entries[i].ssn});
+					
+					// Now we have a sparse array with results for each moment for current student... thus no need to loop through it
+					for(var j=0;j<momtmp.length;j++){
+							var momentresult=restmp[momtmp[j].lid];
+							if(typeof momentresult!='undefined'){							
+									student.push({ishere:true,grade:momentresult.grade,marked:momentresult.marked,submitted:momentresult.submitted,kind:momtmp[j].kind,lid:momtmp[j].lid,uid:uid,needMarking:momentresult.needMarking,gradeSystem:momtmp[j].gradesystem,vers:momentresult.vers,userAnswer:momentresult.useranswer});
+							}else{
+									student.push({ishere:false,kind:momtmp[j].kind,grade:"",lid:momtmp[j].lid,uid:uid,needMarking:false});							
+							}		
+					}
+					
+					students.push(student);
+		}
+			
 		// Update dropdown list
 		var dstr="";
 		for(var j=0;j<moments.length;j++){
 				var lid=moments[j].lid;
 				var name=moments[j].entryname;
-				dstr+="<div class='";				
-				if (moments[j].visible == 0) {dstr +=" checkbox-dugga-hidden";}
+				dstr+="<div class='checkbox-dugga";				
+				if (moments[j].visible == 0) {dstr +=" checkhidden";}
 				
-				if (moments[j].kind == 4) {dstr +=" checkbox-dugga-moment";}
+				if (moments[j].kind == 4) {dstr +=" checkmoment";}
 				
 				dstr+="'><input type='checkbox' class='headercheck' id='hdr"+lid+"check'";
 				if (clist){
-					index=clist.indexOf("hdr"+lid+"check");
-					if(index>-1){
-							if(clist[index+1]=="true"){
-									dstr+=" checked ";
-							}
-					}										
+						index=clist.indexOf("hdr"+lid+"check");
+						if(index>-1){
+								if(clist[index+1]=="true"){
+										dstr+=" checked ";
+								}
+						}										
 				}	else {
 						/* default to display every dugga/moment */
 						dstr+=" checked ";
@@ -339,17 +366,17 @@ function process()
 		document.getElementById("dropdownc").innerHTML=dstr;	
 		
 		var dstr="";
-		dstr+="<div style='border-bottom:1px solid #888'><input type='radio' class='headercheck' name='sortdir' value='1' id='sortdir1'><label class='headerlabel' for='sortdir0'>Sort ascending</label><input name='sortdir' type='radio' class='headercheck' value='-1' id='sortdir-1'><label class='headerlabel' for='sortdir-1'>Sort descending</label></div>";
-		dstr+="<div ><input name='sortcol' type='radio' class='sortradio' onclick='sorttype(0)' value='0' id='sortcol0_0'><label class='headerlabel' for='sortcol0_0' >Firstname</label></div>";
-		dstr+="<div ><input name='sortcol' type='radio' class='sortradio' onclick='sorttype(1)' value='0' id='sortcol0_1'><label class='headerlabel' for='sortcol0_1' >Lastname</label></div>";
-		dstr+="<div style='border-bottom:1px solid #888;' ><input name='sortcol' type='radio' class='sortradio' onclick='sorttype(2)' value='0' id='sortcol0_2'><label class='headerlabel' for='sortcol0_2' >SSN</label></div>";
+		dstr+="<div class='checkbox-dugga' style='border-bottom:1px solid #888'><input type='radio' class='headercheck' name='sortdir' value='1' id='sortdir1'><label class='headerlabel' for='sortdir0'>Sort ascending</label><input name='sortdir' type='radio' class='headercheck' value='-1' id='sortdir-1'><label class='headerlabel' for='sortdir-1'>Sort descending</label></div>";
+		dstr+="<div class='checkbox-dugga'><input name='sortcol' type='radio' class='sortradio' onclick='sorttype(0)' value='0' id='sortcol0_0'><label class='headerlabel' for='sortcol0_0' >Firstname</label></div>";
+		dstr+="<div class='checkbox-dugga' ><input name='sortcol' type='radio' class='sortradio' onclick='sorttype(1)' value='0' id='sortcol0_1'><label class='headerlabel' for='sortcol0_1' >Lastname</label></div>";
+		dstr+="<div class='checkbox-dugga' style='border-bottom:1px solid #888;' ><input name='sortcol' type='radio' class='sortradio' onclick='sorttype(2)' value='0' id='sortcol0_2'><label class='headerlabel' for='sortcol0_2' >SSN</label></div>";
 
 		dstr+="<table><tr><td>";
-		for(var j=1;j<moments.length;j++){
+		for(var j=0;j<moments.length;j++){
 				var lid=moments[j].lid;
 				var name=moments[j].entryname;
 
-				dstr+="<div class='";				
+				dstr+="<div class='checkbox-dugga checknarrow ";				
 				if (moments[j].visible == 0){
 						dstr+="checkbox-dugga-hidden'><input name='sortcol' type='radio' class='sortradio' onclick='sorttype(0)' id='sortcol"+j+"' value='"+j+"'><label class='headerlabel' for='sortcol"+j+"' >"+name+"</label></div>";
 				}else{
@@ -357,30 +384,15 @@ function process()
 				}
 		}
 		dstr+="</td><td style='vertical-align:top;'>";
-		dstr+="<div><input name='sorttype' type='radio' class='sortradio' onclick='sorttype(0)' id='sorttype0' value='0'><label class='headerlabel' for='sorttype0' >Date</label></div>";
-		dstr+="<div><input name='sorttype' type='radio' class='sortradio' onclick='sorttype(1)' id='sorttype1' value='1'><label class='headerlabel' for='sorttype1' >Grade</label></div>";
+		dstr+="<div class='checkbox-dugga checknarrow' ><input name='sorttype' type='radio' class='sortradio' onclick='sorttype(0)' id='sorttype0' value='0'><label class='headerlabel' for='sorttype0' >Date</label></div>";
+		dstr+="<div class='checkbox-dugga checknarrow' ><input name='sorttype' type='radio' class='sortradio' onclick='sorttype(1)' id='sorttype1' value='1'><label class='headerlabel' for='sorttype1' >Grade</label></div>";
 		dstr+="</td></tr></table>";
 		dstr+="<div style='display:flex;justify-content:flex-end;border-top:1px solid #888'><button onclick='leave()'>Filter</button></div>"
 		document.getElementById("dropdowns").innerHTML=dstr;	
 		
-		// Read sorting config from localStorage	
-		var dir=localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sortdir");
-		if (dir === null){dir=1;}
-		$("#sortdir"+dir).prop("checked", true);
-		var type=localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sorttype");
-		var col=localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sortcol");
-		if (type === null){type=0;}
-		if (col === null){col=0;}
-		if (col == 0) {				
-				$("#sortcol0_"+type).prop("checked", true);
-		} else {
-				$("#sortcol"+col).prop("checked", true);
-				$("#sorttype"+type).prop("checked", true);
-		}
-		//console.log("ls: "+dir + " " + col + " " + type);
-		resort(col);
+		resort();
 		
-	console.log(performance.now()-tim);
+		console.log(performance.now()-tim);
 }
 
 function hoverc()
@@ -429,8 +441,11 @@ function leaves()
 	localStorage.setItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sorttype", type);
 	localStorage.setItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sortcol", col);
 	localStorage.setItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sortdir", dir);
-	//console.log(ocol+" "+col +" "+ odir+" "+dir + " " + typechanged);
-	if (!(ocol==col && odir==dir) || typechanged) {typechanged=false; resort(col);}
+
+	if (!(ocol==col && odir==dir) || typechanged) {
+			typechanged=false;
+			resort();
+	}
 }
 
 function sorttype(t){

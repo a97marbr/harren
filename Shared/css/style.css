@@ -1502,7 +1502,6 @@ input.large-button {
 
 .result-data {
     padding:0px;
-    min-width: 140px;
 }
 
 .result-data-cell {
@@ -1582,6 +1581,8 @@ input.large-button {
     display: flex;
     justify-content: space-around;
     padding: 5px 0 5px 0;
+    min-width:140px;
+    max-width:140px; 	
 }
 #newFeedback {
     width:98%;
@@ -1610,14 +1611,31 @@ input.large-button {
 		white-space:nowrap;
 		text-overflow:ellipsis;
 }
-.checkbox-dugga-moment {
-    font-weight: bold;
-    border-top: 1px solid #888;
+
+.checkbox-dugga {
+    font-size:16px;
+    max-width:280px;
+    overflow-x:hidden;
+    overflow-y: auto;
+		white-space:nowrap;
+		text-overflow:ellipsis;
 }
-.checkbox-dugga-hidden {
+
+.checkmoment {
+    border-top: 1px solid #888;
+    font-weight: bold;
+}
+
+.checkhidden {
   opacity:0.4;
   font-style:italic;
 }
+
+.checknarrow {
+		max-width:140px !important;
+		min-width:140px !important;	
+}
+
 .grading-hidden {
   visibility: hidden;
 }
