@@ -524,7 +524,7 @@ function setup(){
   window.onscroll = function() {magicHeading()};
 	
 
-	AJAXService("GET", { cid : querystring['cid'],vers : querystring['coursevers'] }, "MARK");
+	AJAXService("GET", { cid : querystring['cid'],vers : querystring['coursevers'] }, "RESULT");
 	//ajaxStart = new Date();
 	//console.log("ajax star: "+ajaxStart);
 }
@@ -652,7 +652,7 @@ function hoverResult(cid, vers, moment, firstname, lastname, uid, submitted, mar
 		msx = -1;
 		msy = -1;
 
-		AJAXService("DUGGA", { cid : cid, vers : vers, moment : moment, luid : uid }, "MARK");
+		AJAXService("DUGGA", { cid : cid, vers : vers, moment : moment, luid : uid }, "RESULT");
 }
 
 function clickResult(cid, vers, moment, firstname, lastname, uid, submitted, marked, foundgrade, gradeSystem, lid)
@@ -677,7 +677,7 @@ function clickResult(cid, vers, moment, firstname, lastname, uid, submitted, mar
 		menu += "</div> <!-- Menu Dialog END -->";
 		document.getElementById('markMenuPlaceholder').innerHTML=menu;
 		
-		AJAXService("DUGGA", { cid : cid, vers : vers, moment : moment, luid : uid, coursevers : vers }, "MARK");
+		AJAXService("DUGGA", { cid : cid, vers : vers, moment : moment, luid : uid, coursevers : vers }, "RESULT");
 }
 
 function changeGrade(newMark, gradesys, cid, vers, moment, uid, mark, ukind)
@@ -686,7 +686,7 @@ function changeGrade(newMark, gradesys, cid, vers, moment, uid, mark, ukind)
 		if (document.getElementById('newFeedback') !== null){
 				newFeedback = document.getElementById('newFeedback').value;
 		}
-		AJAXService("CHGR", { cid : cid, vers : vers, moment : moment, luid : uid, mark : newMark, ukind : ukind, newFeedback : newFeedback }, "MARK");
+		AJAXService("CHGR", { cid : cid, vers : vers, moment : moment, luid : uid, mark : newMark, ukind : ukind, newFeedback : newFeedback }, "RESULT");
 }
 
 function moveDist(e)
@@ -797,7 +797,7 @@ function saveResponse()
 	
 		var filename=allData["files"][allData["duggaentry"]][clickedindex].filename+allData["files"][allData["duggaentry"]][clickedindex].seq;
 	
-		AJAXService("RESP", { cid : querystring['cid'],vers : querystring['coursevers'],resptext:respo, respfile:filename, duggaid: allData["duggaid"],luid : allData["duggauser"],moment : allData["duggaentry"], luid : allData["duggauser"] }, "MARK");	
+		AJAXService("RESP", { cid : querystring['cid'],vers : querystring['coursevers'],resptext:respo, respfile:filename, duggaid: allData["duggaid"],luid : allData["duggauser"],moment : allData["duggaentry"], luid : allData["duggauser"] }, "RESULT");	
 		document.getElementById("responseArea").innerHTML = "";
 		$("#previewpopover").css("display", "none");
 }

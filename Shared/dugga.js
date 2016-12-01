@@ -379,14 +379,6 @@ function AJAXService(opt,apara,kind)
 				dataType: "json",
 				success: returnedResults
 			});
-	}else if(kind=="MARK"){
-			$.ajax({
-				url: "markDuggaService.php",
-				type: "POST",
-				data: "opt="+opt+para,
-				dataType: "json",
-				success: returnedResults
-			});
 	}else if(kind=="RESULTLIST"){
 			$.ajax({
 				url: "resultlistedservice.php",
