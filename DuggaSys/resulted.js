@@ -44,10 +44,10 @@ function redrawtable()
 				// Make second header row!
 				for(var j=0;j<momtmp.length;j++){
 						if(momtmp[j].kind==3){
-								str+="<th class='result-header dugga-result-subheadermagic'><div id='header"+j+"magic' class='dugga-result-subheader-div' title='"+momtmp[j].entryname+"'>"+momtmp[j].entryname+"</div></th>"													
+								str+="<th id='header"+j+"magic' class='result-header dugga-result-subheadermagic'><div class='dugga-result-subheader-div' title='"+momtmp[j].entryname+"'>"+momtmp[j].entryname+"</div></th>"													
 						}else{
 								//str+="<th class='result-header dugga-result-subheadermagic'>Course part grade</th>"								
-								str+="<th class='result-header dugga-result-subheadermagic'><div id='header"+j+"magic' class='dugga-result-subheader-div' title='Course part grade'>Course part</div></th>"													
+								str+="<th id='header"+j+"magic' class='result-header dugga-result-subheadermagic'><div class='dugga-result-subheader-div' title='Course part grade'>Course part</div></th>"													
 						}
 				}
 				str+="</tr>";
@@ -359,7 +359,7 @@ function process()
 					}
 		
 					var student=new Array;
-					student.push({grade:("<div>"+entries[i].firstname+" "+entries[i].lastname+"</div><div>"+entries[i].username+"</div><div>"+entries[i].ssn+"</div>"),firstname:entries[i].firstname,lastname:entries[i].lastname,ssn:entries[i].ssn});
+					student.push({grade:("<div class='dugga-result-div'>"+entries[i].firstname+" "+entries[i].lastname+"</div><div class='dugga-result-div'>"+entries[i].username+"</div><div class='dugga-result-div'>"+entries[i].ssn+"</div>"),firstname:entries[i].firstname,lastname:entries[i].lastname,ssn:entries[i].ssn});
 					
 					// Now we have a sparse array with results for each moment for current student... thus no need to loop through it
 					for(var j=0;j<momtmp.length;j++){

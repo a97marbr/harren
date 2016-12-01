@@ -67,10 +67,10 @@ function redrawtable()
 				// Make second header row!
 				for(var j=0;j<momtmp.length;j++){
 						if(momtmp[j].kind==3){
-								str+="<th class='result-header dugga-result-subheadermagic'><div id='header"+j+"magic' class='dugga-result-subheader-div' title='"+momtmp[j].entryname+"'>"+momtmp[j].entryname+"</div></th>"													
+								str+="<th id='header"+j+"magic' class='result-header dugga-result-subheadermagic'><div class='dugga-result-subheader-div' title='"+momtmp[j].entryname+"'>"+momtmp[j].entryname+"</div></th>"													
 						}else{
 								//str+="<th class='result-header dugga-result-subheadermagic'>Course part grade</th>"								
-								str+="<th class='result-header dugga-result-subheadermagic'><div id='header"+j+"magic' class='dugga-result-subheader-div' title='Course part grade'>Course part</div></th>"													
+								str+="<th id='header"+j+"magic' class='result-header dugga-result-subheadermagic'><div class='dugga-result-subheader-div' title='Course part grade'>Course part</div></th>"													
 						}
 				}
 				str+="</tr>";

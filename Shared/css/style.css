@@ -1502,6 +1502,8 @@ input.large-button {
 
 .result-data {
     padding:0px;
+    max-width: 140px;
+    min-width: 140px;
 }
 
 .result-data-cell {
@@ -1674,4 +1676,13 @@ input.large-button {
     top:-10px;
 		background:#fff;
 		box-shadow:2px 2px 8px #888;
+}
+
+.dugga-result-div
+{
+		max-width:200px;
+		min-width:140px;
+		overflow:hidden;
+		white-space:nowrap;
+		text-overflow:ellipsis;
 }
