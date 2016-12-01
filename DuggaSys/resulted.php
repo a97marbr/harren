@@ -31,12 +31,13 @@ pdoConnect();
 	<script src="resulted.js"></script>
 
 </head>
-<body>
+<body onload="setup();">
 	<?php
 		$noup="SECTION";
 		$resultedkind = true;
 		include '../Shared/navheader.php';
 	?>
+
 	<div id="content"></div>
 
 	<?php
@@ -47,9 +48,9 @@ pdoConnect();
 	
 	<div id='resultpopover' class='resultPopover' style='display:none'>
 		<div class='loginBoxheader'>
-			<h3 id='Nameof'>Show Results</h3><div onclick='closeWindows();'>x</div>
+			<h3 style='width:100%;' id='Nameof'>Show Results</h3><div onclick='closeWindows();'>x</div>
 		</div>
-		<div id="MarkCont" class="markCont"> </div>
+		<div id="MarkCont" style="position:absolute; left:4px; right:204px; top:34px; bottom:4px; border:2px inset #aaa;background:#bbb; overflow:scroll;"> </div>
 		<div style="position:absolute; right:2px; top:34px; background:#bbb; width:200px;"><div id='markMenuPlaceholder'></div><div id="teacherFeedbackTable"></div></div>
 	</div>
 
@@ -93,35 +94,6 @@ pdoConnect();
 					</tr>
 			</table>
 		</div>
-	</div>
-
-	<!---------------------=============####### Variant Editor Popup Window #######=============--------------------->
-
-	<div id='editVariant' class='loginBox' style='width:464px;display:none;'>
-
-	<div class='loginBoxheader'>
-	<h3>Edit Variant</h3>
-	<div onclick='closeEditVariant();'>x</div>
-	</div>
-
-	<table width="100%">
-		<tr>
-			<td><input type='hidden' id='vid' value='Toddler' /></td>
-			<td colspan='2' style='line-height:40px;'>Param: <input style='float:right;width:390px;' class='form-control textinput' type='text' id='parameter' value='Variant Param' /></td>
-		</tr>
-		<tr>
-			<td colspan='2' style='line-height:40px;'>Answer: <input style='float:right;width:390px;' class='form-control textinput' type='text' id='answer' value='Variant Answer' /></td>
-		</tr>
-	</table>
-
-	<table width="100%">
-		<tr>
-			<td align='left'><input class='submit-button' type='button' value='Delete' onclick='deleteVariant();' /></td>
-			<td align='center'></td>
-			<td align='right'><input class='submit-button' type='button' value='Save' onclick='updateVariant();' /></td>
-		</tr>
-	</table>
-
 	</div>
 </body>
 </html>

@@ -1,5 +1,4 @@
 <?php
-
 date_default_timezone_set("Europe/Stockholm");
 
 // Include basic application services!
@@ -195,15 +194,34 @@ $entries=array();
 $gentries=array();
 $sentries=array();
 $lentries=array();
+$snus=array();
 
 if(strcmp($opt,"DUGGA")!==0){
 	if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESSION['uid']))) {
 		// Users connected to the current course version
-		
+		/*
+		$q = $pdo->prepare("SELECT user_course.cid AS cid,user.uid AS uid,username,firstname,lastname,ssn,aid,quiz,variant,moment,grade,useranswer,submitted,user_course.vers as vers,marked,timeUsed,totalTimeUsed,stepsUsed,totalStepsUsed FROM user,user_course,userAnswer WHERE user.uid=user_course.uid AND user_course.cid=:cid AND user.uid=userAnswer.uid AND user_course.vers=:coursevers order by lastname,quiz;");
+		$q->bindParam(':coursevers', $vers);
+		$q->bindParam(':cid', $cid);
+
+		if(!$q->execute()) {
+			$error=$q->errorInfo();
+			$debug="Error retreiving users. (row ".__LINE__.") ".$q->rowCount()." row(s) were found. Error code: ".$error[2];
+		}
+
+		foreach($q->fetchAll(PDO::FETCH_ASSOC) as $row){
+				if (array_key_exists($row['uid'], $snus){
+					
+				} else {
+						
+				}
+				
+		}
+		*/
 		$query = $pdo->prepare("SELECT user_course.cid AS cid,user.uid AS uid,username,firstname,lastname,ssn FROM user,user_course WHERE user.uid=user_course.uid AND user_course.cid=:cid AND user_course.vers=:coursevers;");
 		//		$query = $pdo->prepare("select user_course.cid as cid,user.uid as uid,username,firstname,lastname,ssn,access from user,user_course where user.uid=user_course.uid and user_course.cid=:cid;");
-		$query->bindParam(':cid', $cid);
 		$query->bindParam(':coursevers', $vers);
+		$query->bindParam(':cid', $cid);
 
 		if(!$query->execute()) {
 			$error=$query->errorInfo();
@@ -236,8 +254,9 @@ if(strcmp($opt,"DUGGA")!==0){
 		}
 
 		// All results from current course and vers?
-		$query = $pdo->prepare("select aid,quiz,variant,moment,grade,uid,useranswer,submitted,vers,marked,timeUsed,totalTimeUsed,stepsUsed,totalStepsUsed from userAnswer where cid=:cid;");
+		$query = $pdo->prepare("select aid,quiz,variant,userAnswer.moment as dugga,grade,uid,useranswer,submitted,userAnswer.vers,marked,timeUsed,totalTimeUsed,stepsUsed,totalStepsUsed,listentries.moment as moment,if((submitted > marked && !isnull(marked))||(isnull(marked) && !isnull(useranswer)), true, false) as needMarking from userAnswer,listentries where userAnswer.cid=:cid and userAnswer.vers=:vers and userAnswer.moment=listentries.lid;");
 		$query->bindParam(':cid', $cid);
+		$query->bindParam(':vers', $vers);
 
 		if(!$query->execute()) {
 			$error=$query->errorInfo();
@@ -254,7 +273,8 @@ if(strcmp($opt,"DUGGA")!==0){
 				array(
 					'aid' => (int)$row['quiz'],
 					'variant' => (int)$row['variant'],
-					'moment' => (int)$row['moment'],
+					'dugga' => (int)$row['dugga'],
+					'moment' => (int)$row['moment'],					
 					'grade' => (int)$row['grade'],
 					'uid' => (int)$row['uid'],
 					'useranswer' => $row['useranswer'],
@@ -264,7 +284,8 @@ if(strcmp($opt,"DUGGA")!==0){
 					'timeUsed' => $row['timeUsed'],
 					'totalTimeUsed' => $row['totalTimeUsed'],
 					'stepsUsed' => $row['stepsUsed'],
-					'totalStepsUsed' => $row['totalStepsUsed']
+					'totalStepsUsed' => $row['totalStepsUsed'],
+					'needMarking' => (bool)$row['needMarking']
 				)
 			);
 		}
@@ -394,6 +415,13 @@ foreach($query->fetchAll() as $row) {
 
 if (sizeof($files) === 0) {$files = (object)array();} // Force data type to be object
 
+if(isset($_SERVER["REQUEST_TIME_FLOAT"])){
+		$serviceTime = microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"];	
+		$benchmark =  array('totalServiceTime' => $serviceTime);
+}else{
+		$benchmark="-1";
+}
+
 $array = array(
 	'entries' => $entries,
 	'moments' => $gentries,
@@ -412,7 +440,8 @@ $array = array(
 	'duggastats' => $duggastats,
 	'duggafeedback' => $duggafeedback,
 	'moment' => $listentry,
-	'files' => $files
+	'files' => $files,
+	'benchmark' => $benchmark
 );
 
 echo json_encode($array);
