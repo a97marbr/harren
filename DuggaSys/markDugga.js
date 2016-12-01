@@ -256,12 +256,18 @@ function resort()
 							});				
 						} else if(colkind2==1){
 							students.sort(function compare(a,b){
-									if(a[sortcolumn].grade>b[sortcolumn].grade){		  				
-											return sortdir;
-									}else if(a[sortcolumn].grade<b[sortcolumn].grade){
+									if(a[sortcolumn].grade!=-1 && b[sortcolumn].grade == -1){
 											return -sortdir;
-									}else{
-											return 0;
+									} else if(a[sortcolumn].grade==-1 && b[sortcolumn].grade != -1){
+											return sortdir;
+									} else{	
+											if(a[sortcolumn].grade>b[sortcolumn].grade){		  				
+													return sortdir;
+											}else if(a[sortcolumn].grade<b[sortcolumn].grade){
+													return -sortdir;
+											}else{
+													return 0;
+											}
 									}
 							});				
 						} else if(colkind2==2){
@@ -824,19 +830,19 @@ function returnedResults(data)
 		if (data['debug'] !== "NONE!") alert(data['debug']);
 		/*		Add filter menu		*/
 		var filt ="";	
-		filt+="<td><span class='dropdown' onmouseover='hoverc();' style='position:relative;z-index:9000;'>";
+		filt+="<td id='select' class='navButt'><span class='dropdown-container' onmouseover='hoverc();'>";
 		filt+="<img class='navButt' src='../Shared/icons/tratt_white.svg'>";
-		filt+="<div id='dropdownc' style='padding:8px;width:300px;overflow:hidden;font-size:12px;z-index:8000;display:none;position:absolute;background:#fff;box-shadow:2px 2px 8px #000;'>";
+		filt+="<div id='dropdownc' class='dropdown-list-container'>";
 		filt+="</div>";
 		filt+="</span></td>";
 
-		filt+="<td><span class='dropdown' onmouseover='hovers();' style='position:relative;z-index:9000;'>";
+		filt+="<td id='filter' class='navButt'><span class='dropdown-container' onmouseover='hovers();'>";
 		filt+="<img class='navButt' src='../Shared/icons/sort_white.svg'>";
-		filt+="<div id='dropdowns' style='padding:8px;width:300px;overflow:hidden;font-size:12px;z-index:8000;display:none;position:absolute;background:#fff;box-shadow:2px 2px 8px #000;'>";
+		filt+="<div id='dropdowns' class='dropdown-list-container'>";
 		filt+="</div>";
 		filt+="</span></td>";
 
-		$("#menuHook").html(filt);
+		$("#menuHook").before(filt);
 		$(document).ready(function () {
 						$("#dropdownc").mouseleave(function () {
 								leavec();

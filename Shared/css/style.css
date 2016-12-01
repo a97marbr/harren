@@ -1658,3 +1658,20 @@ input.large-button {
     background-color: #fff !important;
     color:#614875 !important;
 }
+
+.dropdown-container {
+    position:relative;
+}
+
+
+.dropdown-list-container {
+		padding:8px;
+		width:300px;
+		overflow:hidden;
+		font-size:12px;
+		display:none;
+		position:absolute;
+    top:-10px;
+		background:#fff;
+		box-shadow:2px 2px 8px #888;
+}
