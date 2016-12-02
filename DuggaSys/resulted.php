@@ -54,7 +54,7 @@ pdoConnect();
 		<div style="position:absolute; right:2px; top:34px; background:#bbb; width:200px;"><div id='markMenuPlaceholder'></div><div id="teacherFeedbackTable"></div></div>
 	</div>
 
-	<!---------------------=============####### Preview Popover #######=============--------------------->
+  <!---------------------=============####### Preview Popover #######=============--------------------->
 	
 	<div id='previewpopover' class='previewPopover' style='display:none;'>
 		<div class='loginBoxheader'>
@@ -93,6 +93,13 @@ pdoConnect();
 							</td>
 					</tr>
 			</table>
+		</div>
+	</div>
+  <!---------------------=============####### Statistics Popover #######=============--------------------->
+	
+	<div id='statisticspopover' class='previewpopover' style='display:block;'>
+		<div class='loginBoxheader'>
+			<h3 style='width:100%;' id='Nameof'>Collective results</h3><div onclick='closeWindows();'>x</div>
 		</div>
 	</div>
 </body>

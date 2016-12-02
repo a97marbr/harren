@@ -26,10 +26,11 @@ var moments;
 var versions;
 var results;
 var clist;
+var onlyPending=false;
 
 function redrawtable()
 {
-		// Redraw table
+		// Redraw table    
 		
 		// Magic heading 
 		str = "<div id='upperDecker' style='z-index:4000;position:absolute;left:8px;display:none;'>";
@@ -56,7 +57,6 @@ function redrawtable()
 		str += "</table>"
 		str += "</div>"
 		
-		str+="<table>"
 		str+="<table class='markinglist'>";
 		str+="<thead>";
 		str+="<tr class='markinglist-header'>";
@@ -95,44 +95,54 @@ function redrawtable()
 
 				// Make mf table
 				for(var i=0;i<students.length;i++){
-						str+="<tr class='fumo'>"
+            var show;
+            if (onlyPending){
+                show=false;
+            } else {
+                show=true;
+            }
+            var strt="";
+						strt+="<tr class='fumo'>"
 						var student=students[i];
 						for(var j=0;j<student.length;j++){
-								str+="<td id='u"+student[j].uid+"_d"+student[j].lid+"' class='result-data";
+								strt+="<td id='u"+student[j].uid+"_d"+student[j].lid+"' class='result-data";
 								if(j==0){
-									str+="'>"+student[j].grade+"</td>";																	
+									strt+="'>"+student[j].grade+"</td>";																	
 								}else{
-										if(student[j].kind==4){	str+=" dugga-moment"; }
+										if(student[j].kind==4){	strt+=" dugga-moment"; }
 										// color based on pass,fail,pending,assigned,unassigned
-										if (student[j].grade === 1 && student[j].subheading === false) {str += " dugga-fail"}
-										else if (student[j].grade > 1) {str += " dugga-pass"}
-										else if (student[j].needMarking === true) {str += " dugga-pending"}
-										else if (student[j].grade === 0 /*&& student[j].userAnswer === null*/) {str += " dugga-assigned"}
-										else {str += " dugga-unassigned"}
-										str += "'>";
-										str += "<div class='gradeContainer";
+										if (student[j].grade === 1 && student[j].needMarking === false) {strt += " dugga-fail"}
+										else if (student[j].grade > 1) {strt += " dugga-pass"}
+										else if (student[j].needMarking === true) {strt += " dugga-pending"; show=true;}
+										else if (student[j].grade === 0 /*&& student[j].userAnswer === null*/) {strt += " dugga-assigned"}
+										else {strt += " dugga-unassigned"}
+										strt += "'>";
+										strt += "<div class='gradeContainer";
 										if(student[j].ishere===false){
-											str += " grading-hidden";
+											strt += " grading-hidden";
 										}
-										str += "'>";
+										strt += "'>";
 										if (student[j].grade === null){
-												str += makeSelect(student[j].gradeSystem, querystring['cid'], student[j].vers, student[j].lid, student[j].uid, student[j].grade, 'I');
+												strt += makeSelect(student[j].gradeSystem, querystring['cid'], student[j].vers, student[j].lid, student[j].uid, student[j].grade, 'I');
 										} else {
-												str += makeSelect(student[j].gradeSystem, querystring['cid'], student[j].vers, student[j].lid, student[j].uid, student[j].grade, 'U');
+												strt += makeSelect(student[j].gradeSystem, querystring['cid'], student[j].vers, student[j].lid, student[j].uid, student[j].grade, 'U');
 										}										
-										str += "<img id='korf' class='fist";
+										strt += "<img id='korf' class='fist";
 										if(student[j].userAnswer===null){
-											str += " grading-hidden";
+											strt += " grading-hidden";
 										}
-										str +="' src='../Shared/icons/FistV.png' onclick='clickResult(\"" + querystring['cid'] + "\",\"" + student[j].vers + "\",\"" + student[j].lid + "\",\"" + student[0].firstname + "\",\"" + student[0].lastname + "\",\"" + student[j].uid + "\",\"" + student[j].submitted + "\",\"" + student[j].marked + "\",\"" + student[j].grade + "\",\"" + student[j].gradeSystem + "\",\"" + student[j].lid + "\");' />";
-										str += "</div>";
-										str += "</td>";											
+										strt +="' src='../Shared/icons/FistV.png' onclick='clickResult(\"" + querystring['cid'] + "\",\"" + student[j].vers + "\",\"" + student[j].lid + "\",\"" + student[0].firstname + "\",\"" + student[0].lastname + "\",\"" + student[j].uid + "\",\"" + student[j].submitted + "\",\"" + student[j].marked + "\",\"" + student[j].grade + "\",\"" + student[j].gradeSystem + "\",\"" + student[j].lid + "\");' />";
+										strt += "</div>";
+										strt += "</td>";											
 
 								}
 						}
-						str+="</tr></tbody>"
+						strt+="</tr>"
+            if(show){
+                str+=strt; 
+            }
 				}
-				str+="</table>";
+				str+="</tbody></table>";
 				document.getElementById("content").innerHTML=str;
 		}
 }
@@ -273,23 +283,32 @@ function resort()
 									}
 							});				
 						}	else if(colkind2==4){
-							 students.sort(function compare(a,b){
-									 if(a[sortcolumn].needMarking==true&&b[sortcolumn].needMarking==true){
-											 if(a[sortcolumn].submitted<b[sortcolumn].submitted){
-													 return sortdir;
-											 }if(a[sortcolumn].submitted>b[sortcolumn].submitted){
-													 return -sortdir;									
-											 }else{
-													 return 0;
-											 }
-									 }else if(a[sortcolumn].needMarking==true&&b[sortcolumn].needMarking==false){
-												return sortdir;
-									 }if (a[sortcolumn].needMarking==false&&b[sortcolumn].needMarking==true){
-											 return -sortdir;
-									 }else{
-											 return 0
-									 }
-							 });				
+              students.sort(function compare(a,b){
+								 if(a[sortcolumn].grade==""&&b[sortcolumn].grade==""){
+										 if(a[sortcolumn].marked>b[sortcolumn].marked){
+												 return sortdir;
+										 }if(a[sortcolumn].marked<b[sortcolumn].marked){
+												 return -sortdir;									
+										 }else{
+												 return 0;
+										 }
+								 }else if(a[sortcolumn].grade!=""&&b[sortcolumn].grade!=""){
+										 if(a[sortcolumn].submitted>b[sortcolumn].submitted){
+												 return sortdir;
+										 }if(a[sortcolumn].submitted<b[sortcolumn].submitted){
+												 return -sortdir;									
+										 }else{
+												 return 0;
+										 }
+								 }else if(a[sortcolumn].grade==""&&b[sortcolumn].grade!=""){
+										 return -sortdir;
+								 }else if(a[sortcolumn].grade!=""&&b[sortcolumn].grade==""){
+										 return sortdir;
+								 }else{
+										 return 0
+								 }
+							});				
+				
 							}else{
 							students.sort(function compare(a,b){
 								 if(a[sortcolumn].grade>b[sortcolumn].grade){		  				
@@ -406,7 +425,10 @@ function process()
 		document.getElementById("dropdownc").innerHTML=dstr;	
 		
 		var dstr="";
-		dstr+="<div class='checkbox-dugga' style='border-bottom:1px solid #888'><input type='radio' class='headercheck' name='sortdir' value='1' id='sortdir1'><label class='headerlabel' for='sortdir0'>Sort ascending</label><input name='sortdir' type='radio' class='headercheck' value='-1' id='sortdir-1'><label class='headerlabel' for='sortdir-1'>Sort descending</label></div>";
+    dstr+="<div class='checkbox-dugga' style='border-bottom:1px solid #888'><input type='checkbox' class='headercheck' name='onlyPending' value='0' id='onlyPending'";
+    if (onlyPending){ dstr+=" checked='true'"; }
+    dstr+="><label class='headerlabel' for='onlyPending'>Show only pending</label></div>";
+    dstr+="<div class='checkbox-dugga' style='border-bottom:1px solid #888'><input type='radio' class='headercheck' name='sortdir' value='1' id='sortdir1'><label class='headerlabel' for='sortdir0'>Sort ascending</label><input name='sortdir' type='radio' class='headercheck' value='-1' id='sortdir-1'><label class='headerlabel' for='sortdir-1'>Sort descending</label></div>";
 		dstr+="<div class='checkbox-dugga'><input name='sortcol' type='radio' class='sortradio' onclick='sorttype(0)' value='0' id='sortcol0_0'><label class='headerlabel' for='sortcol0_0' >Firstname</label></div>";
 		dstr+="<div class='checkbox-dugga' ><input name='sortcol' type='radio' class='sortradio' onclick='sorttype(1)' value='0' id='sortcol0_1'><label class='headerlabel' for='sortcol0_1' >Lastname</label></div>";
 		dstr+="<div class='checkbox-dugga' style='border-bottom:1px solid #888;' ><input name='sortcol' type='radio' class='sortradio' onclick='sorttype(2)' value='0' id='sortcol0_2'><label class='headerlabel' for='sortcol0_2' >SSN</label></div>";
@@ -431,7 +453,7 @@ function process()
 		dstr+="</td></tr></table>";
 		dstr+="<div style='display:flex;justify-content:flex-end;border-top:1px solid #888'><button onclick='leaves()'>Filter</button></div>"
 		document.getElementById("dropdowns").innerHTML=dstr;	
-		
+
 		resort();
 		
 		//console.log(performance.now()-tim);
@@ -468,16 +490,19 @@ function leaves()
 	$('#dropdowns').css('display','none'); 
 	var col=0;
 	var dir=1;
+  onlyPending=$('#onlyPending').is(":checked");
 	var ocol=localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sortcol");
 	var odir=localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sortdir"); 
+  var opend=localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-pending");
 		
 	$("input[name='sortcol']:checked").each(function() {col=this.value;});
 	$("input[name='sortdir']:checked").each(function() {dir=this.value;});
 	
 	localStorage.setItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sortcol", col);
 	localStorage.setItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-sortdir", dir);
+  localStorage.setItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-pending", onlyPending);
 
-	if (!(ocol==col && odir==dir) || typechanged) {
+	if (!(ocol==col && odir==dir && onlyPending==opend) || typechanged) {
 			typechanged=false;
 			resort();
 	}
@@ -506,7 +531,7 @@ function setup(){
 	//console.log("Network Latency: "+(benchmarkData.responseEnd-benchmarkData.fetchStart));
 	//console.log("responseEnd -> onload: "+(benchmarkData.loadEventEnd-benchmarkData.responseEnd));
 
-  /*		Add filter menu		*/
+  // Add filter menu
   var filt ="";	
   filt+="<td id='select' class='navButt'><span class='dropdown-container' onmouseover='hoverc();'>";
   filt+="<img class='navButt' src='../Shared/icons/tratt_white.svg'>";
@@ -520,6 +545,13 @@ function setup(){
   filt+="</div>";
   filt+="</span></td>";
   $("#menuHook").before(filt);
+
+  // Set part of filter config 
+  if (localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-pending")=="true"){
+      onlyPending=true;
+  } else {
+      onlyPending=false;
+  }
   	
   window.onscroll = function() {magicHeading()};
 	
