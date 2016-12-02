@@ -126,6 +126,7 @@ function redrawtable()
 										}
 										str +="' src='../Shared/icons/FistV.png' onclick='clickResult(\"" + querystring['cid'] + "\",\"" + student[j].vers + "\",\"" + student[j].lid + "\",\"" + student[0].firstname + "\",\"" + student[0].lastname + "\",\"" + student[j].uid + "\",\"" + student[j].submitted + "\",\"" + student[j].marked + "\",\"" + student[j].grade + "\",\"" + student[j].gradeSystem + "\",\"" + student[j].lid + "\");' />";
 										str += "</div>";
+										str += "<div>"+student[j].submitted+" "+student[j].needMarking+"</div>";
 										str += "</td>";											
 
 								}
@@ -365,7 +366,7 @@ function process()
 					for(var j=0;j<momtmp.length;j++){
 							var momentresult=restmp[momtmp[j].lid];
 							if(typeof momentresult!='undefined'){							
-									student.push({ishere:true,grade:momentresult.grade,marked:new Date(momentresult.marked),submitted:new Date(momentresult.submitted),kind:momtmp[j].kind,lid:momtmp[j].lid,uid:uid,needMarking:momentresult.needMarking,gradeSystem:momtmp[j].gradesystem,vers:momentresult.vers,userAnswer:momentresult.useranswer});
+									student.push({ishere:true,grade:momentresult.grade,marked:new Date((momentresult.marked*1000)),submitted:new Date((momentresult.submitted*1000)),kind:momtmp[j].kind,lid:momtmp[j].lid,uid:uid,needMarking:momentresult.needMarking,gradeSystem:momtmp[j].gradesystem,vers:momentresult.vers,userAnswer:momentresult.useranswer});
 							}else{
 									student.push({ishere:false,kind:momtmp[j].kind,grade:"",lid:momtmp[j].lid,uid:uid,needMarking:false,marked:new Date(0),submitted:new Date(0),grade:-1});							
 							}		

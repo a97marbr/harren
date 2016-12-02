@@ -254,7 +254,7 @@ if(strcmp($opt,"DUGGA")!==0){
 		}
 
 		// All results from current course and vers?
-		$query = $pdo->prepare("select aid,quiz,variant,userAnswer.moment as dugga,grade,uid,useranswer,submitted,userAnswer.vers,marked,timeUsed,totalTimeUsed,stepsUsed,totalStepsUsed,listentries.moment as moment,if((submitted > marked && !isnull(marked))||(isnull(marked) && !isnull(useranswer)), true, false) as needMarking from userAnswer,listentries where userAnswer.cid=:cid and userAnswer.vers=:vers and userAnswer.moment=listentries.lid;");
+		$query = $pdo->prepare("select aid,quiz,variant,userAnswer.moment as dugga,grade,uid,useranswer,UNIX_TIMESTAMP(submitted)as submitted,userAnswer.vers,UNIX_TIMESTAMP(marked) as marked,timeUsed,totalTimeUsed,stepsUsed,totalStepsUsed,listentries.moment as moment,if((submitted > marked && !isnull(marked))||(isnull(marked) && !isnull(useranswer)), true, false) as needMarking from userAnswer,listentries where userAnswer.cid=:cid and userAnswer.vers=:vers and userAnswer.moment=listentries.lid;");
 		$query->bindParam(':cid', $cid);
 		$query->bindParam(':vers', $vers);
 
