@@ -27,6 +27,35 @@ var versions;
 var results;
 var clist;
 
+function setup(){
+	// Benchmarking function
+	//benchmarkData = performance.timing;
+	//console.log("Network Latency: "+(benchmarkData.responseEnd-benchmarkData.fetchStart));
+	//console.log("responseEnd -> onload: "+(benchmarkData.loadEventEnd-benchmarkData.responseEnd));
+
+  /*		Add filter menu		*/
+  var filt ="";	
+  filt+="<td id='select' class='navButt'><span class='dropdown-container' onmouseover='leaves();hoverc();'>";
+  filt+="<img class='navButt' src='../Shared/icons/tratt_white.svg'>";
+  filt+="<div id='dropdownc' class='dropdown-list-container'>";
+  filt+="</div>";
+  filt+="</span></td>";
+
+  filt+="<td id='filter' class='navButt'><span class='dropdown-container' onmouseover='leavec();hovers();'>";
+  filt+="<img class='navButt' src='../Shared/icons/sort_white.svg'>";
+  filt+="<div id='dropdowns' class='dropdown-list-container'>";
+  filt+="</div>";
+  filt+="</span></td>";
+  $("#menuHook").before(filt);
+  	
+  window.onscroll = function() {magicHeading()};
+	
+
+	AJAXService("GET", { cid : querystring['cid'],vers : querystring['coursevers'] }, "RESULT");
+	//ajaxStart = new Date();
+	//console.log("ajax star: "+ajaxStart);
+}
+
 function redrawtable()
 {
 		// Redraw table
@@ -212,31 +241,23 @@ function resort()
 							if (colkind2===null){colkind2=0;}
 							sortcolumn=columno;
 							if(colkind2==0){
-							students.sort(function compare(a,b){
-								 if(a[sortcolumn].grade==""&&b[sortcolumn].grade==""){
-										 if(a[sortcolumn].marked>b[sortcolumn].marked){
-												 return sortdir;
-										 }if(a[sortcolumn].marked<b[sortcolumn].marked){
-												 return -sortdir;									
-										 }else{
-												 return 0;
-										 }
-								 }else if(a[sortcolumn].grade!=""&&b[sortcolumn].grade!=""){
-										 if(a[sortcolumn].submitted>b[sortcolumn].submitted){
-												 return sortdir;
-										 }if(a[sortcolumn].submitted<b[sortcolumn].submitted){
-												 return -sortdir;									
-										 }else{
-												 return 0;
-										 }
-								 }else if(a[sortcolumn].grade==""&&b[sortcolumn].grade!=""){
-										 return -sortdir;
-								 }else if(a[sortcolumn].grade!=""&&b[sortcolumn].grade==""){
-										 return sortdir;
-								 }else{
-										 return 0
-								 }
-							});				
+							 students.sort(function compare(a,b){
+									 if(a[sortcolumn].needMarking==true&&b[sortcolumn].needMarking==true){
+											 if(a[sortcolumn].submitted<b[sortcolumn].submitted){
+													 return sortdir;
+											 }if(a[sortcolumn].submitted>b[sortcolumn].submitted){
+													 return -sortdir;									
+											 }else{
+													 return 0;
+											 }
+									 }else if(a[sortcolumn].needMarking==true&&b[sortcolumn].needMarking==false){
+												return sortdir;
+									 }if (a[sortcolumn].needMarking==false&&b[sortcolumn].needMarking==true){
+											 return -sortdir;
+									 }else{
+											 return 0
+									 }
+							 });			
 						} else if(colkind2==1){
 							students.sort(function compare(a,b){
 									if(a[sortcolumn].grade!=-1 && b[sortcolumn].grade == -1){
@@ -273,25 +294,7 @@ function resort()
 											return 0;
 									}
 							});				
-						}	else if(colkind2==4){
-							 students.sort(function compare(a,b){
-									 if(a[sortcolumn].needMarking==true&&b[sortcolumn].needMarking==true){
-											 if(a[sortcolumn].submitted<b[sortcolumn].submitted){
-													 return sortdir;
-											 }if(a[sortcolumn].submitted>b[sortcolumn].submitted){
-													 return -sortdir;									
-											 }else{
-													 return 0;
-											 }
-									 }else if(a[sortcolumn].needMarking==true&&b[sortcolumn].needMarking==false){
-												return sortdir;
-									 }if (a[sortcolumn].needMarking==false&&b[sortcolumn].needMarking==true){
-											 return -sortdir;
-									 }else{
-											 return 0
-									 }
-							 });				
-							}else{
+						}	else{
 							students.sort(function compare(a,b){
 								 if(a[sortcolumn].grade>b[sortcolumn].grade){		  				
 										 return sortdir;
@@ -443,6 +446,7 @@ function hoverc()
 	$('#dropdownc').css('display','block');
 }
 
+
 function leavec()
 {
 	$('#dropdownc').css('display','none'); 
@@ -500,36 +504,6 @@ function sorttype(t){
 		}
 		typechanged=true;
 }
-
-function setup(){
-	// Benchmarking function
-	//benchmarkData = performance.timing;
-	//console.log("Network Latency: "+(benchmarkData.responseEnd-benchmarkData.fetchStart));
-	//console.log("responseEnd -> onload: "+(benchmarkData.loadEventEnd-benchmarkData.responseEnd));
-
-  /*		Add filter menu		*/
-  var filt ="";	
-  filt+="<td id='select' class='navButt'><span class='dropdown-container' onmouseover='hoverc();'>";
-  filt+="<img class='navButt' src='../Shared/icons/tratt_white.svg'>";
-  filt+="<div id='dropdownc' class='dropdown-list-container'>";
-  filt+="</div>";
-  filt+="</span></td>";
-
-  filt+="<td id='filter' class='navButt'><span class='dropdown-container' onmouseover='hovers();'>";
-  filt+="<img class='navButt' src='../Shared/icons/sort_white.svg'>";
-  filt+="<div id='dropdowns' class='dropdown-list-container'>";
-  filt+="</div>";
-  filt+="</span></td>";
-  $("#menuHook").before(filt);
-  	
-  window.onscroll = function() {magicHeading()};
-	
-
-	AJAXService("GET", { cid : querystring['cid'],vers : querystring['coursevers'] }, "RESULT");
-	//ajaxStart = new Date();
-	//console.log("ajax star: "+ajaxStart);
-}
-
 
 function magicHeading()
 {
