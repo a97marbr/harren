@@ -36,18 +36,25 @@ function setup(){
 
   /*		Add filter menu		*/
   var filt ="";	
-  filt+="<td id='select' class='navButt'><span class='dropdown-container' onmouseover='leaves();hoverc();'>";
+  filt+="<td id='select' class='navButt'><span class='dropdown-container' onmouseover='hoverc();'>";
   filt+="<img class='navButt' src='../Shared/icons/tratt_white.svg'>";
   filt+="<div id='dropdownc' class='dropdown-list-container'>";
   filt+="</div>";
   filt+="</span></td>";
 
-  filt+="<td id='filter' class='navButt'><span class='dropdown-container' onmouseover='leavec();hovers();'>";
+  filt+="<td id='filter' class='navButt'><span class='dropdown-container' onmouseover='hovers();'>";
   filt+="<img class='navButt' src='../Shared/icons/sort_white.svg'>";
   filt+="<div id='dropdowns' class='dropdown-list-container'>";
   filt+="</div>";
   filt+="</span></td>";
   $("#menuHook").before(filt);
+
+  // Set part of filter config 
+  if (localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-pending")=="true"){
+      onlyPending=true;
+  } else {
+      onlyPending=false;
+  }
   	
   window.onscroll = function() {magicHeading()};
 	
@@ -160,17 +167,10 @@ function redrawtable()
 										if(student[j].userAnswer===null){
 											strt += " grading-hidden";
 										}
-<<<<<<< HEAD
 										strt +="' src='../Shared/icons/FistV.png' onclick='clickResult(\"" + querystring['cid'] + "\",\"" + student[j].vers + "\",\"" + student[j].lid + "\",\"" + student[0].firstname + "\",\"" + student[0].lastname + "\",\"" + student[j].uid + "\",\"" + student[j].submitted + "\",\"" + student[j].marked + "\",\"" + student[j].grade + "\",\"" + student[j].gradeSystem + "\",\"" + student[j].lid + "\");' />";
 										strt += "</div>";
+										strt += "<div>"+student[j].submitted+" "+student[j].needMarking+"</div>";
 										strt += "</td>";											
-=======
-										str +="' src='../Shared/icons/FistV.png' onclick='clickResult(\"" + querystring['cid'] + "\",\"" + student[j].vers + "\",\"" + student[j].lid + "\",\"" + student[0].firstname + "\",\"" + student[0].lastname + "\",\"" + student[j].uid + "\",\"" + student[j].submitted + "\",\"" + student[j].marked + "\",\"" + student[j].grade + "\",\"" + student[j].gradeSystem + "\",\"" + student[j].lid + "\");' />";
-										str += "</div>";
-										str += "<div>"+student[j].submitted+" "+student[j].needMarking+"</div>";
-										str += "</td>";											
->>>>>>> d4f83640f94b15129832b844f762c2cd1d93ff50
-
 								}
 						}
 						strt+="</tr>"
@@ -310,38 +310,7 @@ function resort()
 											return 0;
 									}
 							});				
-<<<<<<< HEAD
-						}	else if(colkind2==4){
-              students.sort(function compare(a,b){
-								 if(a[sortcolumn].grade==""&&b[sortcolumn].grade==""){
-										 if(a[sortcolumn].marked>b[sortcolumn].marked){
-												 return sortdir;
-										 }if(a[sortcolumn].marked<b[sortcolumn].marked){
-												 return -sortdir;									
-										 }else{
-												 return 0;
-										 }
-								 }else if(a[sortcolumn].grade!=""&&b[sortcolumn].grade!=""){
-										 if(a[sortcolumn].submitted>b[sortcolumn].submitted){
-												 return sortdir;
-										 }if(a[sortcolumn].submitted<b[sortcolumn].submitted){
-												 return -sortdir;									
-										 }else{
-												 return 0;
-										 }
-								 }else if(a[sortcolumn].grade==""&&b[sortcolumn].grade!=""){
-										 return -sortdir;
-								 }else if(a[sortcolumn].grade!=""&&b[sortcolumn].grade==""){
-										 return sortdir;
-								 }else{
-										 return 0
-								 }
-							});				
-				
-							}else{
-=======
 						}	else{
->>>>>>> d4f83640f94b15129832b844f762c2cd1d93ff50
 							students.sort(function compare(a,b){
 								 if(a[sortcolumn].grade>b[sortcolumn].grade){		  				
 										 return sortdir;
@@ -493,13 +462,14 @@ function process()
 
 function hoverc()
 {
-	$('#dropdownc').css('display','block');
+    $('#dropdowns').css('display','none');
+  	$('#dropdownc').css('display','block');
 }
 
 
 function leavec()
 {
-	$('#dropdownc').css('display','none'); 
+	$('#dropdownc').css('display','none');   
 	
 	// Update columns only now
 	var str="";
@@ -515,7 +485,8 @@ function leavec()
 
 function hovers()
 {
-	$('#dropdowns').css('display','block');
+    $('#dropdownc').css('display','none');
+  	$('#dropdowns').css('display','block');
 }
 
 function leaves()
@@ -558,46 +529,6 @@ function sorttype(t){
 		typechanged=true;
 }
 
-<<<<<<< HEAD
-function setup(){
-	// Benchmarking function
-	//benchmarkData = performance.timing;
-	//console.log("Network Latency: "+(benchmarkData.responseEnd-benchmarkData.fetchStart));
-	//console.log("responseEnd -> onload: "+(benchmarkData.loadEventEnd-benchmarkData.responseEnd));
-
-  // Add filter menu
-  var filt ="";	
-  filt+="<td id='select' class='navButt'><span class='dropdown-container' onmouseover='hoverc();'>";
-  filt+="<img class='navButt' src='../Shared/icons/tratt_white.svg'>";
-  filt+="<div id='dropdownc' class='dropdown-list-container'>";
-  filt+="</div>";
-  filt+="</span></td>";
-
-  filt+="<td id='filter' class='navButt'><span class='dropdown-container' onmouseover='hovers();'>";
-  filt+="<img class='navButt' src='../Shared/icons/sort_white.svg'>";
-  filt+="<div id='dropdowns' class='dropdown-list-container'>";
-  filt+="</div>";
-  filt+="</span></td>";
-  $("#menuHook").before(filt);
-
-  // Set part of filter config 
-  if (localStorage.getItem("lena_"+querystring['cid']+"-"+querystring['coursevers']+"-pending")=="true"){
-      onlyPending=true;
-  } else {
-      onlyPending=false;
-  }
-  	
-  window.onscroll = function() {magicHeading()};
-	
-
-	AJAXService("GET", { cid : querystring['cid'],vers : querystring['coursevers'] }, "RESULT");
-	//ajaxStart = new Date();
-	//console.log("ajax star: "+ajaxStart);
-}
-
-
-=======
->>>>>>> d4f83640f94b15129832b844f762c2cd1d93ff50
 function magicHeading()
 {
 		if(window.pageYOffset-10>$("#subheading").offset().top){

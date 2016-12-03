@@ -97,7 +97,7 @@ pdoConnect();
 	</div>
   <!---------------------=============####### Statistics Popover #######=============--------------------->
 	
-	<div id='statisticspopover' class='previewpopover' style='display:block;'>
+	<div id='statisticspopover' class='previewpopover' style='display:none;'>
 		<div class='loginBoxheader'>
 			<h3 style='width:100%;' id='Nameof'>Collective results</h3><div onclick='closeWindows();'>x</div>
 		</div>
