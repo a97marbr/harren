@@ -28,6 +28,35 @@ var results;
 var clist;
 var onlyPending=false;
 
+function setup(){
+	// Benchmarking function
+	//benchmarkData = performance.timing;
+	//console.log("Network Latency: "+(benchmarkData.responseEnd-benchmarkData.fetchStart));
+	//console.log("responseEnd -> onload: "+(benchmarkData.loadEventEnd-benchmarkData.responseEnd));
+
+  /*		Add filter menu		*/
+  var filt ="";	
+  filt+="<td id='select' class='navButt'><span class='dropdown-container' onmouseover='leaves();hoverc();'>";
+  filt+="<img class='navButt' src='../Shared/icons/tratt_white.svg'>";
+  filt+="<div id='dropdownc' class='dropdown-list-container'>";
+  filt+="</div>";
+  filt+="</span></td>";
+
+  filt+="<td id='filter' class='navButt'><span class='dropdown-container' onmouseover='leavec();hovers();'>";
+  filt+="<img class='navButt' src='../Shared/icons/sort_white.svg'>";
+  filt+="<div id='dropdowns' class='dropdown-list-container'>";
+  filt+="</div>";
+  filt+="</span></td>";
+  $("#menuHook").before(filt);
+  	
+  window.onscroll = function() {magicHeading()};
+	
+
+	AJAXService("GET", { cid : querystring['cid'],vers : querystring['coursevers'] }, "RESULT");
+	//ajaxStart = new Date();
+	//console.log("ajax star: "+ajaxStart);
+}
+
 function redrawtable()
 {
 		// Redraw table    
@@ -131,9 +160,16 @@ function redrawtable()
 										if(student[j].userAnswer===null){
 											strt += " grading-hidden";
 										}
+<<<<<<< HEAD
 										strt +="' src='../Shared/icons/FistV.png' onclick='clickResult(\"" + querystring['cid'] + "\",\"" + student[j].vers + "\",\"" + student[j].lid + "\",\"" + student[0].firstname + "\",\"" + student[0].lastname + "\",\"" + student[j].uid + "\",\"" + student[j].submitted + "\",\"" + student[j].marked + "\",\"" + student[j].grade + "\",\"" + student[j].gradeSystem + "\",\"" + student[j].lid + "\");' />";
 										strt += "</div>";
 										strt += "</td>";											
+=======
+										str +="' src='../Shared/icons/FistV.png' onclick='clickResult(\"" + querystring['cid'] + "\",\"" + student[j].vers + "\",\"" + student[j].lid + "\",\"" + student[0].firstname + "\",\"" + student[0].lastname + "\",\"" + student[j].uid + "\",\"" + student[j].submitted + "\",\"" + student[j].marked + "\",\"" + student[j].grade + "\",\"" + student[j].gradeSystem + "\",\"" + student[j].lid + "\");' />";
+										str += "</div>";
+										str += "<div>"+student[j].submitted+" "+student[j].needMarking+"</div>";
+										str += "</td>";											
+>>>>>>> d4f83640f94b15129832b844f762c2cd1d93ff50
 
 								}
 						}
@@ -221,31 +257,23 @@ function resort()
 							if (colkind2===null){colkind2=0;}
 							sortcolumn=columno;
 							if(colkind2==0){
-							students.sort(function compare(a,b){
-								 if(a[sortcolumn].grade==""&&b[sortcolumn].grade==""){
-										 if(a[sortcolumn].marked>b[sortcolumn].marked){
-												 return sortdir;
-										 }if(a[sortcolumn].marked<b[sortcolumn].marked){
-												 return -sortdir;									
-										 }else{
-												 return 0;
-										 }
-								 }else if(a[sortcolumn].grade!=""&&b[sortcolumn].grade!=""){
-										 if(a[sortcolumn].submitted>b[sortcolumn].submitted){
-												 return sortdir;
-										 }if(a[sortcolumn].submitted<b[sortcolumn].submitted){
-												 return -sortdir;									
-										 }else{
-												 return 0;
-										 }
-								 }else if(a[sortcolumn].grade==""&&b[sortcolumn].grade!=""){
-										 return -sortdir;
-								 }else if(a[sortcolumn].grade!=""&&b[sortcolumn].grade==""){
-										 return sortdir;
-								 }else{
-										 return 0
-								 }
-							});				
+							 students.sort(function compare(a,b){
+									 if(a[sortcolumn].needMarking==true&&b[sortcolumn].needMarking==true){
+											 if(a[sortcolumn].submitted<b[sortcolumn].submitted){
+													 return sortdir;
+											 }if(a[sortcolumn].submitted>b[sortcolumn].submitted){
+													 return -sortdir;									
+											 }else{
+													 return 0;
+											 }
+									 }else if(a[sortcolumn].needMarking==true&&b[sortcolumn].needMarking==false){
+												return sortdir;
+									 }if (a[sortcolumn].needMarking==false&&b[sortcolumn].needMarking==true){
+											 return -sortdir;
+									 }else{
+											 return 0
+									 }
+							 });			
 						} else if(colkind2==1){
 							students.sort(function compare(a,b){
 									if(a[sortcolumn].grade!=-1 && b[sortcolumn].grade == -1){
@@ -282,6 +310,7 @@ function resort()
 											return 0;
 									}
 							});				
+<<<<<<< HEAD
 						}	else if(colkind2==4){
               students.sort(function compare(a,b){
 								 if(a[sortcolumn].grade==""&&b[sortcolumn].grade==""){
@@ -310,6 +339,9 @@ function resort()
 							});				
 				
 							}else{
+=======
+						}	else{
+>>>>>>> d4f83640f94b15129832b844f762c2cd1d93ff50
 							students.sort(function compare(a,b){
 								 if(a[sortcolumn].grade>b[sortcolumn].grade){		  				
 										 return sortdir;
@@ -384,7 +416,7 @@ function process()
 					for(var j=0;j<momtmp.length;j++){
 							var momentresult=restmp[momtmp[j].lid];
 							if(typeof momentresult!='undefined'){							
-									student.push({ishere:true,grade:momentresult.grade,marked:new Date(momentresult.marked),submitted:new Date(momentresult.submitted),kind:momtmp[j].kind,lid:momtmp[j].lid,uid:uid,needMarking:momentresult.needMarking,gradeSystem:momtmp[j].gradesystem,vers:momentresult.vers,userAnswer:momentresult.useranswer});
+									student.push({ishere:true,grade:momentresult.grade,marked:new Date((momentresult.marked*1000)),submitted:new Date((momentresult.submitted*1000)),kind:momtmp[j].kind,lid:momtmp[j].lid,uid:uid,needMarking:momentresult.needMarking,gradeSystem:momtmp[j].gradesystem,vers:momentresult.vers,userAnswer:momentresult.useranswer});
 							}else{
 									student.push({ishere:false,kind:momtmp[j].kind,grade:"",lid:momtmp[j].lid,uid:uid,needMarking:false,marked:new Date(0),submitted:new Date(0),grade:-1});							
 							}		
@@ -464,6 +496,7 @@ function hoverc()
 	$('#dropdownc').css('display','block');
 }
 
+
 function leavec()
 {
 	$('#dropdownc').css('display','none'); 
@@ -525,6 +558,7 @@ function sorttype(t){
 		typechanged=true;
 }
 
+<<<<<<< HEAD
 function setup(){
 	// Benchmarking function
 	//benchmarkData = performance.timing;
@@ -562,6 +596,8 @@ function setup(){
 }
 
 
+=======
+>>>>>>> d4f83640f94b15129832b844f762c2cd1d93ff50
 function magicHeading()
 {
 		if(window.pageYOffset-10>$("#subheading").offset().top){

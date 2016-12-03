@@ -1681,7 +1681,7 @@ input.large-button {
 }
 
 .result-header-inverse {
-    background-color: #fff !important;
+    background-color: rgb(255, 204, 85) !important;
     color:#614875 !important;
 }
 
@@ -1697,7 +1697,7 @@ input.large-button {
 		font-size:12px;
 		display:none;
 		position:absolute;
-    top:-10px;
+    top:10px;
 		background:#fff;
 		box-shadow:2px 2px 8px #888;
 }
