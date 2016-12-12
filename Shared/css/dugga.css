@@ -246,3 +246,7 @@ table tbody tr:nth-child(even) {background-color:#dad8db;}
 svg text {
 	pointer-events: none;
 }
+
+#markMenuPlaceholderz {
+		background:#bbb;
+}

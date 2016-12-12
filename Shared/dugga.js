@@ -3,6 +3,7 @@
 //            This allows us to set and remove whole CSS files
 //----------------------------------------------------------------------------------
 var renderId; // Used to store active rendering function
+var benchmarkData = performance.timing; // Will be updated after onload event
 
 var status = 0;
 var score;
@@ -10,6 +11,7 @@ var timeUsed;
 var stepsUsed;
 var inParams = "UNK";;
 var MAX_SUBMIT_LENGTH = 5000;
+
 function toggleloginnewpass(){
 
 	if(status == 0){

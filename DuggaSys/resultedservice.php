@@ -1,5 +1,4 @@
 <?php
-
 date_default_timezone_set("Europe/Stockholm");
 
 // Include basic application services!
@@ -47,6 +46,15 @@ $duggaentry="";
 $duggauser="";
 $duggafeedback="";
 
+$gradeupdated=false;
+
+$entries=array();
+$gentries=array();
+$sentries=array();
+$lentries=array();
+$snus=array();
+$files= array();
+
 $debug="NONE!";
 
 $log_uuid = getOP('log_uuid');
@@ -71,6 +79,11 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 			if(!$query->execute()) {
 				$error=$query->errorInfo();
 				$debug="Error updating entries".$error[2];
+			} else {
+				$gradeupdated=true;
+				$duggauser=$luid;
+				$duggaid=$listentry;
+				$lentries=$mark;
 			}
 			if ($newDuggaFeedback != "UNK"){
 					$query = $pdo->prepare('UPDATE userAnswer SET feedback = CASE WHEN feedback IS NULL THEN :newDuggaFeedback ELSE concat(feedback, concat("||",:newDuggaFeedback)) END WHERE cid=:cid AND moment=:moment AND vers=:vers AND uid=:uid;');
@@ -98,6 +111,11 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 			if(!$query->execute()) {
 				$error=$query->errorInfo();
 				$debug="Error updating entries\n".$error[2];
+			} else {
+				$gradeupdated=true;
+				$duggauser=$luid;
+				$duggaid=$listentry;
+				$lentries=$mark;
 			}
 		}
 	}
@@ -191,19 +209,34 @@ if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESS
 //------------------------------------------------------------------------------------------------
 // Retrieve Information
 //------------------------------------------------------------------------------------------------
-$entries=array();
-$gentries=array();
-$sentries=array();
-$lentries=array();
 
-if(strcmp($opt,"DUGGA")!==0){
+// Don't retreive all results if request was for a single dugga or a grade update
+if(strcmp($opt,"DUGGA")!==0 && strcmp($opt,"CHGR")!==0){
 	if(checklogin() && (hasAccess($_SESSION['uid'], $cid, 'w') || isSuperUser($_SESSION['uid']))) {
 		// Users connected to the current course version
-		
+		/*
+		$q = $pdo->prepare("SELECT user_course.cid AS cid,user.uid AS uid,username,firstname,lastname,ssn,aid,quiz,variant,moment,grade,useranswer,submitted,user_course.vers as vers,marked,timeUsed,totalTimeUsed,stepsUsed,totalStepsUsed FROM user,user_course,userAnswer WHERE user.uid=user_course.uid AND user_course.cid=:cid AND user.uid=userAnswer.uid AND user_course.vers=:coursevers order by lastname,quiz;");
+		$q->bindParam(':coursevers', $vers);
+		$q->bindParam(':cid', $cid);
+
+		if(!$q->execute()) {
+			$error=$q->errorInfo();
+			$debug="Error retreiving users. (row ".__LINE__.") ".$q->rowCount()." row(s) were found. Error code: ".$error[2];
+		}
+
+		foreach($q->fetchAll(PDO::FETCH_ASSOC) as $row){
+				if (array_key_exists($row['uid'], $snus){
+					
+				} else {
+						
+				}
+				
+		}
+		*/
 		$query = $pdo->prepare("SELECT user_course.cid AS cid,user.uid AS uid,username,firstname,lastname,ssn FROM user,user_course WHERE user.uid=user_course.uid AND user_course.cid=:cid AND user_course.vers=:coursevers;");
 		//		$query = $pdo->prepare("select user_course.cid as cid,user.uid as uid,username,firstname,lastname,ssn,access from user,user_course where user.uid=user_course.uid and user_course.cid=:cid;");
-		$query->bindParam(':cid', $cid);
 		$query->bindParam(':coursevers', $vers);
+		$query->bindParam(':cid', $cid);
 
 		if(!$query->execute()) {
 			$error=$query->errorInfo();
@@ -236,8 +269,9 @@ if(strcmp($opt,"DUGGA")!==0){
 		}
 
 		// All results from current course and vers?
-		$query = $pdo->prepare("select aid,quiz,variant,moment,grade,uid,useranswer,submitted,vers,marked,timeUsed,totalTimeUsed,stepsUsed,totalStepsUsed from userAnswer where cid=:cid;");
+		$query = $pdo->prepare("select aid,quiz,variant,userAnswer.moment as dugga,grade,uid,useranswer,UNIX_TIMESTAMP(submitted)as submitted,userAnswer.vers,UNIX_TIMESTAMP(marked) as marked,timeUsed,totalTimeUsed,stepsUsed,totalStepsUsed,listentries.moment as moment,if((submitted > marked && !isnull(marked))||(isnull(marked) && !isnull(useranswer)), true, false) as needMarking from userAnswer,listentries where userAnswer.cid=:cid and userAnswer.vers=:vers and userAnswer.moment=listentries.lid;");
 		$query->bindParam(':cid', $cid);
+		$query->bindParam(':vers', $vers);
 
 		if(!$query->execute()) {
 			$error=$query->errorInfo();
@@ -254,7 +288,8 @@ if(strcmp($opt,"DUGGA")!==0){
 				array(
 					'aid' => (int)$row['quiz'],
 					'variant' => (int)$row['variant'],
-					'moment' => (int)$row['moment'],
+					'dugga' => (int)$row['dugga'],
+					'moment' => (int)$row['moment'],					
 					'grade' => (int)$row['grade'],
 					'uid' => (int)$row['uid'],
 					'useranswer' => $row['useranswer'],
@@ -264,7 +299,8 @@ if(strcmp($opt,"DUGGA")!==0){
 					'timeUsed' => $row['timeUsed'],
 					'totalTimeUsed' => $row['totalTimeUsed'],
 					'stepsUsed' => $row['stepsUsed'],
-					'totalStepsUsed' => $row['totalStepsUsed']
+					'totalStepsUsed' => $row['totalStepsUsed'],
+					'needMarking' => (bool)$row['needMarking']
 				)
 			);
 		}
@@ -317,82 +353,88 @@ if(strcmp($opt,"DUGGA")!==0){
 			);
 		}
 	}
-}
 
-$files= array();
-$query = $pdo->prepare("select subid,uid,vers,did,fieldnme,filename,extension,mime,updtime,kind,filepath,seq,segment from submission where uid=:uid and vers=:vers and cid=:cid order by filename,updtime asc;");
-$query->bindParam(':uid', $luid);
-$query->bindParam(':cid', $cid);
-$query->bindParam(':vers', $vers);
+	$query = $pdo->prepare("select subid,uid,vers,did,fieldnme,filename,extension,mime,updtime,kind,filepath,seq,segment from submission where uid=:uid and vers=:vers and cid=:cid order by filename,updtime asc;");
+	$query->bindParam(':uid', $luid);
+	$query->bindParam(':cid', $cid);
+	$query->bindParam(':vers', $vers);
 
 
-if(!$query->execute()) {
-	$error=$query->errorInfo();
-	$debug="Error retreiving submissions. (row ".__LINE__.") ".$query->rowCount()." row(s) were found. Error code: ".$error[2];
-}
+	if(!$query->execute()) {
+		$error=$query->errorInfo();
+		$debug="Error retreiving submissions. (row ".__LINE__.") ".$query->rowCount()." row(s) were found. Error code: ".$error[2];
+	}
 
 
-foreach($query->fetchAll() as $row) {
-		$content = "UNK";
-		$feedback = "UNK";
+	foreach($query->fetchAll() as $row) {
+			$content = "UNK";
+			$feedback = "UNK";
 
-		$currcvd=getcwd();
-		
-		$fedbname=$currcvd."/".$row['filepath'].$row['filename'].$row['seq']."_FB.txt";				
-		if(!file_exists($fedbname)) {
-				$feedback="UNK";
-		} else {
-				$feedback=file_get_contents($fedbname);
-		}			
-		
-		
-		if($row['kind']=="3"){
-				// Read file contents
-				$movname=$currcvd."/".$row['filepath']."/".$row['filename'].$row['seq'].".".$row['extension'];
+			$currcvd=getcwd();
+			
+			$fedbname=$currcvd."/".$row['filepath'].$row['filename'].$row['seq']."_FB.txt";				
+			if(!file_exists($fedbname)) {
+					$feedback="UNK";
+			} else {
+					$feedback=file_get_contents($fedbname);
+			}			
+			
+			
+			if($row['kind']=="3"){
+					// Read file contents
+					$movname=$currcvd."/".$row['filepath']."/".$row['filename'].$row['seq'].".".$row['extension'];
 
-				if(!file_exists($movname)) {
-						$content="UNK!";
-				} else {
-						$content=file_get_contents($movname);
-				}
-		}	else if($row['kind']=="2"){
-				// File content is an URL
-				$movname=$currcvd."/".$row['filepath']."/".$row['filename'].$row['seq'];
+					if(!file_exists($movname)) {
+							$content="UNK!";
+					} else {
+							$content=file_get_contents($movname);
+					}
+			}	else if($row['kind']=="2"){
+					// File content is an URL
+					$movname=$currcvd."/".$row['filepath']."/".$row['filename'].$row['seq'];
 
-				if(!file_exists($movname)) {
-						$content="UNK URL!";
-				} else {
-						$content=file_get_contents($movname);
-				}
-		}else{
-				$content="Not a text-submit or URL";
-		}
+					if(!file_exists($movname)) {
+							$content="UNK URL!";
+					} else {
+							$content=file_get_contents($movname);
+					}
+			}else{
+					$content="Not a text-submit or URL";
+			}
 
-		$entry = array(
-			'uid' => $row['uid'],
-			'subid' => $row['subid'],
-			'vers' => $row['vers'],
-			'did' => $row['did'],
-			'fieldnme' => $row['fieldnme'],
-			'filename' => $row['filename'],
-			'filepath' => $row['filepath'],
-			'extension' => $row['extension'],
-			'mime' => $row['mime'],
-			'updtime' => $row['updtime'],
-			'kind' => $row['kind'],
-			'seq' => $row['seq'],
-			'segment' => $row['segment'],
-			'content' => $content,
-			'feedback' => $feedback
-		);
+			$entry = array(
+				'uid' => $row['uid'],
+				'subid' => $row['subid'],
+				'vers' => $row['vers'],
+				'did' => $row['did'],
+				'fieldnme' => $row['fieldnme'],
+				'filename' => $row['filename'],
+				'filepath' => $row['filepath'],
+				'extension' => $row['extension'],
+				'mime' => $row['mime'],
+				'updtime' => $row['updtime'],
+				'kind' => $row['kind'],
+				'seq' => $row['seq'],
+				'segment' => $row['segment'],
+				'content' => $content,
+				'feedback' => $feedback
+			);
 
-		// If the filednme key isn't set, create it now
-  	if (!isset($files[$row['segment']])) $files[$row['segment']] = array();
-		array_push($files[$row['segment']], $entry);
+			// If the filednme key isn't set, create it now
+	  	if (!isset($files[$row['segment']])) $files[$row['segment']] = array();
+			array_push($files[$row['segment']], $entry);
 
+	}
 }
 
 if (sizeof($files) === 0) {$files = (object)array();} // Force data type to be object
+
+if(isset($_SERVER["REQUEST_TIME_FLOAT"])){
+		$serviceTime = microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"];	
+		$benchmark =  array('totalServiceTime' => $serviceTime);
+}else{
+		$benchmark="-1";
+}
 
 $array = array(
 	'entries' => $entries,
@@ -412,7 +454,9 @@ $array = array(
 	'duggastats' => $duggastats,
 	'duggafeedback' => $duggafeedback,
 	'moment' => $listentry,
-	'files' => $files
+	'files' => $files,
+	'gradeupdated' => $gradeupdated,
+	'benchmark' => $benchmark
 );
 
 echo json_encode($array);
