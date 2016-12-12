@@ -807,6 +807,45 @@ function saveResponse()
 
 function returnedResults(data)
 {
+  if (data.gradeupdated === true){
+      // Update background color
+      $("#u"+data.duggauser+"_d"+data.duggaid).removeClass("dugga-fail dugga-pending dugga-assigned");
+      if (data.results != "1"){
+          $("#u"+data.duggauser+"_d"+data.duggaid).addClass("dugga-pass");
+      } else {
+          $("#u"+data.duggauser+"_d"+data.duggaid).addClass("dugga-fail");       
+      }
+      // Find the array row for updated grade in or local data structure "students"
+      var rowpos=-1;
+      var dpos=-1;
+      for (var t=0;t<students.length;t++){
+          if (students[t][1].uid == data.duggauser) {
+              rowpos=t;
+              for (var j=0;j<students[t].length;j++){
+                  if (students[t][j].lid == data.duggaid){
+                    dpos=j;
+                    break;
+                  }
+              }
+              break;
+          }
+      }
+
+      if(rowpos !== -1){
+        // Regenerate the marking buttons to reflect the new grade
+        var tst = makeSelect(students[rowpos][dpos].gradeSystem, querystring['cid'], students[rowpos][dpos].vers, parseInt(data.duggaid), parseInt(data.duggauser), parseInt(data.results), 'U');
+        tst += "<img id='korf' class='fist";
+        if(students[rowpos][dpos].userAnswer===null){
+          tst += " grading-hidden";
+        }
+        tst +="' src='../Shared/icons/FistV.png' onclick='clickResult(\"" + querystring['cid'] + "\",\"" + students[rowpos][dpos].vers + "\",\"" + students[rowpos][dpos].lid + "\",\"" + students[rowpos][0].firstname + "\",\"" + students[rowpos][0].lastname + "\",\"" + students[rowpos][dpos].uid + "\",\"" + students[rowpos][dpos].submitted + "\",\"" + students[rowpos][dpos].marked + "\",\"" + students[rowpos][dpos].grade + "\",\"" + students[rowpos][dpos].gradeSystem + "\",\"" + students[rowpos][dpos].lid + "\");' />";
+
+        $("#u"+data.duggauser+"_d"+data.duggaid+" > .gradeContainer").html(tst);
+      } else {
+        alert("Error updating result");
+      }
+  } else {
+    
 		entries=data.entries;
 		moments=data.moments;
 		versions=data.versions;
@@ -842,4 +881,5 @@ function returnedResults(data)
 			/*			Process and render filtered data			*/
 			process();	
 		}
+  }
 }
